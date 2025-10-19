@@ -20,6 +20,50 @@
 - Query-параметры (`?status=active&createdAfter=2024-01-01`).
 - Сортировка (`?sort=+name,-createdAt`) — определите соглашение (например, `+`/`-` или `asc`/`desc`).
 - Для сложных фильтров лучше POST `/search` с body (JSON DSL).
+  ```json
+  POST /orders/search
+  {
+    "filters": {
+      "status": ["pending", "processing"],
+      "createdAt": { "from": "2024-01-01", "to": "2024-02-01" },
+      "total": { "gte": 100 }
+    },
+    "sort": ["-createdAt"],
+    "pagination": { "cursor": "abc123", "limit": 50 }
+  }
+  ```
+  Возвращайте `meta` с информацией о запросе и `nextCursor`.
+  ```json
+  {
+    "data": [...],
+    "meta": {
+      "limit": 50,
+      "nextCursor": "eyJpZCI6MTIzNH0="
+    }
+  }
+  ```
+  При отсутствии следующей страницы `nextCursor` можно опустить или вернуть null.
+
+- Для bulk (batch) операций создайте отдельный endpoint:
+  ```json
+  POST /inventory/batch
+  {
+    "operations": [
+      { "op": "update", "sku": "SKU-1", "quantity": 10 },
+      { "op": "delete", "sku": "SKU-2"}
+    ]
+  }
+  ```
+  В ответе указывайте результат по каждому элементу.
+  ```json
+  {
+    "results": [
+      { "sku": "SKU-1", "status": "updated" },
+      { "sku": "SKU-2", "status": "deleted" }
+    ],
+    "errors": []
+  }
+  ```
 
 ## Relationships
 - Связанные ресурсы: `/orders/{id}/items`, `/users/{id}/roles`.
