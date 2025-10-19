@@ -2,8 +2,11 @@
 
 - [C++20](./cpp/README.md)
 - [Go](./go/README.md)
+- [Go Concurrency Patterns](./go-concurrency/README.md)
+- [Алгоритмы и интервью](./algorithms-interview/README.md)
 - [JavaScript](./js/README.md)
 - [Типы в TypeScript](./ts-types/README.md)
+- [Express.js рецепты](./express-recipes/README.md)
+- [GraphQL](./graphql/README.md)
 - [Linux CLI](./linux-cli/README.md)
 - [Windows PowerShell](./windows-powershell/README.md)
-
