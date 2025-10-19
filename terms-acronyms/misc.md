@@ -1,49 +1,45 @@
 # Полезные сокращения и прочее
 
-**API** — Application Programming Interface.
+**API** — Application Programming Interface: контракт, по которому взаимодействуют сервисы/клиенты. Может быть REST, GraphQL, gRPC.
 
-**REST** — Representational State Transfer, архитектурный стиль построения API.
+**REST** — Representational State Transfer: стиль API с ресурсами и HTTP-методами (GET/POST/PUT/DELETE), где состояние передаётся через представления.
 
-**RPC** — Remote Procedure Call.
+**RPC** — Remote Procedure Call: вызов удалённой функции как локальной (JSON-RPC, gRPC). Удобно для машин-машин взаимодействия.
 
-**gRPC** — фреймворк RPC поверх HTTP/2 + Protocol Buffers.
+**gRPC** — фреймворк RPC поверх HTTP/2 + Protocol Buffers. Обеспечивает строгую типизацию и двунаправленный стриминг, популярен в микросервисах.
 
-**JSON** — JavaScript Object Notation.
+**JSON** — JavaScript Object Notation, лёгкий формат обмена данными (в веб/API).
 
-**YAML** — YAML Ain't Markup Language.
+**YAML** — YAML Ain't Markup Language: удобен для конфигураций (Kubernetes, CI), но требует аккуратности с отступами.
 
-**XML** — Extensible Markup Language.
+**XML** — Extensible Markup Language: кастомные структуры, часто используется в legacy-интеграциях и документах.
 
-**FQDN** — Fully Qualified Domain Name.
+**FQDN** — Fully Qualified Domain Name (например, api.example.com). Используется для DNS-записей.
 
-**DNS** — Domain Name System.
+**DNS** — Domain Name System: сопоставляет доменные имена IP-адресам. Базовый сервис интернет-инфраструктуры.
 
-**JWT** — JSON Web Token.
+**JWT** — JSON Web Token: компактный формат токена с подписью; несёт клеймы о пользователе, используется в авторизации.
 
-**OAuth** — протокол авторизации, предоставление доступа третьим сторонам.
+**OAuth** — протокол авторизации, позволяющий приложениям запрашивать доступ к ресурсам ("Login with Google").
 
-**OIDC** — OpenID Connect; слой аутентификации поверх OAuth 2.0.
+**OIDC** — OpenID Connect: слой аутентификации поверх OAuth 2.0 (ID-токен с информацией о пользователе).
 
-**IaaS/PaaS/SaaS/XaaS** — инфраструктура/платформа/ПО как сервис.
+**IaaS/PaaS/SaaS/XaaS** — модели облачных сервисов (инфраструктура, платформа, ПО, всё как сервис). Помогают понимать зоны ответственности.
 
-**SaaS** — Software as a Service.
+**SOP** — Standard Operating Procedure: стандартизированная инструкция, как выполнять повторяющиеся задачи.
 
-**SOP** — Standard Operating Procedure.
+**RFC** — Request for Comments (IETF) — официальные документы спецификаций интернет-протоколов. RFC2119 описывает ключевые слова MUST/SHOULD/MAY.
 
-**RFC** — Request for Comments (документы стандартизации в IETF).
+**FOSS/FLOSS** — (Free/Libre) Open Source Software: программное обеспечение с открытым исходным кодом и свободной лицензией.
 
-**RFC2119** — документ с ключевыми словами MUST/SHALL/SHOULD.
+**CLI** — Command-Line Interface (например, `kubectl`, `git`). Предпочитается для автоматизации.
 
-**FOSS/FLOSS** — (Free/Libre) Open Source Software.
+**GUI** — Graphical User Interface: графический интерфейс (VS Code, Photoshop).
 
-**CLI** — Command-Line Interface.
+**SDK** — Software Development Kit: набор инструментов (библиотеки, примеры, документация) для разработки под конкретную платформу.
 
-**GUI** — Graphical User Interface.
+**PWA** — Progressive Web App: веб-приложение с возможностями нативных (офлайн, push), работает через Service Worker.
 
-**SDK** — Software Development Kit.
+**CDN** — Content Delivery Network: сеть серверов для быстрой доставки статического контента пользователям (Cloudflare, Akamai).
 
-**PWA** — Progressive Web App.
-
-**CDN** — Content Delivery Network.
-
-**WAF** — Web Application Firewall.
+**WAF** — Web Application Firewall: фильтрует HTTP-трафик, защищает от OWASP Top 10/ботов (Cloudflare WAF, AWS WAF).

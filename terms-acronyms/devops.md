@@ -1,37 +1,37 @@
 # DevOps и инфраструктура
 
-**CI/CD** — Continuous Integration/Continuous Delivery (или Deployment); автоматизация сборки, тестирования и доставки.
+**CI/CD** — Continuous Integration/Continuous Delivery (или Deployment); автоматизация сборки, тестирования и доставки. Jenkins, GitHub Actions, GitLab CI помогают быстро и безопасно выкатывать изменения.
 
-**IaC** — Infrastructure as Code (Terraform, Ansible, Pulumi): управление инфраструктурой через декларативные/императивные конфигурации.
+**IaC** — Infrastructure as Code (Terraform, Ansible, Pulumi): инфраструктура описывается кодом и управляется через VCS, что даёт повторяемость и audit-trail.
 
-**Immutable Infrastructure** — инфраструктура, которая не обновляется на месте, а заменяется новыми идентичными экземплярами.
+**Immutable Infrastructure** — серверы/контейнеры не обновляются "наживую"; вместо этого создаются новые экземпляры. Уменьшает дрейф конфигураций.
 
-**GitOps** — управление инфраструктурой и приложениями через Git как единственный источник правды, автоматизация sync (ArgoCD, Flux).
+**GitOps** — Git как источник правды для инфраструктуры и приложений. ArgoCD/Flux отслеживают репозитории и приводят окружения к нужному состоянию.
 
-**SRE** — Site Reliability Engineering; инженеры, балансирующие надежность и скорость разработки.
+**SRE** — Site Reliability Engineering: практики Google по балансировке надежности и скорости поставки. Включают error budget, toil reduction.
 
-**SLA/SLO/SLI** — Service Level Agreement/Objective/Indicator; договорные показатели и метрики надежности.
+**SLA/SLO/SLI** — Service Level Agreement/Objective/Indicator; SLA — обещание бизнесу, SLO — конкретное численное целевое значение, SLI — фактические измерения.
 
-**Kubernetes (K8s)** — оркестратор контейнеров (Deployment, Service, Ingress).
+**Kubernetes (K8s)** — оркестратор контейнеров с ресурсами Deployment, Service, Ingress, StatefulSet. Де-факто стандарт для cloud-native.
 
-**Helm** — пакетный менеджер для Kubernetes (Charts).
+**Helm** — пакетный менеджер для Kubernetes; Charts помогaют шаблонизировать манифесты и переиспользовать их.
 
-**Service Mesh** — см. архитектура.
+**Service Mesh** — см. архитектура; на практике добавляет mTLS, ретраи, наблюдаемость без изменения кода.
 
-**Blue/Green Deployment** — одновременное поддержание двух окружений (синий & зелёный) с переключением трафика.
+**Blue/Green Deployment** — поддержка двух сред (Blue — текущая, Green — новая) с мгновенным переключением трафика. Полезно для крупных релизов с rollback.
 
-**Canary Release** — постепенный rollout новой версии к части пользователей для проверки.
+**Canary Release** — постепенный rollout новой версии к небольшой аудитории, чтобы проверить метрики и ошибки до полного релиза.
 
-**Chaos Engineering** — тестирование отказоустойчивости путем введения намеренных сбоев (Chaos Monkey, Litmus).
+**Chaos Engineering** — намеренное внесение сбоев (Chaos Monkey, Litmus) для проверки устойчивости системы.
 
-**MTTR/MTBF** — Mean Time To Recovery / Between Failures; метрики надежности.
+**MTTR/MTBF** — Mean Time To Recovery / Between Failures; ключевые показатели зрелости SRE-команды.
 
-**Observability** — способность понимать внутреннее состояние системы по логам, метрикам, трассам.
+**Observability** — совокупность логов, метрик, трасс, позволяющая отвечать на неожиданные вопросы о системе. Инструменты: Prometheus, Grafana, OpenTelemetry.
 
-**APM** — Application Performance Monitoring (Datadog, New Relic, AppDynamics).
+**APM** — Application Performance Monitoring (Datadog, New Relic); показывает транзакции, задержки, профилирование.
 
-**Sidecar** — вспомогательный контейнер/процесс, который размещается рядом с основным для добавления функционала (например, proxy, logging).
+**Sidecar** — вспомогательный контейнер/процесс рядом с основным (например, Envoy proxy в Istio, лог-коллектор), добавляет функциональность без изменения основного приложения.
 
-**Serverless / FaaS** — Function-as-a-Service: AWS Lambda, Google Cloud Functions, Azure Functions.
+**Serverless / FaaS** — Function-as-a-Service (AWS Lambda, Google Cloud Functions). Удобно для событийных задач, платить только за время выполнения.
 
-**Runtime** — среда выполнения (JVM, Node.js, WASM runtime).
+**Runtime** — среда выполнения (JVM, Node.js, .NET CLR, WASM runtime), которая исполняет приложение и управляет ресурсами.

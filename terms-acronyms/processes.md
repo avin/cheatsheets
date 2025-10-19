@@ -1,29 +1,29 @@
 # Методологии и управление
 
-**Agile** — гибкая методология разработки, итеративная поставка ценности.
+**Agile** — семейство гибких методологий с итеративной поставкой ценности и тесным взаимодействием с заказчиком. Помогает быстрее получать обратную связь.
 
-**Scrum** — Agile-фреймворк: Product Owner, Scrum Master, Development Team; события (Sprint, Standup, Retrospective).
+**Scrum** — Agile-фреймворк с ролями Product Owner, Scrum Master и Development Team. Регулярные события (Sprint Planning, Daily, Review, Retro) структурируют работу спринта.
 
-**Kanban** — метод визуализации потока задач, ограничение WIP (Work In Progress).
+**Kanban** — визуализация потока задач на доске и ограничение WIP. Эффективен для операций/поддержки, где поток задач непрерывный.
 
-**Lean** — минимизация потерь, постоянное улучшение.
+**Lean** — подход минимизации потерь и постоянного улучшения. Заимствован из производства Toyota, помогает оптимизировать процессы разработки.
 
-**Six Sigma** — методология повышения качества процессов (DMAIC).
+**Six Sigma** — методология повышения качества (цикл DMAIC). Используется там, где критически важен контроль дефектов.
 
-**OKR** — Objectives and Key Results (цели и ключевые результаты).
+**OKR** — Objectives and Key Results: формулировка амбициозных целей и измеримых результатов. Применяется на уровне компании/команды для выравнивания целей.
 
-**KPI** — Key Performance Indicator, метрики эффективности.
+**KPI** — Key Performance Indicators: метрики эффективности (скорость, качество, удовлетворенность). Требует аккуратного выбора, чтобы не приводить к "геймингу".
 
-**SMART** — Specific, Measurable, Achievable, Relevant, Time-bound.
+**SMART** — критерии для хорошей цели: Specific, Measurable, Achievable, Relevant, Time-bound.
 
-**RACI** — Responsibility Assignment Matrix (Responsible, Accountable, Consulted, Informed).
+**RACI** — матрица распределения ответственности: кто делает, кто отвечает, кого консультировать, кого информировать. Удобна при кросс-командной работе.
 
-**RUP** — Rational Unified Process.
+**RUP** — Rational Unified Process: итеративная методология с четкими фазами (Inception, Elaboration, Construction, Transition). Часто используется в проектах с сильной документацией.
 
-**XP (Extreme Programming)** — Agile-практики (pair programming, TDD, continuous integration).
+**XP (Extreme Programming)** — Agile-практики (pair programming, TDD, continuous integration, collective ownership) для повышения качества кода.
 
-**Value Stream Mapping** — инструмент Lean для визуализации потока создания ценности.
+**Value Stream Mapping** — инструмент Lean для визуализации цепочки создания ценности и нахождения узких мест.
 
-**Change Management** — процесс внедрения изменений с минимальным риском (CAB, ITIL). 
+**Change Management** — процесс управления изменениями (например, через CAB) для минимизации рисков при обновлениях продакшн-систем.
 
-**ITIL** — библиотека практик IT Service Management.
+**ITIL** — библиотека best practices IT Service Management (инциденты, запросы, изменения). Используется для построения процессов поддержки.

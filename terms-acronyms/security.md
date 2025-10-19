@@ -1,33 +1,33 @@
 # Security и процессы
 
-**RBAC** — Role-Based Access Control: управление доступом по ролям.
+**RBAC** — Role-Based Access Control: управление доступом по ролям (Admin, Operator). Удобно в корпоративных системах, где права завязаны на должности.
 
-**ABAC** — Attribute-Based Access Control: решения об уровне доступа принимаются по атрибутам (время, локация, тег и т.д.).
+**ABAC** — Attribute-Based Access Control: решение по набору атрибутов (время, локация, уровень риска). Используют для гибких политик, например, "разрешить только из корпоративной сети".
 
-**IAM** — Identity and Access Management (AWS IAM, Azure AD).
+**IAM** — Identity and Access Management (AWS IAM, Azure AD): система для управления пользователями, ролями, ключами. Центральный элемент контроля доступа в облаках.
 
-**MFA** — Multi-Factor Authentication.
+**MFA** — Multi-Factor Authentication: сочетание нескольких факторов (пароль + TOTP + аппаратный ключ). Существенно снижает риск компрометации учётки.
 
-**Zero Trust** — модель безопасности «никому не доверяй по умолчанию», каждый запрос проверяется независимо.
+**Zero Trust** — модель "никому не доверяй, всё проверяй". Реализуется через mTLS, короткие токены, постоянную валидацию запросов.
 
-**SOC2** — стандарт аудита безопасности и надежности сервисов (Service Organization Control 2).
+**SOC2** — аудит безопасности/конфиденциальности SaaS-компаний по пяти trust-пунктам. Часто требуется для работы с enterprise-клиентами.
 
-**ISO 27001** — международный стандарт управления информационной безопасностью.
+**ISO 27001** — международный стандарт системы управления информационной безопасностью (ISMS). Используется для построения процессов и прохождения аудиторов.
 
-**OWASP** — Open Web Application Security Project; публикует Top 10 риски веб-безопасности и другие ресурсы.
+**OWASP** — Open Web Application Security Project: лучшие практики, Top 10 рисков, cheat sheets. Полезно для разработчиков и ревьюеров кода.
 
-**CIS Benchmarks** — Center for Internet Security базовые рекомендации по hardening.
+**CIS Benchmarks** — набор рекомендаций по hardening ОС, Docker, Kubernetes и т.д. Используется как baseline при настройке инфраструктуры.
 
-**SIEM** — Security Information and Event Management (Splunk, QRadar) — сбор и корреляция логов.
+**SIEM** — Security Information and Event Management (Splunk, QRadar, ELK SIEM): сбор логов, корреляция событий, алерты.
 
-**SOAR** — Security Orchestration, Automation and Response (автоматизация IR-процессов).
+**SOAR** — Security Orchestration, Automation and Response: автоматизация реагирования (например, автозакрытие доступа при подозрительной активности).
 
-**IR** — Incident Response: процесс реагирования на инциденты безопасности.
+**IR** — Incident Response: процесс выявления, локализации, устранения и анализа инцидентов. Включает runbooks, коммуникацию, пост-мортем.
 
-**DLP** — Data Loss Prevention.
+**DLP** — Data Loss Prevention: инструменты предотвращения утечек (контроль почты, USB, облачных сервисов).
 
-**EDR/XDR** — Endpoint Detection and Response / Extended Detection and Response.
+**EDR/XDR** — Endpoint Detection and Response / Extended Detection and Response: агенты на рабочих станциях/серверaх, отслеживающие подозрительную активность.
 
-**TLS** — Transport Layer Security, протокол защищенного соединения.
+**TLS** — Transport Layer Security: протокол защиты трафика (HTTPS). Важен правильный набор шифров, сертификаты, HSTS.
 
-**PKI** — Public Key Infrastructure: инфраструктура открытых ключей, сертификатов.
+**PKI** — Public Key Infrastructure: выдача, управление и отзыв сертификатов. Используется для TLS, подписания кода, взаимной аутентификации.
