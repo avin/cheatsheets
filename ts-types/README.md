@@ -66,16 +66,18 @@
 
 * 📌  **`Partial`, `Required`, `Readonly`, `Pick`, `Omit`**
 * 📌  **`Record`, `NonNullable`, `Exclude`, `Extract`**
-* 📌  **`ReturnType`, `Parameters`, `ConstructorParameters`**
-* 📌  **`Awaited`, `InstanceType`, `ThisType`**
-* 📌  **Комбинация utility-типа с кастомными ограничениями**
+* 📌  **`ReturnType`, `Parameters`, `ConstructorParameters`, `Awaited`**
+* 📌  **`ThisType`, `ThisParameterType`, `OmitThisParameter`**
+* 📌  **Частичные поля по ключам и выделение writable/readonly участков**
+* 📌  **Карта обработчиков из словаря событий (`EventHandlerMap`)**
 
 ***
 
 ### 🧪 [Паттерны для проверки типов](./type-helpers.ts)
 
 * 📌  **Типовые ассерт-функции (`Equal`, `Expect`)**
-* 📌  **Преобразования объединений ↔ кортежей**
-* 📌  **Глубокие `Partial` / `Required`**
-* 📌  **Фильтрация ключей по значению**
-* 📌  **Типовые "алгоритмы" над массивами**
+* 📌  **Преобразования объединений ↔ кортежей и массивные алгоритмы**
+* 📌  **Глубокие `Partial` / `Required` и фильтрация по типу значения**
+* 📌  **Проверка точного совпадения структур (`Exact`)**
+* 📌  **Контроль вывода типов через `NoInfer`**
+* 📌  **Дискриминированные объединения: извлечение payload и карт**

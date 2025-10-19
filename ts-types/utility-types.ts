@@ -69,3 +69,72 @@ const builders: Record<string, VectorBuilder> = {
     },
   },
 };
+
+
+// ---------------------------------------------------
+// 📌 Частичные, обязательные и изменяемые поля по ключам
+// ---------------------------------------------------
+type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+type RequiredBy<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
+type MutableBy<T, K extends keyof T> = Omit<T, K> & {
+  -readonly [P in K]: T[P];
+};
+
+type ProfilePatch = PartialBy<Profile, 'name' | 'email'>;
+type ProfileIdentified = RequiredBy<Profile, 'name'>;
+type EditableProfile = MutableBy<FrozenProfile, 'name'>;
+
+
+// ---------------------------------------------------
+// 📌 Выделение writable/readonly ключей
+// ---------------------------------------------------
+type WritableKeys<T> = {
+  [K in keyof T]-?: { [Q in K]: T[K] } extends {
+    -readonly [Q in K]: T[K];
+  }
+    ? K
+    : never;
+}[keyof T];
+
+type ReadonlyKeys<T> = {
+  [K in keyof T]-?: { [Q in K]: T[K] } extends {
+    readonly [Q in K]: T[K];
+  }
+    ? K
+    : never;
+}[keyof T];
+
+interface WidgetOptions {
+  readonly id: string;
+  label: string;
+  readonly createdAt: Date;
+}
+
+type EditableWidgetFields = Pick<WidgetOptions, WritableKeys<WidgetOptions>>;
+type LockedWidgetFields = Pick<WidgetOptions, ReadonlyKeys<WidgetOptions>>;
+
+
+// ---------------------------------------------------
+// 📌 Сигнатуры методов и работа с this
+// ---------------------------------------------------
+type ContextualMethod = (this: { url: string }, path: string) => Promise<void>;
+
+type MethodContext = ThisParameterType<ContextualMethod>; // { url: string }
+type MethodArgs = Parameters<ContextualMethod>; // [path: string]
+type BoundMethod = OmitThisParameter<ContextualMethod>; // (path: string) => Promise<void>
+
+
+// ---------------------------------------------------
+// 📌 Конструирование карт обработчиков
+// ---------------------------------------------------
+type DomainEventMap = {
+  'user:created': { id: string; email: string };
+  'user:deleted': { id: string; reason?: string };
+  'billing:charged': { invoiceId: string; amount: number };
+};
+
+type EventHandlerMap<TEvents extends Record<string, unknown>> = {
+  [K in keyof TEvents]: (payload: TEvents[K]) => void;
+};
+
+type EventHandlers = EventHandlerMap<DomainEventMap>;

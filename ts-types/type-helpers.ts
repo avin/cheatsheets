@@ -101,3 +101,63 @@ type Letters = ['a', 'b', 'c'];
 
 type Zipped = Zip<Numbers, Letters>; // [[1, "a"], [2, "b"], [3, "c"]]
 type Reversed = Reverse<Numbers>; // [3, 2, 1]
+
+
+// ---------------------------------------------------
+// 📌 Точное совпадение структур
+// ---------------------------------------------------
+type Exact<T, Shape> = T extends Shape
+  ? Shape extends T
+    ? T
+    : never
+  : never;
+
+type Shape = { id: string; email?: string };
+
+type ValidShape = Exact<{ id: string }, Shape>; // { id: string }
+type ValidFullShape = Exact<{ id: string; email?: string }, Shape>; // { id: string; email?: string }
+type InvalidShape = Exact<{ id: string; email?: string; extra: boolean }, Shape>; // never
+
+
+// ---------------------------------------------------
+// 📌 Управление выводом типов через NoInfer
+// ---------------------------------------------------
+type NoInfer<T> = [T][T extends any ? 0 : never];
+
+type SupportedLocale = 'en' | 'ru';
+
+declare function translate<T extends SupportedLocale>(
+  key: string,
+  locale: T,
+  fallback?: NoInfer<T>,
+): string;
+
+// translate('title', 'en', 'fr'); // ошибка: 'fr' не выводится как Locale
+
+
+// ---------------------------------------------------
+// 📌 Работа с дискриминированными объединениями
+// ---------------------------------------------------
+type DomainEvent =
+  | { type: 'user:created'; payload: { id: string; email: string } }
+  | { type: 'user:deleted'; payload: { id: string; reason?: string } }
+  | { type: 'billing:charged'; payload: { invoiceId: string; amount: number } };
+
+type EventOf<TUnion, TType> = TUnion extends { type: TType } ? TUnion : never;
+type PayloadOf<TUnion, TType> = EventOf<TUnion, TType> extends {
+  payload: infer P;
+}
+  ? P
+  : never;
+
+type DeletedPayload = PayloadOf<DomainEvent, 'user:deleted'>;
+
+
+// ---------------------------------------------------
+// 📌 Преобразование union → record
+// ---------------------------------------------------
+type UnionToRecord<U extends { type: PropertyKey; payload: unknown }> = {
+  [E in U as E['type']]: E['payload'];
+};
+
+type EventPayloadMap = UnionToRecord<DomainEvent>;
