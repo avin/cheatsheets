@@ -2,6 +2,7 @@
 
 - [C](./c/README.md)
 - [C++20](./cpp/README.md)
+- [CMake](./cmake-recipes/README.md)
 - [Go](./go/README.md)
 - [Go Concurrency Patterns](./go-concurrency/README.md)
 - [Алгоритмы и интервью](./algorithms-interview/README.md)
