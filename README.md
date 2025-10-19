@@ -11,5 +11,6 @@
 - [Express.js рецепты](./express-recipes/README.md)
 - [GraphQL](./graphql/README.md)
 - [Docker](./docker-recipes/README.md)
+- [Термины и акронимы IT](./terms-acronyms/README.md)
 - [Linux CLI](./linux-cli/README.md)
 - [Windows PowerShell](./windows-powershell/README.md)
