@@ -9,6 +9,7 @@
 - [Express.js рецепты](./express-recipes/README.md)
 - [GraphQL](./graphql/README.md)
 - [Docker](./docker-recipes/README.md)
+- [TLS / SSL / OpenSSL](./tls-openssl/README.md)
 - [Linux CLI](./linux-cli/README.md)
 - [Windows PowerShell](./windows-powershell/README.md)
 - [Алгоритмы и интервью](./algorithms-interview/README.md)
