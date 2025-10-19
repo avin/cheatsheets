@@ -30,6 +30,14 @@
 - **OLTP**: transactional workloads (insert/update/read).
 - **OLAP**: аналитика, большие запросы.
 
+## Sharding / Partitioning
+- **Sharding**: горизонтальное деление данных по shard'ам (user_id, регион). Снижает нагрузку на одну БД.
+- **Partitioning**: поддержка в самой СУБД (range/hash/list). Позволяет работать с большими таблицами, ускоряет архивирование.
+
+## Materialized View / Data Mart
+- **Materialized View**: сохранённый результат запроса, ускоряет отчётность.
+- **Data Mart**: специализированное хранилище под конкретный отдел/продукт.
+
 ## CDC (Change Data Capture)
 - **Суть**: отслеживание изменений в БД (Debezium, Kafka Connect) для синхронизации и event-driven систем.
 

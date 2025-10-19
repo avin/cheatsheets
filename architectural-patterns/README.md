@@ -8,6 +8,7 @@
 - Hexagonal Architecture — ports & adapters
 - Clean Architecture — concentric layers
 - Modular Monolith — модули в монолите
+- Strangler Fig — постепенная миграция legacy
 - Plugin/Microkernel — ядро+плагины
 - MVC/MVP/MVVM — UI паттерны
 - Pipe and Filter — pipeline трансформаций
@@ -34,6 +35,8 @@
 - Cloud-native — 12-Factor, sidecar
 - Edge Computing — обработка на краю
 - Data Center/Region patterns — active-active
+- Shared-Nothing / Sharding — горизонтальное масштабирование
+- Leader/Follower — master/replica
 - Multitenancy — multi tenant
 - Eventual consistency — сходимость
 - Consul/etcd/Zookeeper — service discovery
@@ -58,13 +61,17 @@
 - Kappa Architecture — stream-only
 - ETL/ELT — данные
 - Star/Snowflake schema — моделирование DWH
-- OLTP vs OLAP — type workloads
+- OLTP vs OLAP — типы нагрузок
+- Sharding/Partitioning — деление данных
+- Materialized View / Data Mart — ускорение аналитики
 - CDC — change data capture
 - Data Mesh — domain ownership
 
 ### ⚠️ [Anti-patterns и принципы](./anti-patterns.md)
 
 - Anti-patterns — Big Ball of Mud, God object
+- Teaming pitfalls — microservice sprawl, silver bullet
 - SOLID/DRY/KISS — принципы
 - Design for Failure — resilience
+- Conway's Law — архитектура отражает организацию
 - ADR — Architecture Decision Records
