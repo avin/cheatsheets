@@ -9,6 +9,7 @@
 - [Express.js рецепты](./express-recipes/README.md)
 - [GraphQL](./graphql/README.md)
 - [Docker](./docker-recipes/README.md)
+- [REST API best practices](./rest-api-best-practices/README.md)
 - [TLS / SSL / OpenSSL](./tls-openssl/README.md)
 - [Linux CLI](./linux-cli/README.md)
 - [Windows PowerShell](./windows-powershell/README.md)
