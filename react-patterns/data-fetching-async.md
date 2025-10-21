@@ -7,6 +7,8 @@
 - **Базовый случай**: загрузка данных внутри компонента с отменой запроса при размонтировании.
 - **Лайфхаки**: храните флаг отмены, сбрасывайте состояние при смене входных параметров, используйте `AbortSignal.timeout()` в современных браузерах.
 
+Пример показывает hook, который реагирует на изменение `userId`, запускает `fetch` и корректно отменяет запрос, если компонент размонтировался или ключ поменялся.
+
 ```tsx
 function useUser(userId: string) {
   const [data, setData] = useState<User | null>(null);
@@ -45,6 +47,8 @@ function useUser(userId: string) {
 - **Паттерн**: конфигурируйте глобальный QueryClient, пиши `queryKey` и `queryFn`, используйте селекторы данных.
 - **Особенности**: указывайте `staleTime`, `cacheTime`, настраивайте `retry` с `retryDelay`, добавляйте devtools.
 
+Конфигурация `QueryClient` задаёт поведение по умолчанию, а `useQuery` получает ключ (`['user', userId]`) и функцию. Компонент умеет рендерить состояний загрузки/ошибки и перезапрашивать данные по кнопке «повторить».
+
 ```tsx
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -75,6 +79,8 @@ function UserView({ userId }: { userId: string }) {
 - **Паттерн**: оборачивайте загрузку в ресурс (`wrapPromise`) или используйте библиотеки (`react-query` с experimental `suspense`).
 - **React 18 RSC**: на сервере можно приостановить рендер, вызвав `await` или `use(fetchPromise)`, клиент получит стрим.
 
+На стороне сервера (Next.js App Router) компонент просто `await`-ит данные — Suspense подхватывает промис и отдаёт HTML, когда ответ готов. На клиенте оборачиваем асинхронный компонент в `Suspense`, чтобы показать скелетон до готовности данных.
+
 ```tsx
 // Серверный компонент (Next.js App Router)
 import { getUser } from '@/lib/data';
@@ -100,6 +106,8 @@ function SuspenseExample({ userId }: { userId: string }) {
 - **Server Components + Streaming**: используйте `renderToPipeableStream` (Node) или `renderToReadableStream` (Edge) для постепенного вывода HTML.
 - **Progressive hydration**: разделяйте крупные страницы на «острова», используйте `React.lazy` для позднего подключения интерактивных частей.
 - **Работа с формами**: в Next.js можно применять `server actions` для оптимистичных обновлений и повторного `revalidatePath`.
+
+Код ниже иллюстрирует Node-сервер, который начинает отдавать HTML сразу после готовности оболочки (shell), а остальной контент загружается по мере рендера.
 
 ```tsx
 // Node сервер

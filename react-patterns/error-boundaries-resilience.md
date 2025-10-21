@@ -8,6 +8,8 @@
 - **Ограничения**: не ловит ошибки в обработчиках событий, асинхронном коде (Promise) и серверном рендеринге.
 - **Практика**: реализуйте `componentDidCatch` и `getDerivedStateFromError`, выводите fallback, логируйте ошибку.
 
+Классический boundary меняет состояние при первой ошибке и отображает запасной UI. Метод `componentDidCatch` — место, куда можно отправить ошибку в логирование (Sentry, Datadog).
+
 ```tsx
 class ErrorBoundary extends React.Component<
   { fallback: React.ReactNode; onError?: (error: Error, info: React.ErrorInfo) => void },
@@ -37,6 +39,8 @@ class ErrorBoundary extends React.Component<
 - **Паттерн**: оборачивайте асинхронный UI в `Suspense` и `ErrorBoundary`, чтобы показывать fallback во время загрузки и ошибки отдельно.
 - **Советы**: обеспечьте разные fallback-компоненты для критичных и некритичных частей, добавьте retry, если ошибка временная.
 
+Комбинация ниже даёт пользовательский опыт: сначала показывается скелетон, а при фатальной ошибке — экран ошибки. Error boundary также может логировать инцидент и предложить «Повторить».
+
 ```tsx
 <ErrorBoundary fallback={<ErrorState />}>
   <Suspense fallback={<Skeleton />}>
@@ -50,6 +54,8 @@ class ErrorBoundary extends React.Component<
 - **Задача**: предоставить пользователю возможность восстановиться после временной ошибки (сеть, API).
 - **Инструменты**: `useQuery` с `retry`, собственные хуки с `retryFn`, UI с кнопкой «Повторить».
 - **Практика**: храните последний успешный ответ, показывайте оптимистичный UI, различайте ошибки пользователя и системы.
+
+`ErrorFallback` — минимальный компонент, который принимает обработчик повтора. Его удобно переиспользовать в разных местах, передавая `refetch` из React Query или собственный retry.
 
 ```tsx
 function ErrorFallback({ onRetry }: { onRetry: () => void }) {
