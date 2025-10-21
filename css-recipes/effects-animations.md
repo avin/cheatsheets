@@ -10,7 +10,7 @@
   transform: translateY(-2px);
 }
 ```
-- Свойства: `transition-property`, `duration`, `timing-function`, `delay`.
+- Свойства: `transition-property`, `duration`, `timing-function`, `delay`. Используйте предустановки (`ease`, `ease-in-out`) или `cubic-bezier(0.4, 0, 0.2, 1)` для кастомных кривых.
 
 ## Animations (keyframes)
 ```css

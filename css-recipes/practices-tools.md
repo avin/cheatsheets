@@ -35,6 +35,10 @@
 ## Reset / normalize
 - CSS reset (Meyer, modern CSS reset) или normalize.css для базовой типографики.
 
+## Feature queries
+- `@supports (display: grid) { ... }` — прогрессивное улучшение.
+- Используйте `@supports not ()` для fallback.
+
 ## Deployment
 - Content hashing (`styles.[hash].css`).
 - HTTP headers: `Cache-Control`, `ETag`.

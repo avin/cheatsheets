@@ -45,8 +45,17 @@
 ```
 
 ## Responsive layout
-- `@media (min-width: 768px) { ... }`.
-- `@container` queries (современные). При условии `container-type: inline-size;`.
+- `@media (min-width: 768px) { ... }` — media queries для breakpoints.
+- Container queries: объявите `container-type: inline-size;` на родителе и используйте `@container (min-width: 400px) { ... }`.
+- Grid auto-fit пример:
+  ```css
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  ```
+  Карточки автоматически подстраиваются под ширину.
 
 ## CSS functions
 - `calc()`, `min()`, `max()`, `clamp()`.

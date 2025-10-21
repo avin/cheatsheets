@@ -44,7 +44,14 @@ body {
   background: var(--bg);
   color: var(--text);
 }
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121212;
+    --text: #f1f1f1;
+  }
+}
 ```
+- Учитывайте `prefers-color-scheme` для автоматического переключения темы.
 
 ## Text overflow
 - `text-overflow: ellipsis; white-space: nowrap; overflow: hidden;`.
