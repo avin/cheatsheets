@@ -15,6 +15,7 @@
 - [Docker](./docker-recipes/README.md)
 - [SQL (PostgreSQL)](./sql-postgresql/README.md)
 - [REST API best practices](./rest-api-best-practices/README.md)
+- [API взаимодействие](./api-interactions/README.md)
 - [Security для фронтенда](./frontend-security/README.md)
 - [TLS / SSL / OpenSSL](./tls-openssl/README.md)
 - [Linux CLI](./linux-cli/README.md)

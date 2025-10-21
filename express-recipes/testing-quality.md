@@ -23,7 +23,7 @@ describe('Users API', () => {
 ```
 
 - Используйте `buildApp()` без запуска `app.listen`.
-- Мокайте внешние сервисы (`nock`, `msw/node`, `jest.mock`).
+- Мокайте внешние сервисы (`nock`, `pollyjs`, `jest.mock`).
 - Для e2e запускайте тестовую БД (docker-compose, testcontainers).
 
 ## Наборы инструментов
