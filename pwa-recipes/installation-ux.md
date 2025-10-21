@@ -3,9 +3,19 @@
 ## Installation prompts
 - `beforeinstallprompt` событие (Chrome/Edge/Android):
 ```js
+let deferredPrompt;
 window.addEventListener('beforeinstallprompt', event => {
   event.preventDefault();
-  showInstallButton(event);
+  deferredPrompt = event;
+  showInstallButton();
+});
+installButton.addEventListener('click', async () => {
+  deferredPrompt.prompt();
+  const result = await deferredPrompt.userChoice;
+  if (result.outcome === 'accepted') {
+    console.log('App installed');
+  }
+  deferredPrompt = null;
 });
 ```
 - При клике: `prompt()` → `userChoice`.
@@ -32,6 +42,7 @@ window.addEventListener('beforeinstallprompt', event => {
 - Web Share API (`navigator.share`) — пользовательская share sheet.
 - Web Share Target — manifest `share_target` (принимает данные).
 - Badges API (`navigator.setAppBadge`) — уведомления.
+- `navigator.getInstalledRelatedApps()` — проверка, установлено ли нативное приложение/другая версия.
 
 ## Constraints
 - iOS: 50MB limit для storage, SW работает только 30 сек после закрытия.

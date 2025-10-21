@@ -8,8 +8,9 @@
 
 ## Updates
 - SW update flow: `install` → `waiting` → `activate`.
-- Prompt user: "New version available. Refresh?".
-- `clients.claim()` для takeover (после activate).
+- Prompt user: "New version available. Refresh?" (и сделать кнопка).
+- `skipWaiting()` + `clients.claim()` — используйте осторожно (перезагрузка клиентов).
+- Periodic Background Sync (`registration.periodicSync.register`) — только Chromium, использовать для свежих данных/notifications, проверять поддержку.
 
 ## Testing
 - Lighthouse (PWA category).

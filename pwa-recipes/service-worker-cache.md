@@ -48,7 +48,14 @@ self.addEventListener('fetch', event => {
 - **Network First** — сначала сеть, fallback cache (HTML/API).
 - **Stale-While-Revalidate** — отдаёт кеш + параллельно обновляет (аватары).
 - **Cache Only**, **Network Only**, **Cache then Network**.
-- Используйте Workbox (Google) для декларативных стратегий.
+- Workbox пример:
+  ```js
+  import { registerRoute } from 'workbox-routing';
+  import { NetworkFirst, StaleWhileRevalidate, CacheFirst } from 'workbox-strategies';
+  registerRoute(({ request }) => request.destination === 'document', new NetworkFirst());
+  registerRoute(({ request }) => request.destination === 'script', new StaleWhileRevalidate());
+  registerRoute(({ request }) => request.destination === 'image', new CacheFirst({ cacheName: 'images' }));
+  ```
 
 ## Offline fallback
 - Кешируйте `/offline.html` или `/offline.json`.

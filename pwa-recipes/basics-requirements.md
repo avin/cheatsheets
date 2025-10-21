@@ -13,7 +13,8 @@
 
 ## Lighthouse PWA аудит
 - Chrome DevTools → Lighthouse → PWA.
-- Проверяет: offline, manifest, service worker, best practices.
+- Проверяет: оффлайн, manifest, SW registration, best practices.
+- Check Progressive Web App Checklist (web.dev/pwa-checklist) для подробного списка требований.
 
 ## Progressive Enhancement
 - Базовая функциональность без JS (где возможно).
@@ -21,7 +22,8 @@
 
 ## Browser support
 - Chromium/Firefox/Safari поддерживают PWA (Safari 16+ имеет ограничения).
-- iOS: поддержка offline limited (квоты IndexedDB, push — только web push iOS 16.4+).
+- iOS: offline ограничен (quota около 50MB, service worker живёт ~30 сек). Web Push Notifications доступны с iOS 16.4+ (только по разрешению пользователя).
+- Нет Background Sync, ограниченный доступ к Web Push API (без periodic sync).
 
 ## SPA vs MPA
 - PWA может быть и SPA, и MPA. Важен service worker.

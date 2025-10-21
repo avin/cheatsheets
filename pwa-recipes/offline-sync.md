@@ -12,6 +12,7 @@
 ## IndexedDB
 - Места хранение данных (workbox, idb library).
 - Синхронизация: сохраняйте изменения в очередь, отправляйте при `online`.
+- Используйте `idb` (Jake Archibald) для библиотеки или Workbox backgroundSync queue.
 
 ## Background Sync
 - Используйте `Background Sync` (гарантированная доставка запросов при восстановлении сети).
@@ -26,6 +27,7 @@
 ## Notifications & push
 - Push API (с разрешением пользователя) для обновлений (в магазине/offline).
 - Web push → payload = JSON, service worker → показать уведомление (`self.registration.showNotification`).
+- На Android: работают даже без открытого приложения; на iOS Web Push требуют PWA c manifest + разрешение.
 
 ## Error handling
 - Graceful degradation: показывайте, что изменения будут синхронизированы позже.
