@@ -3,7 +3,7 @@
 ## Основы a11y
 - Семантические теги → screen readers понимают структуру.
 - Alt-тексты для изображений (`alt="Descriptive text"`).
-- Таббинг: `tabindex"0"` для custom элементов.
+- Управление focus: используйте `tabindex="0"` для того, чтобы элемент участвовал в таб-навигации; `tabindex="-1"` — только программный focus. Избегайте `tabindex` > 0.
 - Contrast (WCAG 2.1 AA ≥ 4.5:1).
 
 ## ARIA roles

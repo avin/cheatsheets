@@ -46,10 +46,11 @@
 - Для radio: одно имя (`name`), разные `value`.
 
 ## Validation
-- HTML5 атрибуты: `required`, `min`, `max`, `pattern`, `step`.
+- HTML5 атрибуты: `required`, `min`, `max`, `pattern`, `step`, `minlength`, `maxlength` (для `input`).
 - `novalidate` отключает встроенную проверку.
 - Custom messages: `oninvalid`, `setCustomValidity`, `reportValidity()`.
-- Client-side (JS) + server-side валидация.
+- Для Ajax форм показывайте ошибки рядом с полями и обновляйте `aria-live` регион для screen readers.
+- Client-side (JS) + server-side валидация обязательна.
 
 ## Autocomplete/Autofill
 - Атрибут `autocomplete`: `email`, `name`, `address-level1`, `cc-number`, `organization-title`, `one-time-code`.
