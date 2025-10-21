@@ -9,6 +9,7 @@
 - [CSS](./css-recipes/README.md)
 - [HTML](./html-recipes/README.md)
 - [PWA](./pwa-recipes/README.md)
+- [Web Performance](./web-performance/README.md)
 - [Express.js рецепты](./express-recipes/README.md)
 - [GraphQL](./graphql/README.md)
 - [Docker](./docker-recipes/README.md)
