@@ -27,8 +27,15 @@ body {
 
 ## Цвета
 - Форматы: HEX (`#1e90ff`), RGB, HSL (`hsl(210, 100%, 56%)`), `rgba`, `hsla`.
-- Используйте HSL для лёгкой корректировки (оттенки).
-- CSS Color Level 4: `color-mix(in srgb, #1e90ff 60%, white)`, новые color spaces (`lab`, `lch`).
+- HSL: `hsl(hue, saturation%, lightness%)`. Пример `hsl(210, 100%, 56%)` — 210° (синий), 100% насыщенность, 56% яркость.
+- CSS Color Level 4: `color-mix(in srgb, #1e90ff 60%, white)` — смешивание цветов в заданном цветовом пространстве.
+- Современные пространства: `lch()` и `lab()` — обеспечивают более естественное управление оттенками.
+  ```css
+  color: lch(70% 40 240); /* L (светлота), C (хрома), H (оттенок в градусах) */
+  color: oklch(70% 0.1 220); /* L, chroma (0-0.4), hue. OKLCH = perceptual */
+  background: color(display-p3 0.1 0.6 0.4); /* Display-P3 для Wide gamut */
+  ```
+- Проверяйте поддержку: fallback цвета + `@supports (color: lab(50% 0 0)) { ... }`.
 
 ## Variables для темы
 ```css
