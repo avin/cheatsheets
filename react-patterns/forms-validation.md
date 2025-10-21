@@ -37,6 +37,8 @@ function useProfileForm(initial: ProfileForm) {
 - **Плюсы**: минимальная нагрузка на React-дерево, браузер управляет state.
 - **Минусы**: сложнее валидировать динамически; требуется работа с `ref` и `FormData`.
 
+Вариант ниже показывает, как использовать нативный `FormData`, чтобы собрать данные без хранения каждого поля в state React.
+
 ```tsx
 const formRef = useRef<HTMLFormElement>(null);
 
@@ -52,6 +54,8 @@ function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
 
 - **Преимущества**: подписка на отдельные поля, минимальные ререндеры, удобная интеграция с UI-библиотеками.
 - **Практика**: используйте `Controller` для компонентов без `ref`, `useFieldArray` для динамических коллекций, `FormProvider` для доступа к методам.
+
+Ниже форма регистрации, построенная на React Hook Form: текстовое поле регистрируется напрямую, а кастомный `PasswordInput` подключается через `Controller`.
 
 ```tsx
 import { FormProvider, useForm, Controller } from 'react-hook-form';
@@ -107,6 +111,8 @@ function Signup() {
 - **Инструменты**: Zod (`z.object`), Yup, Valibot; `@hookform/resolvers` для интеграции с React Hook Form.
 - **Советы**: расшаривайте схему между фронтом и бэком, используйте `transform` для приведения типов.
 
+Фрагмент ниже описывает схему `profileSchema` в Zod и подключает её как `resolver`, чтобы типы автоматически совпадали с формой.
+
 ```tsx
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -129,6 +135,8 @@ const form = useForm<ProfileInput>({
 - **Цель**: моментально обновить UI, пока сервер подтверждает изменения (создание сущности, отметка like).
 - **Инструменты**: React Query `useMutation`, локальный state с `setOptimisticUpdates`, `startTransition`.
 - **Риски**: несоответствие данных при ошибке; добавляйте откат (`onError` → `queryClient.setQueryData(previous)`).
+
+Пример мутации показывает полную схему optimistic update: отменяем фоновые запросы, применяем локальную копию, при ошибке откатываемся и затем инвалидация.
 
 ```tsx
 const mutation = useMutation({
@@ -155,6 +163,8 @@ const mutation = useMutation({
 - **Лучшие практики**: связывайте `<label>` и `<input>` через `htmlFor`, используйте `aria-describedby` для ошибок, показывайте подсказки до сабмита.
 - **Паттерны**: блокируйте кнопки на время отправки, отображайте прогресс (`aria-busy`), сохраняйте введённые значения при ошибках сервера.
 - **Инструменты**: `react-aria`, `@radix-ui/react-label`, Storybook accessibility addons.
+
+`FieldError` использует контекст формы, чтобы показывать сообщение и связывать его с полем через `aria-describedby`. Это удобный шаблон для переиспользования в больших формах.
 
 ```tsx
 function FieldError({ name }: { name: string }) {

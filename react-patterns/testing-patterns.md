@@ -7,12 +7,16 @@
 - **Принципы**: тесты через пользовательские сценарии (`screen.getByRole`), минимум моков, реальный DOM.
 - **Практика**: управляйте временем через `vi.useFakeTimers`, оборачивайте в нужные провайдеры (`renderWithProviders`).
 
+Сценарий ниже запускает форму регистрации, имитирует ввод через `userEvent` и проверяет, что после отправки появляется сообщение об успехе.
+
 ```tsx
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from '@/test-utils/queryClient';
 
 test('отправка формы вызывает API', async () => {
+  const user = userEvent.setup();
   render(
     <QueryClientProvider client={queryClient}>
       <SignupForm />
@@ -32,6 +36,8 @@ test('отправка формы вызывает API', async () => {
 - **Инструменты**: `@testing-library/react-hooks` (deprecated) → `@testing-library/react` + `renderHook`.
 - **Паттерн**: окружайте хук нужными провайдерами, используйте `act` для async.
 
+Хук `useModal` проверяется изолированно: `renderHook` возвращает его API, а `act` гарантирует корректную обработку обновлений state.
+
 ```tsx
 import { renderHook, act } from '@testing-library/react';
 
@@ -48,6 +54,8 @@ test('useModal переключает состояние', () => {
 - **MSW (Mock Service Worker)**: перехватывает `fetch`/XHR, позволяет описывать сценарии (`rest.get`, `graphql.query`).
 - **Советы**: для юнитов можно мокать `fetch` через `vi.fn()`, но для интеграции используйте MSW для реалистичности.
 - **Практика**: конфиг `setupTests.ts` поднимает MSW перед тестами, очищает хэндлеры.
+
+Этот сетап MSW отвечает на `/api/user` детерминированным JSON и очищается после каждого теста, чтобы сценарии не протекали друг в друга.
 
 ```tsx
 import { rest } from 'msw';
@@ -68,6 +76,8 @@ afterAll(() => server.close());
 - **Визуальные тесты**: Chromatic, Percy, Loki сравнивают скриншоты.
 - **Советы**: используйте `play` функции в Storybook 7+ для интеграционных сценариев, накладывайте accessibility чек.
 
+История `Primary` демонстрирует базовый вариант кнопки и использует `play`, чтобы «прокликать» сценарий прямо в Storybook.
+
 ```ts
 // Button.stories.tsx
 export const Primary: Story = {
@@ -84,6 +94,8 @@ export const Primary: Story = {
 - **Инструменты**: Playwright, Cypress, WebdriverIO для браузерных сценариев.
 - **Паттерн**: запускайте приложение в prod-сборке, используйте data-testid только при необходимости, синхронизируйтесь с бэкендом через фикстуры.
 - **Советы**: создавайте «контейнеры» данных (seed), очищайте после тестов, используйте `test.use({ storageState })` для авторизации.
+
+E2E-тест Playwright проходит через страницу профиля, изменяет поле и проверяет, что сообщение об успешном обновлении появилось на экране.
 
 ```ts
 // e2e/profile.spec.ts

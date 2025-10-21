@@ -8,6 +8,8 @@
 - **Инструменты**: `tanstack/table` + `react-virtual`, `ag-grid`, `mui-data-grid`.
 - **Паттерн**: храните источник данных в сторе, виртуализируйте видимые строки, редактирование делайте по локальному state с батч-коммитами.
 
+Конфигурация ниже создаёт колонки таблицы через TanStack Table и виртуализирует строки, чтобы в DOM оставались только видимые элементы.
+
 ```tsx
 const columnHelper = createColumnHelper<Row>();
 
@@ -35,6 +37,8 @@ const rowVirtualizer = useVirtualizer({
 - **Паттерн**: используйте `useInfiniteQuery` (React Query) или `IntersectionObserver` для автоподгрузки страниц.
 - **Советы**: добавьте `hasNextPage`, показывайте `Skeleton` перед следующей порцией, обрабатывайте ошибки с кнопкой «Повторить».
 
+Хук `useInfiniteQuery` возвращает список страниц, функцию `fetchNextPage` и флаги состояния — основа для бесконечной ленты.
+
 ```tsx
 const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
   queryKey: ['feed'],
@@ -49,6 +53,8 @@ const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuer
 - **Паттерн**: используйте `useMemo` или Web Worker, разбивайте расчёты на чанки (`requestIdleCallback`).
 - **Инструменты**: `arquero`, `duckdb-wasm`, `lodash.groupby`.
 
+Вычисление `grouped` проводит агрегацию по категориям внутри `useMemo`, избегая перерасчёта, пока массив данных не изменится.
+
 ```tsx
 const grouped = useMemo(() => {
   return data.reduce<Record<string, number>>((acc, item) => {
@@ -62,6 +68,8 @@ const grouped = useMemo(() => {
 
 - **Паттерн**: используйте SSE/WebSocket для обновления графиков и метрик, храните последние n значений.
 - **Советы**: сглаживайте данные (moving average), ограничивайте частоту обновлений (`throttle`), показывайте индикаторы «live».
+
+Хук `useMetricsStream` подписывается на SSE и хранит только последние 50 измерений, чтобы не раздувать память.
 
 ```tsx
 function useMetricsStream() {
@@ -85,6 +93,8 @@ function useMetricsStream() {
 - **Цель**: избежать «скачков» при загрузке данных и поддержать восприятие.
 - **Паттерн**: skeleton для списков/таблиц, placeholder для графиков, `aria-busy` для доступности.
 - **Инструменты**: React Query `initialData`, Suspense fallback, костомные skeleton-компоненты.
+
+`TableSkeleton` рисует таблицу-заглушку с `aria-busy="true"`, которую можно показывать до прихода настоящих данных.
 
 ```tsx
 function TableSkeleton({ rows = 5 }: { rows?: number }) {

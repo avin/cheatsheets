@@ -8,6 +8,8 @@
 - **Плюсы**: автоматически создаёт отдельный бандл, ленивый импорт с обработкой состояния загрузки.
 - **Минусы**: требуется `Suspense`-обёртка и fallback, поддержка SSR ограничена (нужен `@loadable/component` или ручная интеграция).
 
+В примере `Dashboard` лениво загружает компонент графика и показывает skeleton пока модуль не подтянулся.
+
 ```tsx
 const Chart = React.lazy(() => import('./Chart'));
 
@@ -26,6 +28,8 @@ function Dashboard() {
 - **Инструменты**: `import()` внутри обработчиков, `prefetch` заранее (Webpack magic comments, Vite `import.meta.glob`).
 - **Советы**: используйте `await` внутри `startTransition`, чтобы не блокировать UI.
 
+Функция `loadEditor` подгружает Markdown-редактор только тогда, когда он действительно нужен, и сохраняет компонент в локальном состоянии.
+
 ```tsx
 async function loadEditor() {
   const { MarkdownEditor } = await import(/* webpackChunkName: "md-editor" */ './MarkdownEditor');
@@ -38,6 +42,8 @@ async function loadEditor() {
 - **React Router**: `lazy` в конфигурации маршрутов, `defer` для данных.
 - **Next.js App Router**: папка `app/segment` автоматически создаёт чанки, `loading.tsx` для fallback.
 - **Практика**: группируйте связанные страницы, используйте bundle анализатор, чтобы избегать дублирования.
+
+Конфигурация маршрутизатора ниже делит приложение на чанки по разделам — каждая ветка `reports` загружает свой компонент при первом входе.
 
 ```tsx
 const router = createBrowserRouter([
@@ -74,6 +80,8 @@ const router = createBrowserRouter([
 - **Советы**: префетчите вероятные маршруты, очищайте устаревшие чанки через версионирование.
 - **Риски**: избыточный prefetch ухудшает UX на медленных сетях; проверяйте `navigator.connection.saveData` и пропускайте подсказку, если пользователь просит экономию трафика.
 
+`PrefetchLink` создаёт `<link rel="prefetch">`, чтобы браузер заранее скачал страницу, на которую пользователь, скорее всего, перейдёт.
+
 ```tsx
 function PrefetchLink({ to, children }: { to: string; children: React.ReactNode }) {
   const linkRef = useRef<HTMLAnchorElement>(null);
@@ -99,6 +107,8 @@ function PrefetchLink({ to, children }: { to: string; children: React.ReactNode 
 - **Webpack**: `SplitChunksPlugin`, `dynamic imports`, `module federation`, `bundle analyzer`.
 - **Vite/Rollup**: `optimizeDeps`, `manualChunks`, `import.meta.glob`.
 - **Turbopack/rspack**: автоматическое prefetch/prefetch hints, поддержка импортов из npm.
+
+Конфиг Vite вручную выделяет общие зависимости (`vendor`) и «тяжёлый» блок графиков, чтобы браузер кэшировал их раздельно.
 
 ```js
 // vite.config.ts

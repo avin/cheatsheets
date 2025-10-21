@@ -8,6 +8,8 @@
 - **Ключевые показатели**: LCP, INP, CLS, TTFB, FID. Дополнительно наблюдайте TTI, TBT, custom events.
 - **Советы**: используйте секцию `navigator.connection` для сегментации по сети, связывайте метрику с пользователем (`id`).
 
+Ниже обработчики `web-vitals` пересылают показатели на внутренний endpoint с `keepalive`, чтобы метрика не потерялась при закрытии страницы.
+
 ```tsx
 import { onCLS, onLCP, onINP } from 'web-vitals';
 
@@ -30,6 +32,8 @@ onINP(sendToAnalytics);
 - **Паттерн**: оборачивайте приложение провайдером, используйте `ErrorBoundary` для ручного захвата ошибок.
 - **Советы**: добавляйте `tags` (версия, регион), `breadcrumbs`, передавайте sourcemaps в CI.
 
+Инициализация Sentry подключает трассировку и запись сессий; параметры `tracesSampleRate` и `replaysSessionSampleRate` регулируют объём данных.
+
 ```tsx
 import * as Sentry from '@sentry/react';
 
@@ -46,6 +50,8 @@ Sentry.init({
 - **API**: `PerformanceObserver`, `performance.mark/measure`, `requestIdleCallback`.
 - **Паттерн**: измеряйте критические пользовательские действия (анимации, открытие модалок) и отправляйте метки на бекенд/аналитику.
 - **Советы**: используйте идентификаторы сценариев, агрегируйте данные на сервере для дашбордов.
+
+Хук `usePerfMeasure` ставит метки во время жизни компонента и отправляет длительность в аналитику, после чего очищает `performance` буфер.
 
 ```tsx
 function usePerfMeasure(label: string) {
@@ -75,6 +81,8 @@ function usePerfMeasure(label: string) {
 - **Логи**: структурированные (JSON), включают `traceId`, `sessionId`.
 - **Трейсинг**: OpenTelemetry → OTLP коллектор → Jaeger/Tempo. Используйте `@opentelemetry/api` + custom инжекторы.
 - **Метрики**: Prometheus для server-side, InfluxDB/StatsD для дополнительного контекста.
+
+Пример базовой настройки OpenTelemetry в браузере выводит трейс в консоль; в реальном окружении добавляйте OTLP-экспортёр.
 
 ```ts
 // telemetry.ts

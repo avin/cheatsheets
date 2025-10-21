@@ -8,6 +8,8 @@
 - **Паттерн**: рендер через `createPortal` в элемент вне основного дерева (например, `#modal-root`).
 - **Советы**: блокируйте прокрутку фона (`body.style.overflow`), возвращайте фокус после закрытия.
 
+Компонент `Modal` хранит последний сфокусированный элемент, рендерится через портал и возвращает фокус при закрытии — базовый шаблон для доступных модальных окон.
+
 ```tsx
 function Modal({ open, onClose, children }: Props) {
   const container = document.getElementById('modal-root');
@@ -42,6 +44,8 @@ function Modal({ open, onClose, children }: Props) {
 - **Паттерн**: на `Tab` перемещать фокус по фокусируемым элементам, на `Escape` закрывать.
 - **Риски**: самописные реализации легко пропускают edge-case (disabled элементы, reverse Tab, screen readers), поэтому для продакшена лучше использовать battle-tested библиотеки.
 
+Хук `useFocusTrap` перебирает фокусируемые элементы внутри контейнера и обеспечивает замкнутый цикл переключения табом.
+
 ```tsx
 function useFocusTrap(active: boolean, containerRef: React.RefObject<HTMLElement>) {
   useEffect(() => {
@@ -75,6 +79,8 @@ function useFocusTrap(active: boolean, containerRef: React.RefObject<HTMLElement
 - **Проблема**: при SSR/CSR ID должны совпадать, чтобы ARIA-атрибуты работали корректно.
 - **Решение**: используйте `useId` для генерации стабильных идентификаторов, объединяйте их в `aria-labelledby`, `aria-describedby`.
 
+В `Tooltip` ID генерируется через `useId`, а дочерний элемент получает связку `aria-describedby`, чтобы скринридер зачитывал подсказку.
+
 ```tsx
 function Tooltip({ label, children }: { label: string; children: React.ReactElement }) {
   const id = useId();
@@ -94,6 +100,8 @@ function Tooltip({ label, children }: { label: string; children: React.ReactElem
 - **Паттерн**: для меню используйте `role="menu"` и `role="menuitem"`, обрабатывайте клавиши `ArrowUp/Down`, `Enter`, `Space`, `Escape`.
 - **Инструменты**: Headless UI, Radix UI, Reach UI — уже реализуют ARIA-паттерны.
 - **Советы**: храните фокусируемый индекс в state, объявляйте `aria-haspopup`, `aria-expanded`.
+
+Пример `Menu` отслеживает активный пункт и реагирует на стрелки клавиатуры, обеспечивая корректную навигацию без мыши.
 
 ```tsx
 function Menu() {
@@ -145,6 +153,8 @@ function Menu() {
 - **Применение**: уведомления, обновления состояния, результаты валидации.
 - **Паттерн**: `aria-live="polite"` для ненавязчивых, `aria-live="assertive"` для критичных сообщений.
 - **Советы**: ограничивайте количество объявлений, избегайте спама, очищайте после прочтения.
+
+Компонент `LiveAnnouncements` размещает текст в невидимой области `aria-live`, чтобы скринридер озвучил сообщение, когда оно появится.
 
 ```tsx
 function LiveAnnouncements({ message }: { message: string | null }) {

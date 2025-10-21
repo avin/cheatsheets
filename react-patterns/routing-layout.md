@@ -40,6 +40,8 @@ function DashboardLayout() {
 - **Варианты**: redirect на `/login`, отображение skeleton/fallback, Route Objects с `loader`, который может бросить `redirect`.
 - **Советы**: храните состояние авторизации в глобальном сторе, учитывайте серверный рендер (Next.js middleware).
 
+Компонент `RequireAuth` сначала показывает спиннер при загрузке пользователя, затем либо пропускает дочерний контент, либо отправляет на страницу логина.
+
 ```tsx
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const user = useAuthUser();
@@ -58,6 +60,8 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
 - **React Router loaders/actions**: дают возможность загружать данные до рендера, поддерживают отложенную загрузку (`defer`).
 - **Next.js App Router**: серверные компоненты и `generateMetadata`, `fetch` с кэшированием на уровне маршрута.
 - **Принципы**: отдельный кэш на сегмент, управление ошибками через `errorElement`, `notFound`.
+
+Объявление ниже создаёт файл-маршрут через `@tanstack/router`, где `loader` получает данные до рендера, а страница читает их через `useLoaderData`.
 
 ```tsx
 export const route = createFileRoute('/projects/:id')({
@@ -79,6 +83,8 @@ function ProjectPage() {
 - **Инструменты**: React Router `useFetcher`, Next.js `Link` с `prefetch`, `router.prefetch` для программных переходов, Service Worker для кэширования.
 - **Советы**: префетчите только «холодные» маршруты, отключайте на медленных соединениях (`navigator.connection`), очищайте кэш при обновлении версии.
 
+`ProjectsLink` заранее загружает список проектов через `fetcher.load`, а при переходе использует уже готовые данные.
+
 ```tsx
 function ProjectsLink() {
   const fetcher = useFetcher<ProjectList>();
@@ -99,6 +105,8 @@ function ProjectsLink() {
 - **Next.js**: комбинация `generateStaticParams`, `revalidateTag`, `dynamic = 'force-dynamic'` для тонкой настройки.
 - **Remix/React Router**: SSR с потоковым рендером, пересылка данных через `loader`.
 - **Практика**: выбирайте стратегию по типу страниц — маркетинг (SSG+ISR), дашборды (SSR), интерактивные SPA (CSR).
+
+Пример ниже показывает страницу Next.js App Router с ISR — посты пересобираются раз в минуту, а `notFound` выбрасывается при отсутствии данных.
 
 ```tsx
 // Next.js App Router
