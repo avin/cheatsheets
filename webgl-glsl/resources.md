@@ -34,13 +34,6 @@
 - **TWGL.js** — thin-обёртка для WebGL, полезные хелперы без тяжёлых фич.
 - **Regl-framebuffer-tools** — идеи по работе с ping-pong (можно портировать без Regl).
 
-## Открытые демо и код
-
-- Открытые проекты демосцены: [Bonzomatic](https://github.com/Gargaj/Bonzomatic) (live-coding шейдеров от Mercury), [shader_minifier](https://github.com/psenough/shader_minifier) (утилиты от пранкстеров сцены).
-- ShaderToy users: `iq`, `nimitz`, `Shane`, `TekF`, `kalwalt` — копируйте шейдеры для изучения.
-- GitHub: `peteshand/materials-webgl`, `evanw/webgl-water`, `humbletim/glsl-demos`.
-- Коллекции: `leonardosnt/webgl-demos`, `tsherif/webgl2examples`.
-
 ## Вдохновение и сообщества
 
 - **Shadertoy Discord** — обмен опытом.
