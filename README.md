@@ -14,6 +14,7 @@
 - [HTML](./html-recipes/README.md)
 - [PWA](./pwa-recipes/README.md)
 - [Web Performance](./web-performance/README.md)
+- [WebGL и GLSL](./webgl-glsl/README.md)
 - [React Patterns](./react-patterns/README.md)
 - [Security для фронтенда](./frontend-security/README.md)
 
