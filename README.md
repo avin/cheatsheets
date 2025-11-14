@@ -6,6 +6,7 @@
 - [Go](./go/README.md)
 - [Go Concurrency Patterns](./go-concurrency/README.md)
 - [JavaScript](./js/README.md)
+- [JavaScript алгоритмы](./js-algos/README.md)
 - [Типы в TypeScript](./ts-types/README.md)
 - [SQL (PostgreSQL)](./sql-postgresql/README.md)
 
