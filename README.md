@@ -1,7 +1,5 @@
 # Коллекция шпаргалок
 
-
-
 ## Golang
 - [Go](./go/README.md)
 - [Go Concurrency Patterns](./go-concurrency/README.md)
