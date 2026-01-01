@@ -3,6 +3,8 @@
 #include <iomanip>
 #include <sstream>
 #include <iostream>
+#include <thread>  // для std::this_thread
+#include <print>   // C++23
 
 using namespace std::chrono;
 
@@ -12,7 +14,7 @@ using namespace std::chrono;
 void example_now() {
     auto now = system_clock::now();
     auto now_time_t = system_clock::to_time_t(now);
-    std::cout << std::ctime(&now_time_t);
+    std::println("{}", std::ctime(&now_time_t));
 }
 
 // ---------------------------------------------------

@@ -6,13 +6,14 @@
 #include <atomic>
 #include <future>
 #include <chrono>
+#include <print>  // C++23
 
 // ---------------------------------------------------
 // 📌 Создание и запуск потоков (std::thread)
 // ---------------------------------------------------
 void example_thread_basic() {
     auto func = []() {
-        std::cout << "Привет из потока!" << std::endl;
+        std::println("Привет из потока!");
     };
     std::thread t(func);
     t.join();
@@ -52,14 +53,14 @@ void example_mutex_lock_guard() {
             std::lock_guard<std::mutex> lock(mtx);
             ++counter;
         }
-        std::cout << "Поток " << id << " закончил" << std::endl;
+        std::println("Поток {} закончил", id);
     };
 
     std::thread t1(increment, 1);
     std::thread t2(increment, 2);
     t1.join();
     t2.join();
-    std::cout << "Итоговый счетчик: " << counter << std::endl;
+    std::println("Итоговый счетчик: {}", counter);
 }
 
 // ---------------------------------------------------

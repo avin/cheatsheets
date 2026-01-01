@@ -1,6 +1,8 @@
 #include <bitset>
 #include <iostream>
 #include <cstdint>
+#include <vector>
+#include <print>  // C++23
 
 // ---------------------------------------------------
 // 📌 Основные битовые операции
@@ -108,13 +110,13 @@ void example_flags() {
 void generateSubsets(int n) {
     int totalSubsets = 1 << n;
     for (int mask = 0; mask < totalSubsets; ++mask) {
-        std::cout << "Подмножество: ";
+        std::print("Подмножество: ");
         for (int i = 0; i < n; ++i) {
             if (mask & (1 << i)) {
-                std::cout << i << " ";
+                std::print("{} ", i);
             }
         }
-        std::cout << std::endl;
+        std::println("");
     }
 }
 
@@ -125,7 +127,7 @@ void iterateSetBits(int num) {
     while (num) {
         int lowestBit = num & -num;
         int bitPosition = __builtin_ctz(lowestBit); // count trailing zeros
-        std::cout << "Бит на позиции: " << bitPosition << std::endl;
+        std::println("Бит на позиции: {}", bitPosition);
         num &= num - 1; // снимаем младший бит
     }
 }

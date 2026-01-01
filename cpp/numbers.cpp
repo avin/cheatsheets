@@ -2,6 +2,9 @@
 #include <cmath>
 #include <string>
 #include <sstream>
+#include <cstdlib>
+#include <ctime>
+#include <print>  // C++23
 
 // ---------------------------------------------------
 // 📌 Округление
@@ -61,4 +64,65 @@ void example_conversion(const std::string& str) {
 int example_rand_seeded() {
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
     return std::rand(); // в диапазоне 0..RAND_MAX
+}
+
+// ---------------------------------------------------
+// 📌 Литералы для size_t (C++23) - суффикс uz/zu
+// ---------------------------------------------------
+void example_size_t_literals() {
+    // До C++23
+    std::vector<int> vec = {1, 2, 3, 4, 5};
+    
+    // Старый способ - требует явного приведения или может быть warning
+    for (size_t i = 0; i < vec.size(); ++i) {
+        std::println("{}", vec[i]);
+    }
+    
+    // C++23: литералы size_t с суффиксом uz
+    auto size = 42uz;          // size_t
+    auto zero = 0uz;           // size_t(0)
+    auto large = 1000000uz;    // size_t
+    
+    // Использование в сравнениях (избегает signed/unsigned warnings)
+    if (vec.size() > 3uz) {
+        std::println("Vector has more than 3 elements");
+    }
+    
+    // В циклах
+    for (auto i = 0uz; i < vec.size(); ++i) {
+        std::println("Element {}: {}", i, vec[i]);
+    }
+    
+    // С массивами
+    int arr[10uz];  // массив из 10 элементов
+    
+    // Альтернативный суффикс zu (эквивалентен uz)
+    auto size_zu = 42zu;
+}
+
+// ---------------------------------------------------
+// 📌 Другие числовые литералы (для справки)
+// ---------------------------------------------------
+void example_other_literals() {
+    // Целочисленные литералы
+    auto a = 42;        // int
+    auto b = 42u;       // unsigned int
+    auto c = 42l;       // long
+    auto d = 42ul;      // unsigned long
+    auto e = 42ll;      // long long
+    auto f = 42ull;     // unsigned long long
+    auto g = 42uz;      // size_t (C++23)
+    
+    // Литералы с плавающей точкой
+    auto x = 3.14;      // double
+    auto y = 3.14f;     // float
+    auto z = 3.14l;     // long double
+    
+    // Бинарные литералы (C++14)
+    auto bin = 0b1010;  // 10 в десятичной
+    
+    // Разделители цифр (C++14)
+    auto million = 1'000'000;
+    auto binary = 0b1111'0000'1010;
+    auto hex = 0xDEAD'BEEF;
 }

@@ -4,6 +4,11 @@
 #include <iterator>
 #include <iostream>
 #include <unordered_set>
+#include <ranges>
+#include <mdspan>  // C++23
+
+namespace views = std::views;
+namespace ranges = std::ranges;
 
 // ---------------------------------------------------
 // 📌 Создание вектора
@@ -72,12 +77,18 @@ void example_iteration(const std::vector<int>& arr) {
 }
 
 // ---------------------------------------------------
-// 📌 Фильтрация
+// 📌 Фильтрация (современный подход с ranges)
 // ---------------------------------------------------
 std::vector<int> example_filter(const std::vector<int>& arr) {
+    // Классический способ
     std::vector<int> filtered;
     std::copy_if(arr.begin(), arr.end(), std::back_inserter(filtered),
                  [](int x) { return x > 0; });
+    
+    // C++23 ranges способ (более читаемый)
+    auto filtered_view = arr | views::filter([](int x) { return x > 0; });
+    std::vector<int> filtered_ranges = filtered_view | ranges::to<std::vector>();
+    
     return filtered;
 }
 
@@ -93,22 +104,35 @@ void example_find(const std::vector<int>& arr) {
 }
 
 // ---------------------------------------------------
-// 📌 Map-преобразование
+// 📌 Map-преобразование (с ranges C++20/23)
 // ---------------------------------------------------
 std::vector<int> example_map(const std::vector<int>& arr) {
+    // Классический способ
     std::vector<int> mapped;
     mapped.reserve(arr.size());
     std::transform(arr.begin(), arr.end(), std::back_inserter(mapped),
                    [](int x) { return x * 2; });
+    
+    // Ranges способ (C++23)
+    auto mapped_ranges = arr 
+        | views::transform([](int x) { return x * 2; })
+        | ranges::to<std::vector>();
+    
     return mapped;
 }
 
 // ---------------------------------------------------
-// 📌 Reduce / fold
+// 📌 Reduce / fold (с C++23 fold)
 // ---------------------------------------------------
 int example_reduce(const std::vector<int>& arr) {
-    return std::accumulate(arr.begin(), arr.end(), 0,
-                           [](int acc, int x) { return acc + x; });
+    // Классический accumulate
+    int sum1 = std::accumulate(arr.begin(), arr.end(), 0,
+                               [](int acc, int x) { return acc + x; });
+    
+    // C++23 fold_left (более выразительный)
+    int sum2 = ranges::fold_left(arr, 0, std::plus<>{});
+    
+    return sum1;
 }
 
 // ---------------------------------------------------
@@ -257,13 +281,56 @@ int example_conditional_sum(const std::vector<int>& arr) {
 }
 
 // ---------------------------------------------------
-// 📌 Zip двух массивов (std::transform с двумя диапазонами)
+// 📌 Zip двух массивов (C++23 zip)
 // ---------------------------------------------------
 std::vector<int> example_zip(const std::vector<int>& arr1, const std::vector<int>& arr2) {
+    // Классический transform с двумя диапазонами
     std::vector<int> result;
     result.reserve(std::min(arr1.size(), arr2.size()));
     std::transform(arr1.begin(), arr1.begin() + std::min(arr1.size(), arr2.size()),
                    arr2.begin(), std::back_inserter(result),
                    [](int a, int b) { return a + b; });
+    
+    // C++23 способ с views::zip
+    auto zipped = views::zip(arr1, arr2)
+        | views::transform([](auto pair) { 
+            auto [a, b] = pair; 
+            return a + b; 
+        })
+        | ranges::to<std::vector>();
+    
     return result;
+}
+
+// ---------------------------------------------------
+// 📌 Многомерные массивы (std::mdspan C++23)
+// ---------------------------------------------------
+void example_mdspan() {
+    // Создание одномерных данных
+    std::vector<int> data(12);  // 3x4 матрица
+    std::iota(data.begin(), data.end(), 0);
+    
+    // Создание многомерного представления
+    std::mdspan<int, std::extents<size_t, 3, 4>> matrix(data.data());
+    
+    // Доступ к элементам как к двумерной матрице
+    for (size_t i = 0; i < 3; ++i) {
+        for (size_t j = 0; j < 4; ++j) {
+            matrix[i, j] = i * 4 + j;  // C++23 multidimensional subscript
+        }
+    }
+    
+    // Динамические размеры
+    std::mdspan<int, std::dextents<size_t, 2>> dynamic_matrix(data.data(), 3, 4);
+    
+    int value = dynamic_matrix[1, 2];  // Доступ к элементу [1][2]
+}
+
+// ---------------------------------------------------
+// 📌 Enumerate с индексом (C++23)
+// ---------------------------------------------------
+void example_enumerate(const std::vector<std::string>& arr) {
+    for (auto [index, value] : arr | views::enumerate) {
+        std::println("{}: {}", index, value);
+    }
 }

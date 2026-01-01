@@ -2,17 +2,20 @@
 #include <unordered_set>
 #include <map>
 #include <unordered_map>
+#include <flat_map>        // C++23
+#include <flat_set>        // C++23
 #include <vector>
 #include <algorithm>
 #include <iterator>
 #include <iostream>
+#include <print>           // C++23
 
 // ---------------------------------------------------
 // 📌 Создание std::set и std::unordered_set
 // ---------------------------------------------------
 void example_sets() {
-    std::set<int> ordered = {1, 2, 3};
-    std::unordered_set<int> unordered = {1, 2, 3};
+    std::set<int> ordered = {1, 2, 3};              // сортированный
+    std::unordered_set<int> unordered = {1, 2, 3};  // несортированный (хеш)
 }
 
 // ---------------------------------------------------
@@ -21,6 +24,30 @@ void example_sets() {
 void example_maps() {
     std::map<std::string, int> ordered_map;
     std::unordered_map<std::string, int> unordered_map;
+}
+
+// ---------------------------------------------------
+// 📌 Плоские контейнеры (C++23) - flat_set и flat_map
+// ---------------------------------------------------
+void example_flat_containers() {
+    // flat_set - множество на основе отсортированного вектора
+    // Преимущества: лучшая locality, меньше памяти, быстрее итерация
+    std::flat_set<int> fset = {3, 1, 4, 1, 5, 9};
+    
+    // flat_map - словарь на основе двух отсортированных векторов
+    std::flat_map<std::string, int> fmap;
+    fmap["apple"] = 1;
+    fmap["banana"] = 2;
+    fmap["cherry"] = 3;
+    
+    // Операции аналогичны обычным set/map
+    fset.insert(2);
+    fset.erase(3);
+    bool has = fset.contains(4);  // C++20/23
+    
+    // Доступ к базовому контейнеру (уникально для flat_*)
+    auto keys = fmap.keys();    // ссылка на вектор ключей
+    auto values = fmap.values(); // ссылка на вектор значений
 }
 
 // ---------------------------------------------------
@@ -37,14 +64,24 @@ void example_insert_erase() {
 }
 
 // ---------------------------------------------------
-// 📌 Проверка наличия
+// 📌 Проверка наличия (C++20 contains())
 // ---------------------------------------------------
 void example_has() {
     std::set<int> s = {1, 2, 3};
-    bool has1 = s.count(1) > 0;
+    
+    // C++20/23 способ - более читаемый
+    bool has1 = s.contains(1);
+    
+    // Старый способ (всё ещё работает)
+    bool has1_old = s.count(1) > 0;
 
     std::unordered_map<std::string, int> um = {{"a",1}};
-    bool hasA = um.find("a") != um.end();
+    
+    // C++20/23 способ
+    bool hasA = um.contains("a");
+    
+    // Старый способ
+    bool hasA_old = um.find("a") != um.end();
 }
 
 // ---------------------------------------------------
@@ -52,10 +89,15 @@ void example_has() {
 // ---------------------------------------------------
 void example_iteration() {
     std::set<int> s = {1, 2, 3};
-    for (int val : s) std::cout << val << std::endl;
+    for (int val : s) std::println("{}", val);
 
     std::map<std::string, int> m = { {"k1", 1}, {"k2", 2} };
-    for (const auto& kv : m) std::cout << kv.first << " => " << kv.second << std::endl;
+    for (const auto& kv : m) std::println("{} => {}", kv.first, kv.second);
+    
+    // C++17 структурированные привязки
+    for (const auto& [key, value] : m) {
+        std::println("{} => {}", key, value);
+    }
 }
 
 // ---------------------------------------------------
@@ -92,13 +134,38 @@ void example_set_operations(const std::set<int>& a, const std::set<int>& b) {
 void example_multiset_multimap() {
     std::multiset<int> ms = {1, 2, 2, 3};
     ms.insert(2);
-    ms.erase(2); // удалит все вхождения или одно? erase(2) удалит все элементы со значением 2
+    ms.erase(2); // удалит ВСЕ элементы со значением 2
 
     std::multimap<std::string, int> mm;
     mm.emplace("a", 1);
     mm.emplace("a", 2);
     auto range = mm.equal_range("a");
     for (auto it = range.first; it != range.second; ++it) {
-        std::cout << it->first << " => " << it->second << std::endl;
+        std::println("{} => {}", it->first, it->second);
     }
+}
+
+// ---------------------------------------------------
+// 📌 Сравнение flat контейнеров с обычными
+// ---------------------------------------------------
+void example_flat_vs_normal() {
+    // Обычный set - дерево, O(log n) вставка/поиск
+    std::set<int> normal_set;
+    for (int i = 0; i < 1000; ++i) {
+        normal_set.insert(i);
+    }
+    
+    // Flat set - отсортированный вектор
+    // Лучше для: частых чтений, итераций, меньшего потребления памяти
+    // Хуже для: частых вставок/удалений (требует сдвигов)
+    std::flat_set<int> flat_set;
+    for (int i = 0; i < 1000; ++i) {
+        flat_set.insert(i);
+    }
+    
+    // Когда использовать flat_*:
+    // - Контейнер создаётся редко, читается часто
+    // - Нужна лучшая cache locality
+    // - Важна экономия памяти
+    // - Много итераций по всем элементам
 }

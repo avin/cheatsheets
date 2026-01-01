@@ -9,31 +9,46 @@
 #include <fstream>
 #include <sstream>
 #include <format>
+#include <print>  // C++23
 
 // ---------------------------------------------------
-// 📌 Вывод данных (print / log)
+// 📌 Вывод данных (std::print / std::println C++23)
 // ---------------------------------------------------
 void example_log() {
-    std::cout << "Hello" << std::endl;
+    // C++23 способ - проще и современнее
+    std::println("Hello");
+    
     std::vector<int> arr = {1, 2, 3};
-    for (int x : arr) std::cout << x << " ";
-    std::cout << std::endl;
+    std::print("Array: ");
+    for (int x : arr) std::print("{} ", x);
+    std::println("");
+    
     struct Obj { int a; std::string b; };
     Obj obj{1, "two"};
-    std::cout << "{ a: " << obj.a << ", b: " << obj.b << " }" << std::endl;
+    std::println("{{ a: {}, b: {} }}", obj.a, obj.b);
+    
+    // Старый способ (всё ещё работает)
+    std::cout << "Hello (old style)" << std::endl;
 }
 
 // ---------------------------------------------------
-// 📌 Форматирование вывода (std::format, std::ostringstream)
+// 📌 Форматирование вывода (std::format C++20, std::print C++23)
 // ---------------------------------------------------
 void example_format() {
     std::string name = "Alice";
     int age = 30;
-    std::cout << std::format("Name: {}, Age: {}\n", name, age);
-
+    
+    // C++23 std::print с форматированием
+    std::println("Name: {}, Age: {}", name, age);
+    
+    // C++20 std::format (для создания строки)
+    std::string formatted = std::format("Name: {}, Age: {}", name, age);
+    std::println("{}", formatted);
+    
+    // Старый способ с ostringstream
     std::ostringstream oss;
     oss << "Строка через ostringstream: " << name << ", " << age;
-    std::cout << oss.str() << std::endl;
+    std::println("{}", oss.str());
 }
 
 // ---------------------------------------------------
@@ -45,23 +60,24 @@ void example_timing() {
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> elapsed = end - start;
-    std::cout << "Time: " << elapsed.count() << " ms" << std::endl;
+    std::println("Time: {} ms", elapsed.count());
 }
 
 // ---------------------------------------------------
-// 📌 Отладочные принты
+// 📌 Отладочные принты (с std::print C++23)
 // ---------------------------------------------------
 void example_debug() {
     int x = 42;
-    std::cout << "DEBUG: x = " << x << std::endl;
+    std::println("DEBUG: x = {}", x);
+    
     std::vector<std::map<std::string,int>> data = { {{"key", 1}}, {{"key", 2}} };
-    std::cout << "Table:" << std::endl;
+    std::println("Table:");
     for (size_t i = 0; i < data.size(); ++i) {
-        std::cout << i << ": ";
+        std::print("{}: ", i);
         for (const auto& kv : data[i]) {
-            std::cout << kv.first << "=" << kv.second << " ";
+            std::print("{}={} ", kv.first, kv.second);
         }
-        std::cout << std::endl;
+        std::println("");
     }
 }
 
@@ -78,10 +94,11 @@ int getRandomInt(int min, int max) {
 void example_test_data() {
     std::vector<int> arr(100);
     std::generate(arr.begin(), arr.end(), []() { return getRandomInt(1, 1000); });
+    
     std::string str;
     for (int i = 0; i < 10; ++i)
         str += static_cast<char>(getRandomInt(97, 122));
-    std::cout << "Random string: " << str << std::endl;
+    std::println("Random string: {}", str);
 }
 
 // ---------------------------------------------------

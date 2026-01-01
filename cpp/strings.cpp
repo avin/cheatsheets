@@ -132,3 +132,9 @@ bool hasPrefix(const std::string& str, const std::string& prefix) {
 bool hasSuffix(const std::string& str, const std::string& suffix) {
     return str.ends_with(suffix); // C++20
 }
+
+// Проверка вхождения подстроки (C++23: contains)
+bool hasSubstring(const std::string& str, const std::string& substr) {
+    return str.contains(substr);  // C++23 - более читаемо чем find
+    // Альтернатива: return str.find(substr) != std::string::npos;
+}
