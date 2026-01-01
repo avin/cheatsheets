@@ -1,10 +1,13 @@
 #include <vector>
 #include <cmath>
 #include <string>
+#include <string_view>
 #include <sstream>
 #include <cstdlib>
 #include <ctime>
 #include <print>  // C++23
+#include <charconv>
+#include <optional>
 
 // ---------------------------------------------------
 // 📌 Округление
@@ -54,6 +57,26 @@ void example_conversion(const std::string& str) {
     std::ostringstream oss;
     oss << "Число: " << num;
     std::string formatted = oss.str();
+}
+
+// ---------------------------------------------------
+// 📌 Парсинг числа из std::string_view (std::from_chars)
+// ---------------------------------------------------
+// Плюсы:
+// - без аллокаций, работает напрямую по буферу
+// - быстрый и детерминированный, без локали
+// - без исключений, явная проверка ошибок
+std::optional<int> example_from_chars(std::string_view sv) {
+    int timestamp = 0;
+    auto* first = sv.data();
+    auto* last = sv.data() + sv.size();
+
+    if (auto [ptr, ec] = std::from_chars(first, last, timestamp);
+        ec != std::errc{} || ptr != last) {
+        return std::nullopt; // ошибка парсинга
+    }
+
+    return timestamp;
 }
 
 // ---------------------------------------------------
