@@ -1,16 +1,22 @@
 # Коллекция шпаргалок
 
-## Языки
-- [C](./c/README.md)
-- [C++20](./cpp/README.md)
+
+
+## Golang
 - [Go](./go/README.md)
 - [Go Concurrency Patterns](./go-concurrency/README.md)
+
+## C/C++
+- [C](./c/README.md)
+- [C++20/23 Cookbook](cpp-cookbook/README.md)
+- [C++20/23 Complete Cheatsheet Collection](cpp-modern/README.md)
+- [C++ Web/Network](cpp-web-network/README.md)
+- [CMake](./cmake-recipes/README.md)
+
+## Фронтенд
 - [JavaScript](./js/README.md)
 - [JavaScript алгоритмы](./js-algos/README.md)
 - [Типы в TypeScript](./ts-types/README.md)
-- [SQL (PostgreSQL)](./sql-postgresql/README.md)
-
-## Фронтенд
 - [CSS](./css-recipes/README.md)
 - [HTML](./html-recipes/README.md)
 - [PWA](./pwa-recipes/README.md)
@@ -25,9 +31,10 @@
 - [GraphQL](./graphql/README.md)
 - [REST API best practices](./rest-api-best-practices/README.md)
 - [API взаимодействие](./api-interactions/README.md)
+- [SQL (PostgreSQL)](./sql-postgresql/README.md)
 
 ## DevOps и инструменты
-- [CMake](./cmake-recipes/README.md)
+
 - [Docker](./docker-recipes/README.md)
 - [TLS / SSL / OpenSSL](./tls-openssl/README.md)
 - [Linux CLI](./linux-cli/README.md)
