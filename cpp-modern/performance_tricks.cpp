@@ -22,13 +22,14 @@
 #include <numeric>
 #include <cstring>
 
-// ============================================
-// 📌 MOVE SEMANTICS OPTIMIZATION
-// ============================================
+// ====================================================================================================
+// 📌 MOVE SEMANTICS OPTIMIZATION - ОПТИМИЗАЦИЯ ПЕРЕМЕЩЕНИЯ
+// ====================================================================================================
 
-namespace move_semantics {
+// ──────────────────────────────────────────
+// ❌ Без move semantics - МЕДЛЕННО
+// ──────────────────────────────────────────
 
-// ❌ Без move semantics
 class BigDataOld {
     int* data_;
     size_t size_;
@@ -49,7 +50,10 @@ public:
     }
 };
 
-// ✅ С move semantics
+// ──────────────────────────────────────────
+// ✅ С move semantics - БЫСТРО
+// ──────────────────────────────────────────
+
 class BigData {
     int* data_;
     size_t size_;
@@ -67,7 +71,7 @@ public:
         std::copy(other.data_, other.data_ + size_, data_);
     }
     
-    // Move constructor - дешево!
+    // Move constructor - ДЕШЕВО!
     BigData(BigData&& other) noexcept 
         : data_(other.data_), size_(other.size_) {
         other.data_ = nullptr;
@@ -87,38 +91,43 @@ public:
     }
 };
 
+// ──────────────────────────────────────────
 // RVO (Return Value Optimization) - гарантирован в C++17
+// ──────────────────────────────────────────
+
 BigData create_big_data(size_t size) {
     return BigData(size);  // Никакого копирования!
 }
 
-// Perfect forwarding
+// ──────────────────────────────────────────
+// Perfect Forwarding - идеальная передача
+// ──────────────────────────────────────────
+
 template<typename T>
 void process(T&& value) {
     // Передает lvalue как lvalue, rvalue как rvalue
     auto result = std::forward<T>(value);
 }
 
-void demo() {
-    std::cout << "=== Move Semantics ===\n";
-    
-    // Move вместо copy
-    BigData data1(1000);
-    BigData data2 = std::move(data1);  // Move, не copy!
-    
-    // RVO
-    auto data3 = create_big_data(1000);  // Никакого копирования
-}
+// ──────────────────────────────────────────
+// Примеры использования
+// ──────────────────────────────────────────
 
-} // namespace move_semantics
+// Перемещение вместо копирования
+// BigData data1(1000);
+// BigData data2 = std::move(data1);  // Move constructor
 
-// ============================================
-// 📌 MEMORY OPTIMIZATION
-// ============================================
+// RVO - оптимизация возврата
+// auto data3 = create_big_data(1000);  // Никаких копий!
 
-namespace memory_optimization {
+// ====================================================================================================
+// 📌 MEMORY OPTIMIZATION - ОПТИМИЗАЦИЯ ПАМЯТИ
+// ====================================================================================================
 
-// ❌ Плохо для кэша - "Array of Structures"
+// ──────────────────────────────────────────
+// ❌ AoS (Array of Structures) - плохо для кэша
+// ──────────────────────────────────────────
+
 struct ParticleAoS {
     float x, y, z;      // Позиция
     float vx, vy, vz;   // Скорость
@@ -126,7 +135,10 @@ struct ParticleAoS {
     float padding;      // Выравнивание
 };
 
-// ✅ Хорошо для кэша - "Structure of Arrays"
+// ──────────────────────────────────────────
+// ✅ SoA (Structure of Arrays) - хорошо для кэша
+// ──────────────────────────────────────────
+
 struct ParticlesSoA {
     std::vector<float> x, y, z;       // Позиции
     std::vector<float> vx, vy, vz;    // Скорости
@@ -148,12 +160,19 @@ struct ParticlesSoA {
     }
 };
 
-// Memory alignment для SIMD
+// ──────────────────────────────────────────
+// Memory Alignment - выравнивание для SIMD
+// ──────────────────────────────────────────
+
 struct alignas(32) AlignedData {
     float data[8];  // Выровнено для AVX
 };
 
-// Демонстрация padding
+// ──────────────────────────────────────────
+// Padding - выравнивание структур
+// ──────────────────────────────────────────
+
+// ❌ Плохая упаковка
 struct BadPacking {
     char c;    // 1 byte
     // 3 bytes padding
@@ -162,6 +181,7 @@ struct BadPacking {
     // 3 bytes padding
 };  // Итого: 12 bytes
 
+// ✅ Хорошая упаковка
 struct GoodPacking {
     int i;     // 4 bytes
     char c;    // 1 byte
@@ -169,27 +189,23 @@ struct GoodPacking {
     // 2 bytes padding
 };  // Итого: 8 bytes
 
-void demo() {
-    std::cout << "\n=== Memory Optimization ===\n";
-    
-    std::cout << "BadPacking size: " << sizeof(BadPacking) << " bytes\n";
-    std::cout << "GoodPacking size: " << sizeof(GoodPacking) << " bytes\n";
-    
-    // SoA лучше для кэша при последовательной обработке
-    ParticlesSoA particles;
-    particles.resize(10000);
-    particles.update_positions(0.016f);  // Кэш-френдли!
-}
+// Примеры размеров
+std::cout << "BadPacking size: " << sizeof(BadPacking) << " bytes\n";
+std::cout << "GoodPacking size: " << sizeof(GoodPacking) << " bytes\n";
 
-} // namespace memory_optimization
+// SoA - лучше для кэша при последовательной обработке
+ParticlesSoA memory_particles;
+memory_particles.resize(10000);
+memory_particles.update_positions(0.016f);  // Кэш-френдли!
 
-// ============================================
-// 📌 COMPILE-TIME COMPUTATION
-// ============================================
+// ====================================================================================================
+// 📌 COMPILE-TIME COMPUTATION - ВЫЧИСЛЕНИЯ НА ЭТАПЕ КОМПИЛЯЦИИ
+// ====================================================================================================
 
-namespace compile_time {
-
+// ──────────────────────────────────────────
 // constexpr - вычисляется в compile-time
+// ──────────────────────────────────────────
+
 constexpr int factorial(int n) {
     return n <= 1 ? 1 : n * factorial(n - 1);
 }
@@ -208,7 +224,10 @@ constexpr size_t hash_string(const char* str) {
     return hash;
 }
 
-// Использование для switch на строках
+// ──────────────────────────────────────────
+// Switch на строках через compile-time hash
+// ──────────────────────────────────────────
+
 void process_command(const char* cmd) {
     switch (hash_string(cmd)) {
         case hash_string("start"):
@@ -222,22 +241,20 @@ void process_command(const char* cmd) {
     }
 }
 
-void demo() {
-    std::cout << "\n=== Compile-Time Computation ===\n";
-    
-    constexpr int fact10 = factorial(10);  // Вычислено в compile-time!
-    std::cout << "factorial(10) = " << fact10 << '\n';
-    
-    process_command("start");
-}
+// Примеры
+constexpr int fact10 = factorial(10);  // Вычислено в compile-time!
+std::cout << "factorial(10) = " << fact10 << '\n';
 
-} // namespace compile_time
+process_command("start");
 
 // ============================================
 // 📌 COPY ELISION (C++17)
 // ============================================
 
-namespace copy_elision {
+
+// ====================================================================================================
+// 📌 COPY ELISION (C++17) - ОПТИМИЗАЦИЯ УДАЛЕНИЯ КОПИРОВАНИЯ
+// ====================================================================================================
 
 struct Expensive {
     std::vector<int> data;
@@ -267,19 +284,12 @@ Expensive factory(bool flag) {
     return Expensive(200);      // но не гарантировано
 }
 
-void demo() {
-    std::cout << "\n=== Copy Elision ===\n";
-    
-    auto obj = create_expensive();  // Только один конструктор!
-}
+// Пример использования
+auto elision_obj = create_expensive();  // Только один конструктор!
 
-} // namespace copy_elision
-
-// ============================================
-// 📌 SMALL OBJECT OPTIMIZATION
-// ============================================
-
-namespace small_object_optimization {
+// ====================================================================================================
+// 📌 SMALL OBJECT OPTIMIZATION - ОПТИМИЗАЦИЯ МАЛЫХ ОБЪЕКТОВ
+// ====================================================================================================
 
 // Упрощенная реализация SSO (Small String Optimization)
 class SmallString {
@@ -321,23 +331,16 @@ public:
     bool uses_heap() const { return !is_small_; }
 };
 
-void demo() {
-    std::cout << "\n=== Small Object Optimization ===\n";
-    
-    SmallString small("Hello");           // В стеке
-    SmallString large("This is a very long string that won't fit in SSO");  // В куче
-    
-    std::cout << "Small uses heap: " << std::boolalpha << small.uses_heap() << '\n';
-    std::cout << "Large uses heap: " << large.uses_heap() << '\n';
-}
+// Примеры использования
+SmallString small_str("Hello");           // В стеке
+SmallString large_str("This is a very long string that won't fit in SSO");  // В куче
 
-} // namespace small_object_optimization
+std::cout << "Small uses heap: " << std::boolalpha << small_str.uses_heap() << '\n';
+std::cout << "Large uses heap: " << large_str.uses_heap() << '\n';
 
-// ============================================
-// 📌 BRANCH PREDICTION (C++20)
-// ============================================
-
-namespace branch_prediction {
+// ====================================================================================================
+// 📌 BRANCH PREDICTION (C++20) - ПРЕДСКАЗАНИЕ ВЕТВЛЕНИЙ
+// ====================================================================================================
 
 // [[likely]] / [[unlikely]] hints (C++20)
 int process_value(int x) {
@@ -365,20 +368,13 @@ int clamp_branchy(int value, int min, int max) {
     return value;
 }
 
-void demo() {
-    std::cout << "\n=== Branch Prediction ===\n";
-    
-    std::cout << "process_value(5): " << process_value(5) << '\n';
-    std::cout << "clamp(15, 0, 10): " << clamp_branchfree(15, 0, 10) << '\n';
-}
+// Примеры
+std::cout << "process_value(5): " << process_value(5) << '\n';
+std::cout << "clamp(15, 0, 10): " << clamp_branchfree(15, 0, 10) << '\n';
 
-} // namespace branch_prediction
-
-// ============================================
-// 📌 STRING OPTIMIZATION
-// ============================================
-
-namespace string_optimization {
+// ====================================================================================================
+// 📌 STRING OPTIMIZATION - ОПТИМИЗАЦИЯ СТРОК
+// ====================================================================================================
 
 // ❌ Плохо - много копирований
 std::string process_bad(const std::string& input) {
@@ -417,23 +413,16 @@ std::string build_string_optimized(const std::vector<std::string>& parts) {
     return result;
 }
 
-void demo() {
-    std::cout << "\n=== String Optimization ===\n";
-    
-    std::string text = "hello";
-    process_good(text);  // Эффективно
-    
-    to_upper_inplace(text);
-    std::cout << "Upper: " << text << '\n';
-}
+// Примеры
+std::string opt_text = "hello";
+process_good(opt_text);  // Эффективно
 
-} // namespace string_optimization
+to_upper_inplace(opt_text);
+std::cout << "Upper: " << opt_text << '\n';
 
-// ============================================
-// 📌 CONTAINER OPTIMIZATION
-// ============================================
-
-namespace container_optimization {
+// ====================================================================================================
+// 📌 CONTAINER OPTIMIZATION - ОПТИМИЗАЦИЯ КОНТЕЙНЕРОВ
+// ====================================================================================================
 
 void vector_reserve_demo() {
     std::cout << "\n=== Vector Reserve ===\n";
@@ -482,20 +471,17 @@ void emplace_vs_push() {
     vec.emplace_back(3, 4);  // Только конструктор!
 }
 
-void demo() {
-    vector_reserve_demo();
-    emplace_vs_push();
-}
+// Примеры использования
+vector_reserve_demo();
+emplace_vs_push();
 
-} // namespace container_optimization
+// ====================================================================================================
+// 📌 PROFILING & BENCHMARKING - ПРОФИЛИРОВАНИЕ
+// ====================================================================================================
 
-// ============================================
-// 📌 PROFILING И BENCHMARKING
-// ============================================
-
-namespace profiling {
-
-// Простой benchmark helper
+// ──────────────────────────────────────────
+// Benchmark Helper
+// ──────────────────────────────────────────
 template<typename Func>
 auto benchmark(Func f, int iterations = 1000) {
     auto start = std::chrono::high_resolution_clock::now();
@@ -508,57 +494,47 @@ auto benchmark(Func f, int iterations = 1000) {
     return std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 }
 
-void demo() {
-    std::cout << "\n=== Profiling ===\n";
-    
-    // Бенчмарк vector vs list
-    auto vector_time = benchmark([]() {
-        std::vector<int> vec;
-        for (int i = 0; i < 1000; ++i) {
-            vec.push_back(i);
-        }
-    });
-    
-    std::cout << "Vector operation: " << vector_time.count() << " μs\n";
-    
-    /*
-     * ИНСТРУМЕНТЫ ПРОФИЛИРОВАНИЯ:
-     * 
-     * CPU Profilers:
-     * - perf (Linux): perf record ./app && perf report
-     * - VTune (Intel): Детальный анализ
-     * - gprof (GNU): g++ -pg, затем gprof
-     * 
-     * Memory Profilers:
-     * - Valgrind: valgrind --tool=massif ./app
-     * - AddressSanitizer: g++ -fsanitize=address
-     * - Heaptrack: heaptrack ./app
-     * 
-     * Compiler Flags:
-     * -O0: No optimization (debug)
-     * -O1: Basic optimization
-     * -O2: Recommended для production
-     * -O3: Aggressive optimization
-     * -Os: Optimize for size
-     * -Ofast: -O3 + fast-math (может нарушить стандарты)
-     * -flto: Link-Time Optimization
-     * 
-     * Profile-Guided Optimization (PGO):
-     * 1. g++ -fprofile-generate -O2 app.cpp
-     * 2. ./a.out  (собрать профиль)
-     * 3. g++ -fprofile-use -O2 app.cpp
-     */
-}
+// Пример бенчмарка
+auto prof_vector_time = benchmark([]() {
+    std::vector<int> vec;
+    for (int i = 0; i < 1000; ++i) {
+        vec.push_back(i);
+    }
+});
 
-} // namespace profiling
+std::cout << "Vector operation: " << prof_vector_time.count() << " μs\n";
 
-// ============================================
-// 📌 COMMON PITFALLS
-// ============================================
+/*
+ * ИНСТРУМЕНТЫ ПРОФИЛИРОВАНИЯ:
+ * 
+ * CPU Profilers:
+ * - perf (Linux): perf record ./app && perf report
+ * - VTune (Intel): Детальный анализ
+ * - gprof (GNU): g++ -pg, затем gprof
+ * 
+ * Memory Profilers:
+ * - Valgrind: valgrind --tool=massif ./app
+ * - AddressSanitizer: g++ -fsanitize=address
+ * - Heaptrack: heaptrack ./app
+ * 
+ * Compiler Flags:
+ * -O0: No optimization (debug)
+ * -O1: Basic optimization
+ * -O2: Recommended для production
+ * -O3: Aggressive optimization
+ * -Os: Optimize for size
+ * -Ofast: -O3 + fast-math (может нарушить стандарты)
+ * -flto: Link-Time Optimization
+ * 
+ * Profile-Guided Optimization (PGO):
+ * 1. g++ -fprofile-generate -O2 app.cpp
+ * 2. ./a.out  (собрать профиль)
+ * 3. g++ -fprofile-use -O2 app.cpp
+ */
 
-namespace common_pitfalls {
-
-void premature_optimization() {
+// ====================================================================================================
+// 📌 COMMON PITFALLS - РАСПРОСТРАНЁННЫЕ ОШИБКИ
+// ====================================================================================================
     std::cout << "\n=== Common Pitfalls ===\n\n";
     
     std::cout << "1. PREMATURE OPTIMIZATION\n";
@@ -582,14 +558,7 @@ void premature_optimization() {
     std::cout << "5. ИЗБЫТОЧНЫЕ АЛЛОКАЦИИ\n";
     std::cout << "   ✓ reserve() для vector\n";
     std::cout << "   ✓ Object pooling для частых аллокаций\n";
-    std::cout << "   ✓ Small buffer optimization\n";
-}
-
-void demo() {
-    premature_optimization();
-}
-
-} // namespace common_pitfalls
+std::cout << "   ✓ Small buffer optimization\n";
 
 // ============================================
 // 📌 BEST PRACTICES
@@ -635,38 +604,31 @@ void demo() {
  *    - Parallel algorithms для больших данных
  *    - Учитывай overhead создания потоков
  *    - Избегай false sharing
- */
 
-// ============================================
-// 📌 ГЛАВНАЯ ФУНКЦИЯ
-// ============================================
 
-int main() {
-    std::cout << "=== C++ Performance Optimization ===\n";
-    
-    move_semantics::demo();
-    memory_optimization::demo();
-    compile_time::demo();
-    copy_elision::demo();
-    small_object_optimization::demo();
-    branch_prediction::demo();
-    string_optimization::demo();
-    container_optimization::demo();
-    profiling::demo();
-    common_pitfalls::demo();
-    
-    std::cout << "\n=== Резюме ===\n";
-    std::cout << "✓ Профилируй перед оптимизацией\n";
-    std::cout << "✓ Алгоритм важнее микрооптимизаций\n";
-    std::cout << "✓ Move semantics и copy elision бесплатны\n";
-    std::cout << "✓ Cache-friendly структуры данных (SoA)\n";
-    std::cout << "✓ constexpr для compile-time вычислений\n";
-    std::cout << "✓ reserve() для контейнеров\n";
-    std::cout << "✓ emplace вместо push\n";
-    std::cout << "✓ string_view вместо const string&\n";
-    std::cout << "✓ -O2/-O3 + LTO для production\n";
-    
-    return 0;
-}
-// • Lock contention
-// • Memory fragmentation
+// ====================================================================================================
+// 📌 ИТОГО: C++ Performance Optimization
+// ====================================================================================================
+// 
+// 🎯 Ключевые техники:
+// • Move Semantics - std::move, perfect forwarding, RVO
+// • Memory Optimization - reserve(), SoA, padding, alignment
+// • Compile-time Computation - constexpr, template metaprogramming
+// • Copy Elision - RVO, NRVO (C++17 гарантирует)
+// • Small Object Optimization - SSO в string, SOO в function
+// • Branch Prediction - [[likely]]/[[unlikely]], profile-guided
+// • String Optimization - string_view, SSO, concatenation
+// • Container Optimization - reserve, emplace, heterogeneous lookup
+// • Profiling - gprof, perf, Valgrind, tracy
+// • Common Pitfalls - vector reallocations, lock contention
+// 
+// 🛠️ Best Practices:
+// ✓ Профилируй перед оптимизацией
+// ✓ Алгоритм важнее микрооптимизаций (O(n²) → O(n log n))
+// ✓ Move semantics и copy elision бесплатны
+// ✓ Cache-friendly структуры данных (SoA)
+// ✓ constexpr для compile-time вычислений
+// ✓ reserve() для контейнеров
+// ✓ emplace вместо push
+// ✓ string_view вместо const string&
+// ✓ -O2/-O3 + LTO для production

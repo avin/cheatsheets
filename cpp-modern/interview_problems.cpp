@@ -137,23 +137,12 @@ std::vector<int> product_except_self(const std::vector<int>& nums) {
     return result;
 }
 
-void demo() {
-    std::cout << "=== Arrays and Strings ===\n";
-    
-    // Two Sum
-    auto indices = two_sum({2, 7, 11, 15}, 9);
-    std::cout << "Two Sum: [" << indices[0] << ", " << indices[1] << "]\n";
-    
-    // Longest Substring
-    std::cout << "Longest substring: " 
-              << length_of_longest_substring("abcabcbb") << '\n';
-    
-    // Container With Most Water
-    std::cout << "Max area: " << max_area({1,8,6,2,5,4,8,3,7}) << '\n';
-    
-    // Trapping Rain Water
-    std::cout << "Trapped water: " << trap({0,1,0,2,1,0,1,3,2,1,2,1}) << '\n';
-}
+// ──────────────────────────────────────────
+// Примеры использования:
+// auto indices = two_sum({2, 7, 11, 15}, 9);
+// int len = length_of_longest_substring("abcabcbb");
+// int area = max_area({1,8,6,2,5,4,8,3,7});
+// int water = trap({0,1,0,2,1,0,1,3,2,1,2,1});
 
 } // namespace arrays_strings
 
@@ -282,22 +271,13 @@ Node* copy_random_list(Node* head) {
     return old_to_new[head];
 }
 
-void demo() {
-    std::cout << "\n=== Linked Lists ===\n";
-    
-    // Создаем список: 1 -> 2 -> 3
-    ListNode* head = new ListNode(1);
-    head->next = new ListNode(2);
-    head->next->next = new ListNode(3);
-    
-    // Reverse
-    head = reverse_list(head);
-    std::cout << "Reversed list: " << head->val << " -> " 
-              << head->next->val << " -> " << head->next->next->val << '\n';
-    
-    // Cleanup (упрощенно)
-    // В реальном коде используйте умные указатели!
-}
+// ──────────────────────────────────────────
+// Примеры использования:
+// ListNode* head = new ListNode(1, new ListNode(2, new ListNode(3)));
+// ListNode* reversed = reverse_list(head);
+// bool has_cycle = has_cycle(head);
+// ListNode* merged = merge_two_lists(l1, l2);
+// В реальном коде используйте умные указатели для управления памятью!
 
 } // namespace linked_lists
 
@@ -408,20 +388,14 @@ TreeNode* lowest_common_ancestor(TreeNode* root, TreeNode* p, TreeNode* q) {
     return left ? left : right;      // Оба в одном поддереве
 }
 
-void demo() {
-    std::cout << "\n=== Trees ===\n";
-    
-    // Создаем дерево:
-    //       1
-    //      / \
-    //     2   3
-    TreeNode* root = new TreeNode(1);
-    root->left = new TreeNode(2);
-    root->right = new TreeNode(3);
-    
-    std::cout << "Max depth: " << max_depth(root) << '\n';
-    std::cout << "Is valid BST: " << std::boolalpha << is_valid_bst(root) << '\n';
-}
+// ──────────────────────────────────────────
+// Примеры использования:
+// TreeNode* root = new TreeNode(1, new TreeNode(2), new TreeNode(3));
+// int depth = max_depth(root);
+// bool valid = is_valid_bst(root);
+// TreeNode* inverted = invert_tree(root);
+// TreeNode* lca = lowest_common_ancestor(root, p, q);
+// Используйте умные указатели для управления памятью дерева
 
 } // namespace trees
 
@@ -562,26 +536,14 @@ bool has_cycle(const std::vector<std::vector<int>>& graph) {
     return false;
 }
 
-void demo() {
-    std::cout << "\n=== Graphs ===\n";
-    
-    // Граф (список смежности)
-    std::vector<std::vector<int>> graph = {
-        {1, 2},    // 0 -> 1, 2
-        {3},       // 1 -> 3
-        {3},       // 2 -> 3
-        {}         // 3
-    };
-    
-    std::cout << "DFS: ";
-    std::vector<bool> visited(4, false);
-    dfs(0, graph, visited);
-    std::cout << '\n';
-    
-    std::cout << "BFS: ";
-    bfs(0, graph);
-    std::cout << '\n';
-}
+// ──────────────────────────────────────────
+// Примеры использования:
+// std::vector<std::vector<int>> graph = {{1,2}, {3}, {3}, {}};
+// std::vector<bool> visited(graph.size(), false);
+// dfs(0, graph, visited);  // Обход в глубину
+// bfs(0, graph);           // Обход в ширину
+// bool cyclic = has_cycle(graph);
+// auto order = topological_sort(graph);
 
 } // namespace graphs
 
@@ -679,14 +641,11 @@ bool word_break(const std::string& s, const std::unordered_set<std::string>& dic
     return dp[n];
 }
 
-void demo() {
-    std::cout << "\n=== Dynamic Programming ===\n";
-    
-    std::cout << "Fibonacci(10): " << fibonacci(10) << '\n';
-    std::cout << "LCS('abcde', 'ace'): " << lcs("abcde", "ace") << '\n';
-    std::cout << "Coin change for 11: " 
-              << coin_change({1, 2, 5}, 11) << '\n';
-}
+// ──────────────────────────────────────────
+// Примеры использования:
+// int fib10 = fibonacci(10);
+// int lcs_len = lcs("abcde", "ace");
+// int coins = coin_change({1, 2, 5}, 11);
 
 } // namespace dynamic_programming
 
@@ -791,18 +750,12 @@ int find_kth_largest(std::vector<int>& nums, int k) {
     return nums[nums.size() - k];
 }
 
-void demo() {
-    std::cout << "\n=== Sorting and Searching ===\n";
-    
-    std::vector<int> arr = {5, 2, 8, 1, 9};
-    merge_sort(arr, 0, arr.size() - 1);
-    
-    std::cout << "Sorted: ";
-    for (int x : arr) std::cout << x << " ";
-    std::cout << '\n';
-    
-    std::cout << "Binary search for 8: " << binary_search(arr, 8) << '\n';
-}
+// ──────────────────────────────────────────
+// Примеры использования:
+// std::vector<int> arr = {5, 2, 8, 1, 9};
+// merge_sort(arr, 0, arr.size() - 1);
+// int idx = binary_search(arr, 8);
+// int kth = find_kth_largest({3,2,1,5,6,4}, 2);
 
 } // namespace sorting_searching
 
@@ -854,15 +807,12 @@ bool is_power_of_two(int n) {
     return n > 0 && (n & (n - 1)) == 0;
 }
 
-void demo() {
-    std::cout << "\n=== Bit Manipulation ===\n";
-    
-    std::cout << "Single number in {4,1,2,1,2}: " 
-              << single_number({4, 1, 2, 1, 2}) << '\n';
-    std::cout << "Hamming weight of 11: " << hamming_weight(11) << '\n';
-    std::cout << "Missing number in {0,1,3}: " 
-              << missing_number({0, 1, 3}) << '\n';
-}
+// ──────────────────────────────────────────
+// Примеры использования:
+// int single = single_number({4, 1, 2, 1, 2});
+// int bits = hamming_weight(11);
+// int missing = missing_number({0, 1, 3});
+// bool is_pow2 = is_power_of_two(16);
 
 } // namespace bit_manipulation
 
@@ -1012,52 +962,40 @@ public:
     }
 };
 
-void demo() {
-    std::cout << "\n=== Modern C++ Specific ===\n";
-    
-    // Singleton
-    Singleton::instance().do_something();
-    
-    // LRU Cache
-    LRUCache cache(2);
-    cache.put(1, 1);
-    cache.put(2, 2);
-    std::cout << "Get 1: " << cache.get(1) << '\n';
-    cache.put(3, 3);  // Вытесняет ключ 2
-    std::cout << "Get 2: " << cache.get(2) << '\n';  // -1 (не найден)
-    
-    // Simple unique_ptr
-    SimpleUniquePtr<int> ptr(new int(42));
-    std::cout << "Unique ptr value: " << *ptr << '\n';
-}
+
+// ──────────────────────────────────────────
+// Примеры использования:
+// Singleton::instance().do_something();
+// 
+// LRUCache cache(2);
+// cache.put(1, 100);
+// int val = cache.get(1);  // 100
+// 
+// SimpleUniquePtr<int> ptr(new int(42));
+// std::cout << *ptr;  // 42
 
 } // namespace modern_cpp_problems
 
-// ============================================
-// 📌 ГЛАВНАЯ ФУНКЦИЯ
-// ============================================
 
-int main() {
-    std::cout << "=== Interview Problems - Modern C++ ===\n\n";
-    
-    arrays_strings::demo();
-    linked_lists::demo();
-    trees::demo();
-    graphs::demo();
-    dynamic_programming::demo();
-    sorting_searching::demo();
-    bit_manipulation::demo();
-    modern_cpp_problems::demo();
-    
-    std::cout << "\n=== Резюме ===\n";
-    std::cout << "✓ Arrays/Strings - Two Sum, Longest Substring, Water Trapping\n";
-    std::cout << "✓ Linked Lists - Reverse, Cycle Detection, Merge\n";
-    std::cout << "✓ Trees - Traversals, BST Validation, LCA\n";
-    std::cout << "✓ Graphs - DFS/BFS, Dijkstra, Topological Sort\n";
-    std::cout << "✓ Dynamic Programming - Fibonacci, LCS, Knapsack\n";
-    std::cout << "✓ Sorting/Searching - Binary Search, Merge Sort, Quick Sort\n";
-    std::cout << "✓ Bit Manipulation - XOR tricks, Hamming weight\n";
-    std::cout << "✓ Modern C++ - Smart pointers, Singleton, LRU Cache\n";
-    
-    return 0;
-}
+// ====================================================================================================
+// 📌 ИТОГО: Полная коллекция решений алгоритмических задач на C++20/23
+// ====================================================================================================
+// 
+// 🎯 Основные категории задач:
+// • Arrays/Strings - массивы, строки, two pointers, sliding window
+// • Linked Lists - списки, reverse, поиск циклов, merge
+// • Trees - деревья, BST, traversal, recursion
+// • Graphs - графы, DFS, BFS, topological sort
+// • Dynamic Programming - динамическое программирование
+// • Sorting/Searching - сортировка, бинарный поиск, quickselect
+// • Bit Manipulation - битовые операции, XOR, маски
+// • Modern C++ - Singleton, LRU Cache, unique_ptr реализация
+// 
+// 🛠️ Техники и паттерны:
+// • Two Pointers - два указателя для оптимизации
+// • Sliding Window - скользящее окно
+// • Fast & Slow Pointers - поиск циклов (алгоритм Флойда)
+// • DFS/BFS Traversal - обходы графов
+// • Memoization/Tabulation - кеширование в DP
+// • Binary Search - O(log n) поиск
+// • Bit Tricks - XOR, маски, сдвиги

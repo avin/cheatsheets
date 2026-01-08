@@ -71,15 +71,8 @@ void process(std::floating_point auto value) {
 template<typename T>
 concept Number = Numeric<T> && Addable<T>;
 
-void demo() {
-    std::cout << "=== C++20 Concepts ===\n";
-    
-    std::cout << "square(5): " << square(5) << '\n';
-    std::cout << "square(2.5): " << square(2.5) << '\n';
-    
-    process(42);
-    process(3.14);
-}
+// ──────────────────────────────────────────
+// Примеры: square(5); process(42); process(3.14);
 
 } // namespace cpp20_concepts
 
@@ -149,10 +142,8 @@ void range_algorithms() {
     }
 }
 
-void demo() {
-    basic_ranges();
-    range_algorithms();
-}
+// ──────────────────────────────────────────
+// Примеры: basic_ranges(); range_algorithms();
 
 } // namespace cpp20_ranges
 
@@ -189,21 +180,8 @@ struct Person {
     }
 };
 
-void demo() {
-    std::cout << "\n=== C++20 Spaceship Operator ===\n";
-    
-    Point p1{1, 2};
-    Point p2{1, 3};
-    
-    std::cout << "p1 < p2: " << std::boolalpha << (p1 < p2) << '\n';
-    std::cout << "p1 == p2: " << (p1 == p2) << '\n';
-    std::cout << "p1 != p2: " << (p1 != p2) << '\n';
-    
-    Person alice{"Alice", 30};
-    Person bob{"Bob", 25};
-    
-    std::cout << "alice < bob: " << (alice < bob) << '\n';
-}
+// ──────────────────────────────────────────
+// Примеры: Point p1{1,2}; Point p2{1,3}; p1 < p2; p1 == p2;
 
 } // namespace cpp20_spaceship
 
@@ -237,9 +215,8 @@ void basic_format() {
     #endif
 }
 
-void demo() {
-    basic_format();
-}
+// ──────────────────────────────────────────
+// Примеры: basic_format(); std::format("Hello, {}!", "World");
 
 } // namespace cpp20_format
 
@@ -268,9 +245,8 @@ void calendar_demo() {
     std::cout << "Christmas 2024 is on: " << weekday << '\n';
 }
 
-void demo() {
-    calendar_demo();
-}
+// ──────────────────────────────────────────
+// Примеры: calendar_demo(); year_month_day{2024y, January, 15d};
 
 } // namespace cpp20_calendar
 
@@ -334,23 +310,12 @@ void template_lambda_demo() {
     lambda("hello");
 }
 
-void demo() {
-    std::cout << "\n=== C++20 Other Features ===\n";
-    
-    constexpr int fact5 = factorial(5);
-    std::cout << "factorial(5): " << fact5 << '\n';
-    
-    constexpr int sq10 = square(10);
-    std::cout << "square(10): " << sq10 << '\n';
-    
-    print_color(Color::Red);
-    
-    // Designated initializers
-    Point p = {.x = 10, .y = 20, .z = 30};
-    std::cout << "Point: " << p.x << ", " << p.y << ", " << p.z << '\n';
-    
-    template_lambda_demo();
-}
+// ──────────────────────────────────────────
+// Примеры:
+// constexpr int f = factorial(5);
+// constexpr int sq = square(10);
+// Point p = {.x = 10, .y = 20, .z = 30};  // designated initializers
+// template_lambda_demo();
 
 } // namespace cpp20_other
 
@@ -360,19 +325,8 @@ void demo() {
 
 namespace cpp23_print {
 
-void demo() {
-    std::cout << "\n=== C++23 Print Library ===\n";
-    
-    // std::print и std::println доступны в C++23
-    // Для демонстрации используем cout
-    std::cout << "std::print/println - type-safe альтернатива printf\n";
-    std::cout << "Использует std::format под капотом\n";
-    
-    #if __cpp_lib_print >= 202207L
-    std::print("Hello, {}!\n", "World");
-    std::println("Number: {}", 42);
-    #endif
-}
+// ──────────────────────────────────────────
+// Примеры: std::print("Hello, {}!\n", "World"); std::println("Number: {}", 42);
 
 } // namespace cpp23_print
 
@@ -421,13 +375,10 @@ void monadic_operations() {
 }
 #endif
 
-void demo() {
-    #if HAS_EXPECTED
-    monadic_operations();
-    #else
-    std::cout << "\nstd::expected not available (requires C++23)\n";
-    #endif
-}
+// ──────────────────────────────────────────
+#if HAS_EXPECTED
+// Примеры: monadic_operations(); std::expected<int, Error> result = divide(10, 2);
+#endif
 
 } // namespace cpp23_expected
 
@@ -457,20 +408,8 @@ public:
     }
 };
 
-void demo() {
-    std::cout << "\n=== C++23 Multidimensional Subscript ===\n";
-    
-    Matrix<int> mat(3, 3);
-    
-    // Инициализация
-    for (size_t i = 0; i < 3; ++i) {
-        for (size_t j = 0; j < 3; ++j) {
-            mat[i, j] = i * 3 + j;  // C++23 syntax!
-        }
-    }
-    
-    std::cout << "Matrix[1, 1] = " << mat[1, 1] << '\n';
-}
+// ──────────────────────────────────────────
+// Примеры: Matrix<int> mat(3, 3); mat[1, 2] = 42;  // C++23 syntax
 
 } // namespace cpp23_multidim_subscript
 
@@ -510,19 +449,11 @@ void recursive_lambda_demo() {
     #endif
 }
 
-void demo() {
-    std::cout << "\n=== C++23 Deducing This ===\n";
-    
-    Counter c;
-    c.increment().increment();
-    std::cout << "Counter value: " << c.value << '\n';
-    
-    #if __cpp_explicit_this_parameter >= 202110L
-    recursive_lambda_demo();
-    #else
-    std::cout << "Deducing this not available\n";
-    #endif
-}
+// ──────────────────────────────────────────
+// Примеры:
+// Counter c;
+// c.increment().increment();  // method chaining
+// recursive_lambda_demo();    // explicit this в lambda
 
 } // namespace cpp23_deducing_this
 
@@ -558,9 +489,8 @@ void new_views() {
     #endif
 }
 
-void demo() {
-    new_views();
-}
+// ──────────────────────────────────────────
+// Примеры: new_views();  // zip, chunk, enumerate, cartesian_product
 
 } // namespace cpp23_ranges
 
@@ -637,15 +567,11 @@ void to_underlying_demo() {
     #endif
 }
 
-void demo() {
-    std::cout << "\n=== C++23 Other Features ===\n";
-    
-    constexpr int val = compute(5);
-    std::cout << "compute(5): " << val << '\n';
-    
-    string_contains();
-    to_underlying_demo();
-}
+// ──────────────────────────────────────────
+// Примеры:
+// constexpr int val = compute(5);
+// string_contains();
+// to_underlying_demo();
 
 } // namespace cpp23_other
 
@@ -688,11 +614,8 @@ void cpp17_features() {
     std::cout << "✓ Class template argument deduction (CTAD)\n";
 }
 
-void demo() {
-    cpp11_features();
-    cpp14_features();
-    cpp17_features();
-}
+// ──────────────────────────────────────────
+// Примеры: cpp11_features(); cpp14_features(); cpp17_features();
 
 } // namespace cpp11_17_summary
 
@@ -728,38 +651,31 @@ void demo() {
  * 8. Ranges для ленивых вычислений
  */
 
-// ============================================
-// 📌 ГЛАВНАЯ ФУНКЦИЯ
-// ============================================
-
-int main() {
-    std::cout << "=== Modern C++ Features Overview ===\n";
-    
-    // C++20
-    cpp20_concepts::demo();
-    cpp20_ranges::demo();
-    cpp20_spaceship::demo();
-    cpp20_format::demo();
-    cpp20_calendar::demo();
-    cpp20_other::demo();
-    
-    // C++23
-    cpp23_print::demo();
-    cpp23_expected::demo();
-    cpp23_multidim_subscript::demo();
-    cpp23_deducing_this::demo();
-    cpp23_ranges::demo();
-    cpp23_other::demo();
-    
-    // Summary
-    cpp11_17_summary::demo();
-    
-    std::cout << "\n=== Резюме ===\n";
-    std::cout << "✓ C++20 - Concepts, Ranges, Coroutines, Modules, Spaceship\n";
-    std::cout << "✓ C++23 - std::expected, print, deducing this, mdspan\n";
-    std::cout << "✓ Используйте modern features для более безопасного кода\n";
-    std::cout << "✓ Компилятор - ваш друг (concepts дают лучшие ошибки)\n";
-    std::cout << "✓ Constexpr everything - производительность бесплатно\n";
-    
-    return 0;
-}
+// ====================================================================================================
+// 📌 ИТОГО: Modern C++ Features (C++11/14/17/20/23)
+// ====================================================================================================
+// 
+// 🎯 C++20 Ключевые возможности:
+// • Concepts - ограничения типов с читаемым синтаксисом
+// • Ranges - композиция алгоритмов, lazy evaluation
+// • Spaceship operator (<=>) - автоматические сравнения
+// • std::format - безопасное форматирование строк
+// • Calendar - работа с датами и временными зонами
+// • constexpr/consteval - улучшения compile-time вычислений
+// • Designated initializers, [[likely]]/[[unlikely]]
+// 
+// 🎯 C++23 Новинки:
+// • std::print - вывод с std::format синтаксисом
+// • std::expected - явная обработка ошибок
+// • Multidimensional subscript - operator[i,j]
+// • Deducing this - явный this параметр
+// • Ranges improvements - zip, chunk, enumerate, cartesian_product
+// • std::unreachable(), if consteval, std::to_underlying()
+// 
+// 🛠️ Best Practices:
+// • Используйте Concepts вместо SFINAE
+// • Ranges для работы с последовательностями
+// • std::format вместо iostream форматирования
+// • constexpr всё что возможно
+// • Smart pointers вместо raw
+// • Range-based for и structured bindings

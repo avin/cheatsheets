@@ -27,14 +27,14 @@
 #include <source_location>
 #endif
 
-// ============================================
-// 📌 TESTING FRAMEWORKS PATTERNS
-// ============================================
-
-namespace testing_frameworks {
+// ====================================================================================================
+// 📌 TESTING FRAMEWORKS - ТЕСТОВЫЕ ФРЕЙМВОРКИ
+// ====================================================================================================
 
 /*
+ * ──────────────────────────────────────────
  * CATCH2 PATTERN:
+ * ──────────────────────────────────────────
  * 
  * #include <catch2/catch_test_macros.hpp>
  * 
@@ -54,7 +54,9 @@ namespace testing_frameworks {
  */
 
 /*
+ * ──────────────────────────────────────────
  * GOOGLE TEST PATTERN:
+ * ──────────────────────────────────────────
  * 
  * #include <gtest/gtest.h>
  * 
@@ -72,7 +74,9 @@ namespace testing_frameworks {
  */
 
 /*
+ * ──────────────────────────────────────────
  * DOCTEST PATTERN (header-only):
+ * ──────────────────────────────────────────
  * 
  * #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
  * #include <doctest/doctest.h>
@@ -85,7 +89,10 @@ namespace testing_frameworks {
  * }
  */
 
-// Custom assertion macro
+// ──────────────────────────────────────────
+// Custom Assertions - свои макросы проверки
+// ──────────────────────────────────────────
+
 #define EXPECT(condition, message) \
     do { \
         if (!(condition)) { \
@@ -94,48 +101,38 @@ namespace testing_frameworks {
         } \
     } while (0)
 
-void demo_custom_assertions() {
-    std::cout << "=== Custom Assertions ===\n";
-    
-    int x = 42;
-    EXPECT(x == 42, "x should be 42");
-    EXPECT(x > 0, "x should be positive");
-    
-    std::cout << "Assertions passed!\n";
+// Примеры использования
+int test_x = 42;
+EXPECT(test_x == 42, "x should be 42");
+EXPECT(test_x > 0, "x should be positive");
+
+std::cout << "Custom assertions passed!\n";
+
+// ====================================================================================================
+// 📌 UNIT TESTING PATTERNS - ПАТТЕРНЫ ЮНИТ-ТЕСТИРОВАНИЯ
+// ====================================================================================================
+
+// ──────────────────────────────────────────
+// AAA Pattern - Arrange, Act, Assert
+// ──────────────────────────────────────────
+
+// Arrange - подготовка
+std::vector<int> aaa_numbers = {1, 2, 3, 4, 5};
+
+// Act - действие
+int aaa_sum = 0;
+for (int n : aaa_numbers) {
+    aaa_sum += n;
 }
 
-void demo() {
-    std::cout << "=== Testing Frameworks Patterns ===\n";
-    demo_custom_assertions();
-}
+// Assert - проверка
+assert(aaa_sum == 15);
+std::cout << "AAA Pattern: Sum test passed\n";
 
-} // namespace testing_frameworks
+// ──────────────────────────────────────────
+// Test Fixture - повторяемая настройка тестов
+// ──────────────────────────────────────────
 
-// ============================================
-// 📌 UNIT TESTING PATTERNS
-// ============================================
-
-namespace unit_testing_patterns {
-
-// AAA Pattern (Arrange-Act-Assert)
-void demo_aaa_pattern() {
-    std::cout << "\n=== AAA Pattern ===\n";
-    
-    // Arrange
-    std::vector<int> numbers = {1, 2, 3, 4, 5};
-    
-    // Act
-    int sum = 0;
-    for (int n : numbers) {
-        sum += n;
-    }
-    
-    // Assert
-    assert(sum == 15);
-    std::cout << "Sum test passed\n";
-}
-
-// Test fixture
 class CalculatorFixture {
 protected:
     int a = 10;
@@ -150,20 +147,19 @@ protected:
     }
 };
 
-void demo_fixtures() {
-    std::cout << "\n=== Test Fixtures ===\n";
-    
-    CalculatorFixture fixture;
-    fixture.setup();
-    
-    // Test
-    int result = fixture.a + fixture.b;
-    assert(result == 30);
-    
-    fixture.teardown();
-}
+// Использование fixture
+CalculatorFixture calc_fixture;
+calc_fixture.setup();
 
-// Параметризованные тесты (pattern)
+int fixture_result = calc_fixture.a + calc_fixture.b;
+assert(fixture_result == 30);
+
+calc_fixture.teardown();
+
+// ──────────────────────────────────────────
+// Parameterized Tests - параметризованные тесты
+// ──────────────────────────────────────────
+
 template<typename T>
 void test_container_size() {
     T container;
@@ -174,16 +170,16 @@ void test_container_size() {
     assert(container.size() == 1);
 }
 
-void demo_parameterized() {
-    std::cout << "\n=== Parameterized Tests ===\n";
-    
-    test_container_size<std::vector<int>>();
-    test_container_size<std::vector<std::string>>();
-    
-    std::cout << "Parameterized tests passed\n";
-}
+// Запуск с разными типами
+test_container_size<std::vector<int>>();
+test_container_size<std::vector<std::string>>();
 
-// Mock object pattern
+std::cout << "Parameterized tests passed\n";
+
+// ──────────────────────────────────────────
+// Mock Object Pattern - тестовые заглушки
+// ──────────────────────────────────────────
+
 class DatabaseInterface {
 public:
     virtual ~DatabaseInterface() = default;
@@ -210,46 +206,33 @@ public:
     bool was_called() const { return was_called_; }
 };
 
-void demo_mocking() {
-    std::cout << "\n=== Mocking ===\n";
-    
-    MockDatabase mock;
-    mock.expect_query("SELECT * FROM users", "Alice,Bob");
-    
-    std::string result = mock.query("SELECT * FROM users");
-    assert(result == "Alice,Bob");
-    assert(mock.was_called());
-    
-    std::cout << "Mock test passed\n";
-}
+// Использование mock object
+MockDatabase mock_db;
+mock_db.expect_query("SELECT * FROM users", "Alice,Bob");
 
-void demo() {
-    std::cout << "\n=== Unit Testing Patterns ===\n";
-    demo_aaa_pattern();
-    demo_fixtures();
-    demo_parameterized();
-    demo_mocking();
-}
+std::string mock_result = mock_db.query("SELECT * FROM users");
+assert(mock_result == "Alice,Bob");
+assert(mock_db.was_called());
 
-} // namespace unit_testing_patterns
+std::cout << "Mock test passed\n";
 
-// ============================================
-// 📌 STATIC ANALYSIS
-// ============================================
+// ====================================================================================================
+// 📌 STATIC ANALYSIS - СТАТИЧЕСКИЙ АНАЛИЗ
+// ====================================================================================================
 
-namespace static_analysis {
-
+// ──────────────────────────────────────────
 // static_assert - compile-time проверки
-void demo_static_assert() {
-    std::cout << "\n=== static_assert ===\n";
-    
-    static_assert(sizeof(int) >= 4, "int must be at least 4 bytes");
-    static_assert(sizeof(void*) == 8, "64-bit platform required");
-    
-    std::cout << "Static assertions passed at compile time\n";
-}
+// ──────────────────────────────────────────
 
-// Concepts для compile-time проверок
+static_assert(sizeof(int) >= 4, "int must be at least 4 bytes");
+static_assert(sizeof(void*) == 8, "64-bit platform required");
+
+std::cout << "Static assertions passed at compile time\n";
+
+// ──────────────────────────────────────────
+// Concepts - концепты для проверки типов
+// ──────────────────────────────────────────
+
 template<typename T>
 concept Addable = requires(T a, T b) {
     { a + b } -> std::same_as<T>;
@@ -260,16 +243,16 @@ T add(T a, T b) {
     return a + b;
 }
 
-void demo_concepts() {
-    std::cout << "\n=== Concepts ===\n";
-    
-    int result = add(10, 20);  // ✅ Компилируется
-    std::cout << "10 + 20 = " << result << '\n';
-    
-    // add("hello", "world");  // ❌ Ошибка компиляции
-}
+// Использование
+int concept_result = add(10, 20);  // ✅ Компилируется
+std::cout << "10 + 20 = " << concept_result << '\n';
 
-// Type trait assertions
+// add("hello", "world");  // ❌ Ошибка компиляции - string не Addable
+
+// ──────────────────────────────────────────
+// Type Traits - проверка свойств типов
+// ──────────────────────────────────────────
+
 template<typename T>
 void process_trivial_type(T value) {
     static_assert(std::is_trivially_copyable_v<T>,
@@ -278,14 +261,14 @@ void process_trivial_type(T value) {
     std::cout << "Processing trivial type\n";
 }
 
-void demo_type_traits() {
-    std::cout << "\n=== Type Traits ===\n";
-    
-    process_trivial_type(42);  // ✅ int is trivial
-    // process_trivial_type(std::string("test"));  // ❌ string is not trivial
-}
+// Использование
+process_trivial_type(42);  // ✅ int is trivial
+// process_trivial_type(std::string("test"));  // ❌ string is not trivial
 
-// constexpr unit tests
+// ──────────────────────────────────────────
+// Constexpr Tests - тесты во время компиляции
+// ──────────────────────────────────────────
+
 constexpr int factorial(int n) {
     return n <= 1 ? 1 : n * factorial(n - 1);
 }
@@ -294,48 +277,35 @@ constexpr bool test_factorial() {
     return factorial(5) == 120 && factorial(0) == 1;
 }
 
-void demo_constexpr_tests() {
-    std::cout << "\n=== Constexpr Tests ===\n";
-    
-    static_assert(test_factorial(), "Factorial test failed");
-    std::cout << "Constexpr tests passed at compile time\n";
-}
+static_assert(test_factorial(), "Factorial test failed");
+std::cout << "Constexpr tests passed at compile time\n";
 
-void demo() {
-    std::cout << "\n=== Static Analysis ===\n";
-    demo_static_assert();
-    demo_concepts();
-    demo_type_traits();
-    demo_constexpr_tests();
-}
+// ====================================================================================================
+// 📌 RUNTIME DEBUGGING - ОТЛАДКА ВО ВРЕМЯ ВЫПОЛНЕНИЯ
+// ====================================================================================================
 
-} // namespace static_analysis
-
-// ============================================
-// 📌 RUNTIME DEBUGGING
-// ============================================
-
-namespace runtime_debugging {
-
+// ──────────────────────────────────────────
 // assert() - runtime проверки
-void demo_assert() {
-    std::cout << "\n=== assert() ===\n";
-    
-    int x = 42;
-    assert(x > 0);  // Выполняется только в debug builds
-    
-    std::cout << "Assertions enabled in debug build\n";
-    
-    // NDEBUG отключает assert
-    #ifdef NDEBUG
-    std::cout << "NDEBUG defined - assertions disabled\n";
-    #else
-    std::cout << "Debug mode - assertions enabled\n";
-    #endif
-}
+// ──────────────────────────────────────────
 
+int assert_x = 42;
+assert(assert_x > 0);  // Выполняется только в debug builds
+
+std::cout << "Assertions enabled in debug build\n";
+
+// NDEBUG отключает assert
+#ifdef NDEBUG
+std::cout << "NDEBUG defined - assertions disabled\n";
+#else
+std::cout << "Debug mode - assertions enabled\n";
+#endif
+
+// ──────────────────────────────────────────
 // source_location (C++20) - информация о месте вызова
+// ──────────────────────────────────────────
+
 #ifdef __cpp_lib_source_location
+
 void log_message(const std::string& msg,
                  const std::source_location& loc = std::source_location::current()) {
     std::cout << "["
@@ -345,15 +315,16 @@ void log_message(const std::string& msg,
               << msg << '\n';
 }
 
-void demo_source_location() {
-    std::cout << "\n=== source_location ===\n";
-    
-    log_message("This is a debug message");
-    log_message("Another message");
-}
+// Использование
+log_message("This is a debug message");
+log_message("Another message");
+
 #endif
 
-// Логирование
+// ──────────────────────────────────────────
+// Logging System - система логирования
+// ──────────────────────────────────────────
+
 enum class LogLevel { DEBUG, INFO, WARNING, ERROR };
 
 class Logger {
@@ -382,58 +353,42 @@ private:
     }
 };
 
-void demo_logging() {
-    std::cout << "\n=== Logging ===\n";
-    
-    Logger logger;
-    
-    logger.log(LogLevel::DEBUG, "Debug message");  // Не выводится
-    logger.log(LogLevel::INFO, "Application started");
-    logger.log(LogLevel::WARNING, "Low memory: ", 512, " MB");
-    logger.log(LogLevel::ERROR, "Failed to open file");
-    
-    // Включить DEBUG
-    logger.set_level(LogLevel::DEBUG);
-    logger.log(LogLevel::DEBUG, "Now debug is visible");
-}
+// Использование Logger
+Logger app_logger;
 
-// Debug vs Release builds
-void demo_debug_builds() {
-    std::cout << "\n=== Debug Builds ===\n";
-    
-    #ifdef _DEBUG
-    std::cout << "DEBUG build\n";
-    #else
-    std::cout << "RELEASE build\n";
-    #endif
-    
-    // Debug-only код
-    #ifndef NDEBUG
-    int debug_counter = 0;
-    std::cout << "Debug counter: " << debug_counter << '\n';
-    #endif
-}
+app_logger.log(LogLevel::DEBUG, "Debug message");  // Не выводится (min_level = INFO)
+app_logger.log(LogLevel::INFO, "Application started");
+app_logger.log(LogLevel::WARNING, "Low memory: ", 512, " MB");
+app_logger.log(LogLevel::ERROR, "Failed to open file");
 
-void demo() {
-    std::cout << "\n=== Runtime Debugging ===\n";
-    demo_assert();
-    #ifdef __cpp_lib_source_location
-    demo_source_location();
-    #endif
-    demo_logging();
-    demo_debug_builds();
-}
+// Включить DEBUG
+app_logger.set_level(LogLevel::DEBUG);
+app_logger.log(LogLevel::DEBUG, "Now debug is visible");
 
-} // namespace runtime_debugging
+// ──────────────────────────────────────────
+// Debug vs Release Builds
+// ──────────────────────────────────────────
 
-// ============================================
-// 📌 SANITIZERS
-// ============================================
+#ifdef _DEBUG
+std::cout << "DEBUG build\n";
+#else
+std::cout << "RELEASE build\n";
+#endif
 
-namespace sanitizers {
+// Debug-only код
+#ifndef NDEBUG
+int debug_counter = 0;
+std::cout << "Debug counter: " << debug_counter << '\n';
+#endif
+
+// ====================================================================================================
+// 📌 SANITIZERS - ИНСТРУМЕНТЫ ОБНАРУЖЕНИЯ ОШИБОК
+// ====================================================================================================
 
 /*
+ * ──────────────────────────────────────────
  * ADDRESSSANITIZER (ASan) - детектор ошибок памяти
+ * ──────────────────────────────────────────
  * Компиляция: g++ -fsanitize=address -g testing_debugging.cpp
  * 
  * Находит:
@@ -443,33 +398,30 @@ namespace sanitizers {
  * - Memory leaks
  */
 
-void demo_asan() {
-    std::cout << "\n=== AddressSanitizer ===\n";
-    
-    // ❌ Пример ошибки (закомментировано для безопасности)
-    // int* ptr = new int(42);
-    // delete ptr;
-    // std::cout << *ptr << '\n';  // Use-after-free!
-    
-    // ✅ Правильный код
-    std::unique_ptr<int> ptr = std::make_unique<int>(42);
-    std::cout << "Value: " << *ptr << '\n';
-    
-    std::cout << "Compile with -fsanitize=address to detect memory errors\n";
-}
+// ❌ Пример ошибки (закомментировано для безопасности)
+// int* ptr = new int(42);
+// delete ptr;
+// std::cout << *ptr << '\n';  // Use-after-free!
+
+// ✅ Правильный код
+std::unique_ptr<int> asan_ptr = std::make_unique<int>(42);
+std::cout << "Value: " << *asan_ptr << '\n';
+
+std::cout << "Compile with -fsanitize=address to detect memory errors\n";
 
 /*
+ * ──────────────────────────────────────────
  * THREADSANITIZER (TSan) - детектор data races
+ * ──────────────────────────────────────────
  * Компиляция: g++ -fsanitize=thread -g testing_debugging.cpp
  */
 
-void demo_tsan() {
-    std::cout << "\n=== ThreadSanitizer ===\n";
-    std::cout << "Compile with -fsanitize=thread to detect data races\n";
-}
+std::cout << "Compile with -fsanitize=thread to detect data races\n";
 
 /*
+ * ──────────────────────────────────────────
  * UNDEFINEDBEHAVIORSANITIZER (UBSan)
+ * ──────────────────────────────────────────
  * Компиляция: g++ -fsanitize=undefined -g testing_debugging.cpp
  * 
  * Находит:
@@ -479,40 +431,29 @@ void demo_tsan() {
  * - Invalid shifts
  */
 
-void demo_ubsan() {
-    std::cout << "\n=== UndefinedBehaviorSanitizer ===\n";
-    
-    // ✅ Безопасный код
-    int x = 100;
-    int y = 2;
-    std::cout << "100 / 2 = " << x / y << '\n';
-    
-    std::cout << "Compile with -fsanitize=undefined to detect UB\n";
-}
+// ✅ Безопасный код
+int ubsan_x = 100;
+int ubsan_y = 2;
+std::cout << "100 / 2 = " << ubsan_x / ubsan_y << '\n';
 
-void demo() {
-    std::cout << "\n=== Sanitizers ===\n";
-    demo_asan();
-    demo_tsan();
-    demo_ubsan();
-    
-    std::cout << "\nAvailable sanitizers:\n";
-    std::cout << "  -fsanitize=address     (ASan)\n";
-    std::cout << "  -fsanitize=thread      (TSan)\n";
-    std::cout << "  -fsanitize=undefined   (UBSan)\n";
-    std::cout << "  -fsanitize=memory      (MSan, Clang only)\n";
-    std::cout << "  -fsanitize=leak        (LSan)\n";
-}
+std::cout << "Compile with -fsanitize=undefined to detect UB\n";
 
-} // namespace sanitizers
+// Available sanitizers
+std::cout << "\nAvailable sanitizers:\n";
+std::cout << "  -fsanitize=address     (ASan)\n";
+std::cout << "  -fsanitize=thread      (TSan)\n";
+std::cout << "  -fsanitize=undefined   (UBSan)\n";
+std::cout << "  -fsanitize=memory      (MSan, Clang only)\n";
+std::cout << "  -fsanitize=leak        (LSan)\n";
 
-// ============================================
-// 📌 PROFILING И BENCHMARKING
-// ============================================
+// ====================================================================================================
+// 📌 PROFILING & BENCHMARKING - ПРОФИЛИРОВАНИЕ
+// ====================================================================================================
 
-namespace profiling {
+// ──────────────────────────────────────────
+// Benchmark Helper - простой бенчмарк
+// ──────────────────────────────────────────
 
-// Простой benchmark helper
 template<typename Func>
 auto benchmark(const std::string& name, Func f, int iterations = 1000) {
     auto start = std::chrono::high_resolution_clock::now();
@@ -531,30 +472,31 @@ auto benchmark(const std::string& name, Func f, int iterations = 1000) {
     return duration;
 }
 
-void demo_benchmarking() {
-    std::cout << "\n=== Benchmarking ===\n";
-    
-    // Сравнение vector vs list
-    benchmark("vector push_back", []() {
-        std::vector<int> vec;
-        for (int i = 0; i < 100; ++i) {
-            vec.push_back(i);
-        }
-    });
-    
-    benchmark("vector with reserve", []() {
-        std::vector<int> vec;
-        vec.reserve(100);
-        for (int i = 0; i < 100; ++i) {
-            vec.push_back(i);
-        }
-    });
-}
+// ──────────────────────────────────────────
+// Примеры бенчмарков
+// ──────────────────────────────────────────
 
-void demo_profiling_tools() {
-    std::cout << "\n=== Profiling Tools ===\n";
-    
-    std::cout << R"(
+// Сравнение vector vs list
+benchmark("vector push_back", []() {
+    std::vector<int> vec;
+    for (int i = 0; i < 100; ++i) {
+        vec.push_back(i);
+    }
+});
+
+benchmark("vector with reserve", []() {
+    std::vector<int> vec;
+    vec.reserve(100);
+    for (int i = 0; i < 100; ++i) {
+        vec.push_back(i);
+    }
+});
+
+// ──────────────────────────────────────────
+// Profiling Tools - инструменты профилирования
+// ──────────────────────────────────────────
+
+std::cout << R"(
 CPU Profilers:
   - perf (Linux): perf record ./app && perf report
   - Valgrind callgrind: valgrind --tool=callgrind ./app
@@ -571,76 +513,54 @@ Benchmarking Libraries:
   - Catch2: built-in benchmarking
   - Hayai: lightweight C++ benchmarking
 )";
-}
 
-void demo() {
-    std::cout << "\n=== Profiling & Benchmarking ===\n";
-    demo_benchmarking();
-    demo_profiling_tools();
-}
+// ====================================================================================================
+// 📌 DEBUGGING TECHNIQUES - ТЕХНИКИ ОТЛАДКИ
+// ====================================================================================================
 
-} // namespace profiling
+// ──────────────────────────────────────────
+// Printf Debugging - отладка через вывод
+// ──────────────────────────────────────────
 
-// ============================================
-// 📌 DEBUGGING TECHNIQUES
-// ============================================
+int debug_x = 10;
+std::cout << "DEBUG: debug_x = " << debug_x << '\n';
 
-namespace debugging_techniques {
+debug_x *= 2;
+std::cout << "DEBUG: after multiply, debug_x = " << debug_x << '\n';
 
-// Printf debugging
-void demo_printf_debugging() {
-    std::cout << "\n=== Printf Debugging ===\n";
-    
-    int x = 10;
-    std::cout << "DEBUG: x = " << x << '\n';
-    
-    x *= 2;
-    std::cout << "DEBUG: after multiply, x = " << x << '\n';
-    
-    #ifdef __cpp_lib_print
-    // C++23 std::print
-    // std::print("x = {}\n", x);
-    #endif
-}
+#ifdef __cpp_lib_print
+// C++23 std::print
+// std::print("debug_x = {}\n", debug_x);
+#endif
 
-// Conditional compilation
-void demo_conditional_compilation() {
-    std::cout << "\n=== Conditional Compilation ===\n";
-    
-    #ifdef DEBUG
-    std::cout << "Debug code is active\n";
-    #endif
-    
-    #if defined(__GNUC__)
-    std::cout << "Compiled with GCC/G++\n";
-    #elif defined(_MSC_VER)
-    std::cout << "Compiled with MSVC\n";
-    #endif
-}
+// ──────────────────────────────────────────
+// Conditional Compilation - условная компиляция
+// ──────────────────────────────────────────
 
-// Debug macros
+#ifdef DEBUG
+std::cout << "Debug code is active\n";
+#endif
+
+#if defined(__GNUC__)
+std::cout << "Compiled with GCC/G++\n";
+#elif defined(_MSC_VER)
+std::cout << "Compiled with MSVC\n";
+#endif
+
+// ──────────────────────────────────────────
+// Debug Macros - отладочные макросы
+// ──────────────────────────────────────────
+
 #ifndef NDEBUG
     #define DEBUG_PRINT(x) std::cout << "DEBUG: " << #x << " = " << (x) << '\n'
 #else
     #define DEBUG_PRINT(x)
 #endif
 
-void demo_debug_macros() {
-    std::cout << "\n=== Debug Macros ===\n";
-    
-    int value = 42;
-    DEBUG_PRINT(value);
-    DEBUG_PRINT(value * 2);
-}
-
-void demo() {
-    std::cout << "\n=== Debugging Techniques ===\n";
-    demo_printf_debugging();
-    demo_conditional_compilation();
-    demo_debug_macros();
-}
-
-} // namespace debugging_techniques
+// Использование
+int macro_value = 42;
+DEBUG_PRINT(macro_value);
+DEBUG_PRINT(macro_value * 2);
 
 // ============================================
 // 📌 BEST PRACTICES
@@ -691,24 +611,13 @@ void demo() {
 // 📌 ГЛАВНАЯ ФУНКЦИЯ
 // ============================================
 
-int main() {
-    std::cout << "=== C++ Testing & Debugging ===\n";
-    
-    testing_frameworks::demo();
-    unit_testing_patterns::demo();
-    static_analysis::demo();
-    runtime_debugging::demo();
-    sanitizers::demo();
-    profiling::demo();
-    debugging_techniques::demo();
-    
-    std::cout << "\n=== Резюме ===\n";
-    std::cout << "✓ Testing frameworks: Catch2, GTest, doctest\n";
-    std::cout << "✓ Static analysis: static_assert, concepts\n";
-    std::cout << "✓ Runtime: assert, source_location, logging\n";
-    std::cout << "✓ Sanitizers: ASan, TSan, UBSan\n";
-    std::cout << "✓ Profiling: perf, Valgrind, benchmarks\n";
-    std::cout << "✓ CI/CD: автоматические тесты + sanitizers\n";
-    
-    return 0;
-}
+
+// ====================================================================================================
+// 📌 ИТОГО: C++ Testing & Debugging
+// ====================================================================================================
+// • Testing frameworks: Catch2, Google Test, doctest
+// • Static analysis: static_assert, concepts
+// • Runtime: assert, source_location, логирование
+// • Sanitizers: ASan, TSan, UBSan, MSan
+// • Profiling: perf, Valgrind, Tracy, benchmarks
+// • CI/CD: автоматические тесты + sanitizers

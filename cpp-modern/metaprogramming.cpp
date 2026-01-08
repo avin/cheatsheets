@@ -72,15 +72,12 @@ auto sum(Args... args) {
     return (... + args);
 }
 
-void demo() {
-    std::cout << "=== Template Basics ===\n";
-    
-    std::cout << "max(5, 10): " << max(5, 10) << '\n';
-    std::cout << "pi<double>: " << pi<double> << '\n';
-    
-    print("Hello", " ", "World", "!");
-    std::cout << "sum(1, 2, 3, 4, 5): " << sum(1, 2, 3, 4, 5) << '\n';
-}
+// ──────────────────────────────────────────
+// Примеры использования:
+// int m = max(5, 10);
+// double p = pi<double>;
+// print("Hello", " ", "World", "!");
+// int s = sum(1, 2, 3, 4, 5);
 
 } // namespace template_basics
 
@@ -167,19 +164,15 @@ void sort_range(Iter begin, Iter end) {
     std::cout << "Sorting with random access iterator\n";
 }
 
-void demo() {
-    std::cout << "\n=== Concepts ===\n";
-    
-    std::cout << add(5, 10) << '\n';
-    std::cout << multiply(2.5, 4.0) << '\n';
-    std::cout << divide(10, 2) << '\n';
-    
-    handle(5);      // Signed numeric
-    handle(5u);     // Numeric
-    
-    process(42);
-    process("text");
-}
+// ──────────────────────────────────────────
+// Примеры использования:
+// add(5, 10);           // Numeric
+// multiply(2.5, 4.0);   // Numeric
+// divide(10, 2);        // NotZero
+// handle(5);            // SignedNumeric
+// handle(5u);           // Numeric
+// process(42);          // Integral
+// process("text");      // Stringlike
 
 } // namespace concepts_demo
 
@@ -242,29 +235,19 @@ struct conditional<false, TrueType, FalseType> {
 template<bool Condition, typename TrueType, typename FalseType>
 using conditional_t = typename conditional<Condition, TrueType, FalseType>::type;
 
-void demo() {
-    std::cout << "\n=== Type Traits ===\n";
-    
-    // Standard traits
-    std::cout << "int is integral: " 
-              << std::boolalpha << std::is_integral_v<int> << '\n';
-    std::cout << "double is floating point: " 
-              << std::is_floating_point_v<double> << '\n';
-    
-    // Custom traits
-    std::cout << "int* is pointer-like: " 
-              << is_pointer_like_v<int*> << '\n';
-    std::cout << "unique_ptr is pointer-like: " 
-              << is_pointer_like_v<std::unique_ptr<int>> << '\n';
-    
-    // Type transformations
-    static_assert(std::is_same_v<remove_all_pointers_t<int***>, int>);
-    std::cout << "remove_all_pointers works correctly\n";
-    
     // Conditional type
     using type = conditional_t<true, int, double>;
     static_assert(std::is_same_v<type, int>);
 }
+
+// ──────────────────────────────────────────
+// Примеры использования:
+// std::is_integral_v<int>  // true
+// std::is_floating_point_v<double>  // true
+// is_pointer_like_v<int*>  // true
+// is_pointer_like_v<std::unique_ptr<int>>  // true
+// remove_all_pointers_t<int***>  // int
+// conditional_t<true, int, double>  // int
 
 } // namespace type_traits_demo
 
@@ -315,17 +298,13 @@ concept HasSize = requires(T t) {
     { t.size() } -> std::convertible_to<std::size_t>;
 };
 
-void demo() {
-    std::cout << "\n=== SFINAE vs Concepts ===\n";
-    
-    print_new(42);
-    print_new(3.14);
-    
-    std::cout << "vector has size: " 
-              << std::boolalpha << has_size_v<std::vector<int>> << '\n';
-    std::cout << "int has size: " 
-              << has_size_v<int> << '\n';
-}
+// ──────────────────────────────────────────
+// Примеры использования:
+// print_new(42);    // SFINAE версия
+// print_new(3.14);
+// has_size_v<std::vector<int>>  // true
+// has_size_v<int>               // false
+// Предпочитайте Concepts вместо SFINAE!
 
 } // namespace sfinae_vs_concepts
 
@@ -391,24 +370,13 @@ constexpr int vector_sum() {
     return sum;
 }
 
-void demo() {
-    std::cout << "\n=== Compile-time Programming ===\n";
-    
-    std::cout << "factorial(5): " << value << '\n';
-    
-    int x = 10;
-    std::cout << "get_value(&x): " << get_value(&x) << '\n';
-    std::cout << "get_value(x): " << get_value(x) << '\n';
-    
-    constexpr int sq = square(10);  // Вычисляется в compile-time
-    std::cout << "square(10): " << sq << '\n';
-    
-    constexpr int dyn = dynamic_allocation();
-    std::cout << "dynamic allocation result: " << dyn << '\n';
-    
-    constexpr int sum = vector_sum();
-    std::cout << "vector_sum(): " << sum << '\n';
-}
+// ──────────────────────────────────────────
+// Примеры использования:
+// constexpr int f = factorial(5);  // compile-time
+// constexpr auto val = get_value(42);
+// constexpr int sq = square(10);
+// constexpr int dyn = dynamic_allocation();  // consteval
+// constexpr int sum = vector_sum();
 
 } // namespace compile_time
 
@@ -527,29 +495,23 @@ public:
     }
 };
 
-void demo() {
-    std::cout << "\n=== Advanced Patterns ===\n";
-    
-    // CRTP
-    Derived d;
-    d.interface();
-    d.common_functionality();
-    
-    // Mixin
-    MyClass obj(42);
-    obj.print();
-    
-    // Policy-based design
-    Logger<ConsoleOutput> console_logger;
-    console_logger.log("Hello");
-    
-    Logger<FileOutput> file_logger;
-    file_logger.log("World");
-    
-    // Type erasure
-    AnyCallable callable([]{ std::cout << "Lambda called\n"; });
-    callable();
-}
+// ──────────────────────────────────────────
+// Примеры использования:
+// // CRTP
+// Derived d;
+// d.interface();
+// 
+// // Mixin
+// MyClass obj(42);
+// obj.print();
+// 
+// // Policy-based design
+// Logger<ConsoleOutput> console_logger;
+// console_logger.log("Message");
+// 
+// // Type erasure
+// AnyCallable callable([]{ std::cout << "Lambda\n"; });
+// callable();
 
 } // namespace advanced_patterns
 
@@ -605,18 +567,13 @@ constexpr bool is_small = sizeof(T) <= 4;
 template<>
 constexpr bool is_small<std::string> = false;  // Всегда большой
 
-void demo() {
-    std::cout << "\n=== Template Specialization ===\n";
-    
-    std::cout << Serializer<int>::serialize(42) << '\n';
-    std::cout << Serializer<std::string>::serialize("hello") << '\n';
-    
-    int value = 100;
-    std::cout << Serializer<int*>::serialize(&value) << '\n';
-    
-    std::cout << "int is small: " << std::boolalpha << is_small<int> << '\n';
-    std::cout << "string is small: " << is_small<std::string> << '\n';
-}
+// ──────────────────────────────────────────
+// Примеры использования:
+// Serializer<int>::serialize(42);            // "инт: 42"
+// Serializer<std::string>::serialize("hi");  // "строка: hi"
+// Serializer<int*>::serialize(&value);       // "указатель: ..."
+// is_small<int>        // true
+// is_small<std::string> // false
 
 } // namespace template_specialization
 
@@ -690,23 +647,12 @@ struct sum {
     static constexpr int value = (... + Values);
 };
 
-void demo() {
-    std::cout << "\n=== Metafunctions ===\n";
-    
-    std::cout << "Fibonacci<10>: " << Fibonacci<10>::value << '\n';
-    
-    using list = type_list<int, double, char>;
-    using first = front_t<list>;
-    static_assert(std::is_same_v<first, int>);
-    std::cout << "front_t works correctly\n";
-    
-    using transformed = transform<add_pointer, list>::type;
-    using transformed_first = front_t<transformed>;
-    static_assert(std::is_same_v<transformed_first, int*>);
-    std::cout << "transform works correctly\n";
-    
-    std::cout << "sum<1,2,3,4,5>: " << sum<1,2,3,4,5>::value << '\n';
-}
+// ──────────────────────────────────────────
+// Примеры использования:
+// Fibonacci<10>::value  // 55
+// using first = front_t<type_list<int, double, char>>;  // int
+// using transformed = transform<add_pointer, type_list<int, double>>::type;
+// sum<1,2,3,4,5>::value  // 15
 
 } // namespace metafunctions
 
@@ -790,23 +736,18 @@ constexpr auto operator/(Unit<M1, L1, T1> a, Unit<M2, L2, T2> b) {
     return Unit<M1-M2, L1-L2, T1-T2>(a.value / b.value);
 }
 
-void demo() {
-    std::cout << "\n=== Practical Examples ===\n";
-    
-    // String hash
-    process_message("hello");
-    process_message("unknown");
-    
-    // Type name
-    std::cout << "Type of int: " << type_name<int>() << '\n';
-    
-    // Unit system
-    constexpr Length distance(100.0);  // 100 метров
-    constexpr Time time(10.0);         // 10 секунд
-    constexpr auto velocity = distance / time;  // Velocity
-    
-    std::cout << "Velocity: " << velocity.value << " m/s\n";
-}
+// ──────────────────────────────────────────
+// Примеры использования:
+// // String hash
+// process_message("hello");
+// 
+// // Type name
+// type_name<int>();  // "int"
+// 
+// // Unit system
+// constexpr Length distance(100.0);
+// constexpr Time time(10.0);
+// constexpr auto velocity = distance / time;  // m/s
 
 } // namespace practical_examples
 
@@ -846,33 +787,27 @@ void demo() {
  *    - Concepts дают лучшие ошибки чем SFINAE
  */
 
-// ============================================
-// 📌 ГЛАВНАЯ ФУНКЦИЯ
-// ============================================
 
-int main() {
-    std::cout << "=== Modern C++ Template Metaprogramming ===\n\n";
-    
-    template_basics::demo();
-    concepts_demo::demo();
-    type_traits_demo::demo();
-    sfinae_vs_concepts::demo();
-    compile_time::demo();
-    advanced_patterns::demo();
-    template_specialization::demo();
-    metafunctions::demo();
-    practical_examples::demo();
-    
-    std::cout << "\n=== Резюме ===\n";
-    std::cout << "✓ Templates - function, class, variable, variadic\n";
-    std::cout << "✓ Concepts (C++20) - type constraints with readable syntax\n";
-    std::cout << "✓ Type traits - compile-time type introspection\n";
-    std::cout << "✓ SFINAE vs Concepts - prefer concepts in modern code\n";
-    std::cout << "✓ constexpr/consteval - compile-time computation\n";
-    std::cout << "✓ CRTP - static polymorphism pattern\n";
-    std::cout << "✓ Policy-based design - compile-time configuration\n";
-    std::cout << "✓ Type erasure - runtime polymorphism without inheritance\n";
-    std::cout << "✓ Metafunctions - type-level programming\n";
-    
-    return 0;
-}
+// ====================================================================================================
+// 📌 ИТОГО: Modern C++ Template Metaprogramming (C++20/23)
+// ====================================================================================================
+// 
+// 🎯 Основные темы:
+// • Templates - function, class, variable, variadic templates
+// • Concepts (C++20) - type constraints с читаемым синтаксисом
+// • Type Traits - compile-time интроспекция типов
+// • SFINAE vs Concepts - предпочитайте concepts в современном коде
+// • constexpr/consteval - compile-time вычисления
+// • CRTP - static polymorphism pattern
+// • Policy-based design - compile-time конфигурация
+// • Type Erasure - runtime polymorphism без наследования
+// • Metafunctions - type-level программирование
+// 
+// 🛠️ Best Practices:
+// • Используйте Concepts вместо SFINAE
+// • constexpr везде где возможно
+// • Стандартные type traits из <type_traits>
+// • static_assert с понятными сообщениями
+// • Concepts дают лучшие ошибки компиляции
+// • CRTP для производительности, но с осторожностью
+// • Template specialization умеренно

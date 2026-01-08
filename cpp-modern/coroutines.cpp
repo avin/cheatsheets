@@ -152,25 +152,25 @@ generator<int> fibonacci() {
     }
 }
 
-void demo_generator() {
-    std::cout << "=== Generator Examples ===\n";
-    
-    // Range-based for с generator
-    std::cout << "Range 0-5: ";
-    for (int i : range(0, 5)) {
-        std::cout << i << ' ';
-    }
-    std::cout << '\n';
-    
-    // Fibonacci
-    std::cout << "First 10 Fibonacci: ";
-    int count = 0;
-    for (int fib : fibonacci()) {
-        std::cout << fib << ' ';
-        if (++count == 10) break;
-    }
-    std::cout << '\n';
+// ────────────────────────────────────────────────────────────────────────────────────
+// Примеры использования generator
+// ────────────────────────────────────────────────────────────────────────────────────
+
+// Range-based for с generator
+std::cout << "Range 0-5: ";
+for (int i : range(0, 5)) {
+    std::cout << i << ' ';
 }
+std::cout << '\n';
+
+// Fibonacci последовательность
+std::cout << "First 10 Fibonacci: ";
+int count = 0;
+for (int fib : fibonacci()) {
+    std::cout << fib << ' ';
+    if (++count == 10) break;
+}
+std::cout << '\n';
 
 // Рекурсивный generator
 generator<int> tree_traverse(int depth) {
@@ -445,13 +445,10 @@ task<int> complex_computation() {
     co_return product + 100;
 }
 
-void demo_task() {
-    std::cout << "\n=== Task Examples ===\n";
-    
-    auto t = complex_computation();
-    int result = t.get();
-    std::cout << "Final result: " << result << '\n';
-}
+// Использование task
+auto task_result = complex_computation();
+int final_value = task_result.get();
+std::cout << "Final result: " << final_value << '\n';
 
 // ============================================
 // 📌 CUSTOM AWAITABLES
@@ -571,16 +568,13 @@ lazy<int> expensive_computation() {
     co_return 42;
 }
 
-void demo_lazy() {
-    std::cout << "\n=== Lazy Evaluation ===\n";
-    
-    auto lazy_value = expensive_computation();
-    std::cout << "Lazy created (computation not started)\n";
-    
-    std::cout << "Getting value...\n";
-    int result = lazy_value.get();
-    std::cout << "Result: " << result << '\n';
-}
+// Использование lazy
+auto lazy_value = expensive_computation();
+std::cout << "Lazy created (вычисление НЕ началось)\n";
+
+std::cout << "Getting value...\n";
+int lazy_result = lazy_value.get();  // ЗДЕСЬ начинается выполнение
+std::cout << "Result: " << lazy_result << '\n';
 
 // ============================================
 // 📌 ASYNC PRODUCER-CONSUMER
@@ -672,11 +666,9 @@ task<int> level1() {
     co_return val + 1;
 }
 
-void demo_symmetric_transfer() {
-    std::cout << "\n=== Symmetric Transfer ===\n";
-    auto t = level1();
-    std::cout << "Result: " << t.get() << '\n';
-}
+// Использование symmetric transfer
+auto sym_task = level1();
+std::cout << "Result: " << sym_task.get() << '\n';
 
 // ============================================
 // 📌 ERROR HANDLING В КОРУТИНАХ
@@ -694,7 +686,7 @@ task<int> handle_errors() {
         int result = co_await might_throw(false);
         std::cout << "Success: " << result << '\n';
         
-        // Это бросит исключение
+        // Это бросит exception
         result = co_await might_throw(true);
         std::cout << "Won't reach here\n";
         
@@ -705,16 +697,13 @@ task<int> handle_errors() {
     }
 }
 
-void demo_error_handling() {
-    std::cout << "\n=== Error Handling ===\n";
-    
-    auto t = handle_errors();
-    try {
-        int result = t.get();
-        std::cout << "Final result: " << result << '\n';
-    } catch (const std::exception& e) {
-        std::cout << "Caught outside: " << e.what() << '\n';
-    }
+// Использование
+auto error_task = handle_errors();
+try {
+    int error_result = error_task.get();
+    std::cout << "Final result: " << error_result << '\n';
+} catch (const std::exception& e) {
+    std::cout << "Caught outside: " << e.what() << '\n';
 }
 
 // ============================================
@@ -797,28 +786,35 @@ public:
 // 📌 ГЛАВНАЯ ФУНКЦИЯ
 // ============================================
 
-int main() {
-    std::cout << "=== C++20 Coroutines Guide ===\n\n";
-    
-    demo_generator();
-    demo_task();
-    demo_lazy();
-    demo_symmetric_transfer();
-    demo_error_handling();
-    
-    // Delayed print example
-    std::cout << "\n=== Delayed Print ===\n";
-    auto t = delayed_print("Hello from coroutine!", 200);
-    t.get();
-    
-    std::cout << "\n=== Резюме ===\n";
-    std::cout << "✓ generator<T> - для ленивых последовательностей\n";
-    std::cout << "✓ task<T> - для async операций\n";
-    std::cout << "✓ co_await - приостановить и дождаться\n";
-    std::cout << "✓ co_yield - вернуть значение в generator\n";
-    std::cout << "✓ co_return - завершить корутину\n";
-    std::cout << "✓ Symmetric transfer - избежать stack overflow\n";
-    std::cout << "✓ Custom awaitables - интеграция с event loops\n";
-    
-    return 0;
-}
+/*
+ * ════════════════════════════════════════════════════════════════════════════════════
+ * 🎯 РЕЗЮМЕ - КОРУТИНЫ C++20
+ * ════════════════════════════════════════════════════════════════════════════════════
+ * 
+ * КЛЮЧЕВЫЕ СЛОВА:
+ * ✓ co_await  - приостановить и дождаться
+ * ✓ co_yield  - вернуть значение в generator
+ * ✓ co_return - завершить корутину
+ * 
+ * ТИПЫ КОРУТИН:
+ * ✓ generator<T>  - для ленивых последовательностей (итераторы)
+ * ✓ task<T>       - для async операций
+ * ✓ lazy<T>       - ленивые вычисления (старт по запросу)
+ * ✓ Custom awaitables - интеграция с event loops
+ * 
+ * ВАЖНЫЕ КОНЦЕПЦИИ:
+ * ✓ Promise type        - управляет поведением корутины
+ * ✓ Symmetric transfer  - избежать stack overflow
+ * ✓ Awaitable interface - await_ready/suspend/resume
+ * ✓ Exception handling  - unhandled_exception()
+ * 
+ * ПРЕИМУЩЕСТВА:
+ * ✓ Ленивые вычисления (generator)
+ * ✓ Асинхронный код без callback hell
+ * ✓ Экономия памяти (не создаем всю последовательность)
+ * ✓ Читаемый асинхронный код
+ * 
+ * КОМПИЛЯЦИЯ:
+ * g++ -std=c++20 -fcoroutines coroutines.cpp
+ * clang++ -std=c++20 -stdlib=libc++ coroutines.cpp
+ */
