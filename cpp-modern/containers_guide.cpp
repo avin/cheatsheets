@@ -669,9 +669,9 @@ void demo_string() {
     process(std::string_view(str).substr(0, 5));  // Без копирования
 }
 
-// ============================================
-// 📌 PERFORMANCE COMPARISON
-// ============================================
+// ════════════════════════════════════════════════════════════════════════════════════
+// PERFORMANCE COMPARISON (СРАВНЕНИЕ ПРОИЗВОДИТЕЛЬНОСТИ)
+// ════════════════════════════════════════════════════════════════════════════════════
 
 void performance_tips() {
     std::cout << "\n=== Performance Tips ===\n";
@@ -727,32 +727,4 @@ void performance_tips() {
     // 5. Список используйте РЕДКО (только если действительно нужен)
 }
 
-// ============================================
-// 📌 MAIN
-// ============================================
 
-int main() {
-    std::cout << "=== STL Containers Complete Guide ===\n\n";
-    
-    demo_vector_basics();
-    demo_vector_pitfalls();
-    demo_array();
-    demo_deque();
-    demo_list();
-    demo_set();
-    demo_map();
-    demo_unordered_map();
-    demo_adaptors();
-    demo_span();
-    demo_string();
-    performance_tips();
-    
-    std::cout << "\n=== Резюме ===\n";
-    std::cout << "✓ vector - используйте по умолчанию\n";
-    std::cout << "✓ unordered_map - для hash tables\n";
-    std::cout << "✓ set/map - когда нужна сортировка\n";
-    std::cout << "✓ span - для view без владения\n";
-    std::cout << "✗ list - используйте редко\n";
-    
-    return 0;
-}

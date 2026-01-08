@@ -1,1145 +1,1515 @@
 /*
- * ============================================
+ * ════════════════════════════════════════════════════════════════════════════════════
  * ПАТТЕРНЫ STL АЛГОРИТМОВ (C++20/23)
- * ============================================
+ * ════════════════════════════════════════════════════════════════════════════════════
  * 
  * Справочник по всем основным алгоритмам STL
  * с примерами использования и паттернами.
- * 
- * Требования: C++20 или выше
- * Компиляция: g++ -std=c++20 algorithms_patterns.cpp
  */
 
-#include <algorithm>      // Основные алгоритмы
-#include <numeric>        // Численные алгоритмы
-#include <ranges>         // C++20 ranges
-#include <execution>      // Parallel execution policies
+#include <algorithm>
+#include <numeric>
+#include <ranges>
+#include <execution>
 #include <vector>
 #include <list>
 #include <string>
-#include <iostream>
 #include <random>
 #include <iterator>
 #include <functional>
 
-// ============================================
-// 📌 NON-MODIFYING SEQUENCE OPERATIONS
-// ============================================
 
-void demo_find_algorithms() {
-    std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8, 9};
-    
-    // find - поиск первого элемента
-    auto it = std::find(vec.begin(), vec.end(), 5);
-    if (it != vec.end()) {
-        std::cout << "Найден: " << *it << '\n';
-    }
-    
-    // find_if - поиск с предикатом
-    auto it2 = std::find_if(vec.begin(), vec.end(), 
-        [](int x) { return x > 5; });
-    std::cout << "Первый > 5: " << *it2 << '\n';
-    
-    // find_if_not - поиск элемента, НЕ удовлетворяющего предикату
-    auto it3 = std::find_if_not(vec.begin(), vec.end(),
-        [](int x) { return x < 5; });
-    std::cout << "Первый НЕ < 5: " << *it3 << '\n';
-    
-    // adjacent_find - поиск двух соседних одинаковых элементов
-    std::vector<int> vec2{1, 2, 2, 3, 4, 4, 5};
-    auto adj = std::adjacent_find(vec2.begin(), vec2.end());
-    if (adj != vec2.end()) {
-        std::cout << "Дубликаты: " << *adj << '\n';
-    }
-    
-    // search - поиск подпоследовательности
-    std::vector<int> pattern{3, 4, 5};
-    auto found = std::search(vec.begin(), vec.end(), 
-                            pattern.begin(), pattern.end());
-    std::cout << "Паттерн найден на позиции: " 
-              << std::distance(vec.begin(), found) << '\n';
-    
-    // search_n - поиск n последовательных одинаковых элементов
-    std::vector<int> vec3{1, 2, 3, 3, 3, 4, 5};
-    auto three = std::search_n(vec3.begin(), vec3.end(), 3, 3);
-    std::cout << "Три тройки начинаются с позиции: "
-              << std::distance(vec3.begin(), three) << '\n';
-}
+// ════════════════════════════════════════════════════════════════════════════════════
+// 📌 NON-MODIFYING SEQUENCE OPERATIONS (НЕИЗМЕНЯЮЩИЕ ОПЕРАЦИИ)
+// ════════════════════════════════════════════════════════════════════════════════════
 
-void demo_count_algorithms() {
-    std::vector<int> vec{1, 2, 3, 2, 4, 2, 5};
-    
-    // count - подсчет элементов
-    auto cnt = std::count(vec.begin(), vec.end(), 2);
-    std::cout << "Количество 2: " << cnt << '\n';
-    
-    // count_if - подсчет с предикатом
-    auto even_cnt = std::count_if(vec.begin(), vec.end(),
-        [](int x) { return x % 2 == 0; });
-    std::cout << "Четных чисел: " << even_cnt << '\n';
-}
+// ────────────────────────────────────────────────────────────────────────────────────
+// Алгоритмы поиска (find)
+// ────────────────────────────────────────────────────────────────────────────────────
 
-void demo_predicates() {
-    std::vector<int> vec{2, 4, 6, 8, 10};
-    std::vector<int> vec2{1, 3, 5};
-    
-    // all_of - все элементы удовлетворяют условию
-    bool all_even = std::all_of(vec.begin(), vec.end(),
-        [](int x) { return x % 2 == 0; });
-    std::cout << "Все четные: " << all_even << '\n';
-    
-    // any_of - хотя бы один элемент удовлетворяет условию
-    bool has_even = std::any_of(vec2.begin(), vec2.end(),
-        [](int x) { return x % 2 == 0; });
-    std::cout << "Есть четные: " << has_even << '\n';
-    
-    // none_of - ни один элемент не удовлетворяет условию
-    bool no_even = std::none_of(vec2.begin(), vec2.end(),
-        [](int x) { return x % 2 == 0; });
-    std::cout << "Нет четных: " << no_even << '\n';
-}
+std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-void demo_comparison() {
-    std::vector<int> vec1{1, 2, 3, 4, 5};
-    std::vector<int> vec2{1, 2, 3, 4, 5};
-    std::vector<int> vec3{1, 2, 9, 4, 5};
-    
-    // equal - проверка равенства последовательностей
-    bool eq = std::equal(vec1.begin(), vec1.end(), vec2.begin());
-    std::cout << "vec1 == vec2: " << eq << '\n';
-    
-    // mismatch - поиск первого различия
-    auto [it1, it3] = std::mismatch(vec1.begin(), vec1.end(), 
-                                     vec3.begin());
-    if (it1 != vec1.end()) {
-        std::cout << "Различие: " << *it1 << " vs " << *it3 << '\n';
-    }
-    
-    // is_permutation - проверка, является ли одна последовательность
-    // перестановкой другой
-    std::vector<int> perm{5, 4, 3, 2, 1};
-    bool is_perm = std::is_permutation(vec1.begin(), vec1.end(),
-                                       perm.begin());
-    std::cout << "Является перестановкой: " << is_perm << '\n';
-}
+// find - поиск первого вхождения элемента
+auto it = std::find(vec.begin(), vec.end(), 5);
+// it указывает на элемент 5, или vec.end() если не найден
 
-// ============================================
-// 📌 MODIFYING SEQUENCE OPERATIONS
-// ============================================
+// find_if - поиск первого элемента по условию (predicate)
+auto it2 = std::find_if(vec.begin(), vec.end(), 
+    [](int x) { return x > 5; });
+// Найдёт первый элемент > 5 (это 6)
 
-void demo_copy_move() {
-    std::vector<int> src{1, 2, 3, 4, 5, 6, 7, 8, 9};
-    std::vector<int> dst;
-    
-    // copy - копирование всех элементов
-    std::copy(src.begin(), src.end(), std::back_inserter(dst));
-    
-    // copy_if - копирование с фильтрацией
-    std::vector<int> evens;
-    std::copy_if(src.begin(), src.end(), std::back_inserter(evens),
-        [](int x) { return x % 2 == 0; });
-    
-    // copy_n - копирование первых n элементов
-    std::vector<int> first_three;
-    std::copy_n(src.begin(), 3, std::back_inserter(first_three));
-    
-    // copy_backward - копирование в обратном порядке итерирования
-    std::vector<int> backward(src.size());
-    std::copy_backward(src.begin(), src.end(), backward.end());
-    
-    // move - перемещение элементов (полезно для move-only типов)
-    std::vector<std::string> str_src{"hello", "world"};
-    std::vector<std::string> str_dst;
-    std::move(str_src.begin(), str_src.end(), 
-              std::back_inserter(str_dst));
-    // str_src теперь содержит пустые строки
-}
+// find_if_not - поиск первого элемента, НЕ удовлетворяющего условию
+auto it3 = std::find_if_not(vec.begin(), vec.end(),
+    [](int x) { return x < 5; });
+// Найдёт первый элемент НЕ < 5 (это 5)
 
-void demo_transform() {
-    std::vector<int> vec{1, 2, 3, 4, 5};
-    std::vector<int> result;
-    
-    // transform - применение функции к каждому элементу
-    std::transform(vec.begin(), vec.end(), std::back_inserter(result),
-        [](int x) { return x * x; });  // Квадраты чисел
-    
-    // transform с двумя входными последовательностями
-    std::vector<int> vec2{10, 20, 30, 40, 50};
-    std::vector<int> sums;
-    std::transform(vec.begin(), vec.end(), vec2.begin(),
-                   std::back_inserter(sums),
-                   [](int a, int b) { return a + b; });
-}
 
-void demo_replace() {
-    std::vector<int> vec{1, 2, 3, 2, 4, 2, 5};
-    
-    // replace - замена значений
-    std::replace(vec.begin(), vec.end(), 2, 99);
-    // vec = {1, 99, 3, 99, 4, 99, 5}
-    
-    // replace_if - замена с предикатом
-    std::vector<int> vec2{1, 2, 3, 4, 5, 6};
-    std::replace_if(vec2.begin(), vec2.end(),
-        [](int x) { return x % 2 == 0; }, 0);
-    // Все четные заменены на 0
-    
-    // replace_copy - замена с копированием в новый контейнер
-    std::vector<int> vec3{1, 2, 3, 2, 4};
-    std::vector<int> result;
-    std::replace_copy(vec3.begin(), vec3.end(),
-                      std::back_inserter(result), 2, 99);
-    // vec3 не изменен, result содержит измененную копию
-}
+// ────────────────────────────────────────────────────────────────────────────────────
+// adjacent_find - поиск соседних одинаковых элементов
+// ────────────────────────────────────────────────────────────────────────────────────
 
-void demo_fill_generate() {
-    // fill - заполнение значением
-    std::vector<int> vec(5);
-    std::fill(vec.begin(), vec.end(), 42);
-    // vec = {42, 42, 42, 42, 42}
-    
-    // fill_n - заполнение n элементов
-    std::vector<int> vec2(10);
-    std::fill_n(vec2.begin(), 5, 7);
-    // Первые 5 элементов = 7
-    
-    // generate - заполнение результатом вызова функции
-    std::vector<int> vec3(5);
-    int n = 0;
-    std::generate(vec3.begin(), vec3.end(), [&n] { return n++; });
-    // vec3 = {0, 1, 2, 3, 4}
-    
-    // generate_n - генерация n элементов
-    std::vector<int> random_nums;
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dis(1, 100);
-    std::generate_n(std::back_inserter(random_nums), 10,
-        [&] { return dis(gen); });
-}
+std::vector<int> vec2{1, 2, 2, 3, 4, 4, 5};
+auto adj = std::adjacent_find(vec2.begin(), vec2.end());
+// adj указывает на первую пару одинаковых соседей (первая 2)
 
-void demo_remove_unique() {
-    // remove - НЕ удаляет элементы, а перемещает их в конец!
-    // Возвращает итератор на начало "мусора"
-    std::vector<int> vec{1, 2, 3, 2, 4, 2, 5};
-    auto new_end = std::remove(vec.begin(), vec.end(), 2);
-    // vec = {1, 3, 4, 5, ?, ?, ?} - "мусор" в конце
-    
-    // Правильный способ удаления - erase-remove идиома
-    vec.erase(new_end, vec.end());
-    // Теперь vec = {1, 3, 4, 5}
-    
-    // remove_if с erase
-    std::vector<int> vec2{1, 2, 3, 4, 5, 6, 7, 8};
-    vec2.erase(
-        std::remove_if(vec2.begin(), vec2.end(),
-            [](int x) { return x % 2 == 0; }),
-        vec2.end()
-    );
-    // vec2 теперь содержит только нечетные числа
-    
-    // unique - удаление последовательных дубликатов
-    // (обычно используется после sort)
-    std::vector<int> vec3{1, 1, 2, 2, 2, 3, 3, 4, 5, 5};
-    vec3.erase(
-        std::unique(vec3.begin(), vec3.end()),
-        vec3.end()
-    );
-    // vec3 = {1, 2, 3, 4, 5}
-}
+// С пользовательским компаратором
+auto adj2 = std::adjacent_find(vec2.begin(), vec2.end(),
+    [](int a, int b) { return b == a + 1; });
+// Найдёт первую пару последовательных чисел
 
-void demo_reverse_rotate() {
-    // reverse - разворот последовательности
-    std::vector<int> vec{1, 2, 3, 4, 5};
-    std::reverse(vec.begin(), vec.end());
-    // vec = {5, 4, 3, 2, 1}
-    
-    // rotate - циклический сдвиг
-    std::vector<int> vec2{1, 2, 3, 4, 5};
-    std::rotate(vec2.begin(), vec2.begin() + 2, vec2.end());
-    // vec2 = {3, 4, 5, 1, 2}
-    // Элемент на позиции begin()+2 стал первым
-    
-    // Практический пример: сдвиг влево на 1
-    std::vector<int> vec3{1, 2, 3, 4, 5};
-    std::rotate(vec3.begin(), vec3.begin() + 1, vec3.end());
-    // vec3 = {2, 3, 4, 5, 1}
-}
 
-void demo_shuffle_sample() {
-    std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-    
-    // shuffle - случайная перестановка
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::shuffle(vec.begin(), vec.end(), gen);
-    // vec теперь в случайном порядке
-    
-    // sample (C++17) - случайная выборка n элементов
-    std::vector<int> full_deck(52);
-    std::iota(full_deck.begin(), full_deck.end(), 1); // 1..52
-    std::vector<int> hand;
-    std::sample(full_deck.begin(), full_deck.end(),
-                std::back_inserter(hand), 5, gen);
-    // hand содержит 5 случайных карт
-}
+// ────────────────────────────────────────────────────────────────────────────────────
+// search - поиск подпоследовательности
+// ────────────────────────────────────────────────────────────────────────────────────
 
-// ============================================
-// 📌 SORTING OPERATIONS
-// ============================================
+std::vector<int> pattern{3, 4, 5};
+auto found = std::search(vec.begin(), vec.end(), 
+                        pattern.begin(), pattern.end());
+// found указывает на начало найденной подпоследовательности
 
-void demo_sorting() {
-    // sort - быстрая сортировка (O(n log n))
-    std::vector<int> vec{5, 2, 8, 1, 9, 3};
-    std::sort(vec.begin(), vec.end());
-    // vec = {1, 2, 3, 5, 8, 9}
-    
-    // Сортировка по убыванию
-    std::sort(vec.begin(), vec.end(), std::greater<>());
-    
-    // stable_sort - устойчивая сортировка
-    // (сохраняет относительный порядок равных элементов)
-    struct Person {
-        std::string name;
-        int age;
-    };
-    std::vector<Person> people{
-        {"Alice", 30}, {"Bob", 25}, {"Charlie", 30}
-    };
-    std::stable_sort(people.begin(), people.end(),
-        [](const Person& a, const Person& b) { 
-            return a.age < b.age; 
-        });
-    // Alice и Charlie сохранят свой порядок
-    
-    // partial_sort - частичная сортировка (топ-N)
-    std::vector<int> scores{85, 92, 78, 95, 88, 73, 90};
-    std::partial_sort(scores.begin(), scores.begin() + 3, scores.end(),
-                      std::greater<>());
-    // Первые 3 элемента - наибольшие в отсортированном порядке
-    // Остальные - в неопределенном порядке
-    
-    // nth_element - n-й элемент на своем месте
-    std::vector<int> nums{5, 2, 8, 1, 9, 3, 7, 4, 6};
-    std::nth_element(nums.begin(), nums.begin() + 4, nums.end());
-    // nums[4] - медиана, слева меньше, справа больше
-}
 
-void demo_custom_comparators() {
-    struct Product {
-        std::string name;
-        double price;
-        int rating;
-    };
-    
-    std::vector<Product> products{
-        {"Laptop", 999.99, 5},
-        {"Mouse", 29.99, 4},
-        {"Keyboard", 79.99, 5}
-    };
-    
-    // Лямбда-компаратор
-    std::sort(products.begin(), products.end(),
-        [](const Product& a, const Product& b) {
-            return a.price < b.price;
-        });
-    
-    // Сортировка по нескольким критериям
-    std::sort(products.begin(), products.end(),
-        [](const Product& a, const Product& b) {
-            if (a.rating != b.rating) return a.rating > b.rating;
-            return a.price < b.price;
-        });
-    // Сначала по рейтингу (убыв.), затем по цене (возр.)
-    
-    // Использование std::tie для сравнения
-    std::sort(products.begin(), products.end(),
-        [](const Product& a, const Product& b) {
-            return std::tie(a.rating, a.price) > 
-                   std::tie(b.rating, b.price);
-        });
-}
+// ────────────────────────────────────────────────────────────────────────────────────
+// search_n - поиск N последовательных одинаковых элементов
+// ────────────────────────────────────────────────────────────────────────────────────
 
-void demo_partitioning() {
-    std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8, 9};
-    
-    // partition - разбиение на две части
-    auto pivot = std::partition(vec.begin(), vec.end(),
-        [](int x) { return x % 2 == 0; });
-    // Четные элементы перед нечетными
-    // pivot указывает на начало второй части
-    
-    // stable_partition - устойчивое разбиение
-    std::vector<int> vec2{1, 2, 3, 4, 5, 6, 7, 8, 9};
-    std::stable_partition(vec2.begin(), vec2.end(),
-        [](int x) { return x % 2 == 0; });
-    // Сохраняет относительный порядок
-    
-    // is_sorted / is_sorted_until
-    std::vector<int> sorted{1, 2, 3, 4, 5};
-    bool is_sorted = std::is_sorted(sorted.begin(), sorted.end());
-    
-    std::vector<int> partial{1, 2, 3, 9, 4, 5};
-    auto until = std::is_sorted_until(partial.begin(), partial.end());
-    // until указывает на 9 (первый "неотсортированный")
-}
+std::vector<int> vec3{1, 2, 3, 3, 3, 4, 5};
+auto three = std::search_n(vec3.begin(), vec3.end(), 3, 3);
+// Ищет 3 последовательных элемента со значением 3
 
-// ============================================
-// 📌 BINARY SEARCH (требуют отсортированного диапазона)
-// ============================================
+// Поиск 2 подряд чётных чисел
+auto two_evens = std::search_n(vec3.begin(), vec3.end(), 2, 0,
+    [](int a, int) { return a % 2 == 0; });
 
-void demo_binary_search() {
-    std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8, 9};
-    // ВАЖНО: массив должен быть отсортирован!
-    
-    // binary_search - проверка наличия элемента
-    bool found = std::binary_search(vec.begin(), vec.end(), 5);
-    std::cout << "5 найден: " << found << '\n';
-    
-    // lower_bound - первый элемент >= значения
-    auto lb = std::lower_bound(vec.begin(), vec.end(), 5);
-    std::cout << "lower_bound(5): " << *lb << '\n';
-    
-    // upper_bound - первый элемент > значения
-    auto ub = std::upper_bound(vec.begin(), vec.end(), 5);
-    std::cout << "upper_bound(5): " << *ub << '\n';
-    
-    // equal_range - диапазон элементов, равных значению
-    auto [first, last] = std::equal_range(vec.begin(), vec.end(), 5);
-    std::cout << "Диапазон для 5: от " << *first << " до " << *last << '\n';
-    
-    // Практический пример: вставка с сохранением порядка
-    auto insert_pos = std::lower_bound(vec.begin(), vec.end(), 5);
-    vec.insert(insert_pos, 5); // Вставляем еще одну 5
-}
 
-void demo_binary_search_custom() {
-    struct Event {
-        int time;
-        std::string name;
-    };
-    
-    std::vector<Event> events{
-        {100, "Start"}, {200, "Middle"}, {300, "End"}
-    };
-    
-    // Бинарный поиск с кастомным компаратором
-    auto it = std::lower_bound(events.begin(), events.end(), 200,
-        [](const Event& e, int t) { return e.time < t; });
-    
-    if (it != events.end() && it->time == 200) {
-        std::cout << "Событие в 200: " << it->name << '\n';
-    }
-}
+// ────────────────────────────────────────────────────────────────────────────────────
+// Алгоритмы подсчёта (count)
+// ────────────────────────────────────────────────────────────────────────────────────
 
-// ============================================
-// 📌 SET OPERATIONS (требуют отсортированных диапазонов)
-// ============================================
+std::vector<int> numbers{1, 2, 3, 2, 4, 2, 5};
 
-void demo_set_operations() {
-    std::vector<int> a{1, 2, 3, 4, 5};
-    std::vector<int> b{3, 4, 5, 6, 7};
-    std::vector<int> result;
-    
-    // set_union - объединение
-    std::set_union(a.begin(), a.end(), b.begin(), b.end(),
-                   std::back_inserter(result));
-    // result = {1, 2, 3, 4, 5, 6, 7}
-    
-    // set_intersection - пересечение
-    result.clear();
-    std::set_intersection(a.begin(), a.end(), b.begin(), b.end(),
-                          std::back_inserter(result));
-    // result = {3, 4, 5}
-    
-    // set_difference - разность (A - B)
-    result.clear();
-    std::set_difference(a.begin(), a.end(), b.begin(), b.end(),
-                        std::back_inserter(result));
-    // result = {1, 2}
-    
-    // set_symmetric_difference - симметричная разность
-    result.clear();
-    std::set_symmetric_difference(a.begin(), a.end(), b.begin(), b.end(),
-                                  std::back_inserter(result));
-    // result = {1, 2, 6, 7}
-    
-    // includes - проверка, что все элементы b есть в a
-    std::vector<int> subset{2, 3};
-    bool contains = std::includes(a.begin(), a.end(), 
-                                  subset.begin(), subset.end());
-    std::cout << "a содержит subset: " << contains << '\n';
-    
-    // merge - слияние двух отсортированных последовательностей
-    result.clear();
-    std::merge(a.begin(), a.end(), b.begin(), b.end(),
-               std::back_inserter(result));
-    // result отсортирован и может содержать дубликаты
-}
+// count - подсчёт количества элементов с заданным значением
+auto cnt = std::count(numbers.begin(), numbers.end(), 2);
+// cnt = 3
 
-// ============================================
-// 📌 HEAP OPERATIONS
-// ============================================
+// count_if - подсчёт элементов по условию
+auto even_cnt = std::count_if(numbers.begin(), numbers.end(),
+    [](int x) { return x % 2 == 0; });
+// even_cnt = 4 (числа 2, 2, 4, 2)
 
-void demo_heap_operations() {
-    std::vector<int> vec{3, 1, 4, 1, 5, 9, 2, 6};
-    
-    // make_heap - создание max-heap
-    std::make_heap(vec.begin(), vec.end());
-    // vec[0] - максимальный элемент
-    
-    // push_heap - добавление элемента в heap
-    vec.push_back(10);
-    std::push_heap(vec.begin(), vec.end());
-    
-    // pop_heap - удаление максимального элемента
-    std::pop_heap(vec.begin(), vec.end());
-    int max = vec.back();
-    vec.pop_back();
-    std::cout << "Макс элемент: " << max << '\n';
-    
-    // sort_heap - сортировка heap (после этого это уже не heap!)
-    std::sort_heap(vec.begin(), vec.end());
-    // vec теперь отсортирован по возрастанию
-    
-    // is_heap - проверка, является ли диапазон heap'ом
-    std::vector<int> vec2{9, 5, 4, 1, 3};
-    bool is_h = std::is_heap(vec2.begin(), vec2.end());
-    
-    // Min-heap: используем greater<>
-    std::vector<int> min_heap{3, 1, 4, 1, 5};
-    std::make_heap(min_heap.begin(), min_heap.end(), std::greater<>());
-    // min_heap[0] - минимальный элемент
-}
 
-// ============================================
-// 📌 MIN/MAX OPERATIONS
-// ============================================
+// ────────────────────────────────────────────────────────────────────────────────────
+// Проверочные предикаты (predicates)
+// ────────────────────────────────────────────────────────────────────────────────────
 
-void demo_minmax() {
-    // min / max - минимум и максимум двух значений
-    int a = 5, b = 10;
-    std::cout << "min: " << std::min(a, b) << '\n';
-    std::cout << "max: " << std::max(a, b) << '\n';
-    
-    // minmax - возвращает пару {min, max}
-    auto [min_val, max_val] = std::minmax(a, b);
-    
-    // min/max с initializer_list
-    int min_of_many = std::min({5, 2, 8, 1, 9});
-    
-    // min_element / max_element - поиск в диапазоне
-    std::vector<int> vec{5, 2, 8, 1, 9, 3};
-    auto min_it = std::min_element(vec.begin(), vec.end());
-    auto max_it = std::max_element(vec.begin(), vec.end());
-    std::cout << "Минимум: " << *min_it << '\n';
-    std::cout << "Максимум: " << *max_it << '\n';
-    
-    // minmax_element - оба сразу
-    auto [min_it2, max_it2] = std::minmax_element(vec.begin(), vec.end());
-    
-    // clamp (C++17) - ограничение значения диапазоном
-    int value = 15;
-    int clamped = std::clamp(value, 0, 10); // = 10
-    std::cout << "Clamped: " << clamped << '\n';
-    
-    // Пример: нормализация координат
-    struct Point { int x, y; };
-    Point p{150, -50};
-    Point clamped_p{
-        std::clamp(p.x, 0, 100),
-        std::clamp(p.y, 0, 100)
-    };
-}
+std::vector<int> all_even{2, 4, 6, 8, 10};
+std::vector<int> all_odd{1, 3, 5};
 
-// ============================================
-// 📌 NUMERIC OPERATIONS
-// ============================================
+// all_of - проверка, что ВСЕ элементы удовлетворяют условию
+bool all_are_even = std::all_of(all_even.begin(), all_even.end(),
+    [](int x) { return x % 2 == 0; });
+// all_are_even = true
 
-void demo_numeric_algorithms() {
-    std::vector<int> vec{1, 2, 3, 4, 5};
-    
-    // accumulate - суммирование (или другая бинарная операция)
-    int sum = std::accumulate(vec.begin(), vec.end(), 0);
-    std::cout << "Сумма: " << sum << '\n';
-    
-    // accumulate с кастомной операцией (произведение)
-    int product = std::accumulate(vec.begin(), vec.end(), 1,
-        [](int a, int b) { return a * b; });
-    std::cout << "Произведение: " << product << '\n';
-    
-    // reduce (C++17) - параллелизуемая версия accumulate
-    int sum2 = std::reduce(vec.begin(), vec.end(), 0);
-    
-    // inner_product - скалярное произведение
-    std::vector<int> vec2{2, 3, 4, 5, 6};
-    int dot = std::inner_product(vec.begin(), vec.end(), 
-                                  vec2.begin(), 0);
-    // 1*2 + 2*3 + 3*4 + 4*5 + 5*6 = 70
-    
-    // transform_reduce (C++17) - transform + reduce
-    int sum_of_squares = std::transform_reduce(
-        vec.begin(), vec.end(), 0, std::plus<>(),
-        [](int x) { return x * x; }
-    );
-    // 1² + 2² + 3² + 4² + 5² = 55
-    
-    // partial_sum - частичные суммы
-    std::vector<int> partial;
-    std::partial_sum(vec.begin(), vec.end(), 
-                     std::back_inserter(partial));
-    // partial = {1, 3, 6, 10, 15}
-    
-    // inclusive_scan (C++17) - как partial_sum
-    std::vector<int> scan;
-    std::inclusive_scan(vec.begin(), vec.end(),
-                        std::back_inserter(scan));
-    
-    // exclusive_scan (C++17) - без включения текущего элемента
-    std::vector<int> exc_scan;
-    std::exclusive_scan(vec.begin(), vec.end(),
-                        std::back_inserter(exc_scan), 0);
-    // exc_scan = {0, 1, 3, 6, 10}
-    
-    // adjacent_difference - разности соседних элементов
-    std::vector<int> diffs;
-    std::adjacent_difference(vec.begin(), vec.end(),
-                             std::back_inserter(diffs));
-    // diffs = {1, 1, 1, 1, 1}
-    
-    // iota - заполнение последовательными значениями
-    std::vector<int> seq(10);
-    std::iota(seq.begin(), seq.end(), 1);
-    // seq = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
-    
-    // gcd / lcm (C++17) - НОД и НОК
-    int g = std::gcd(24, 36);  // 12
-    int l = std::lcm(24, 36);  // 72
-    
-    // midpoint (C++20) - среднее без переполнения
-    int mid = std::midpoint(100, 200);  // 150
-    
-    // lerp (C++20) - линейная интерполяция
-    double interpolated = std::lerp(0.0, 10.0, 0.5);  // 5.0
-}
+// any_of - проверка, что ХОТЯ БЫ ОДИН элемент удовлетворяет условию
+bool has_even = std::any_of(all_odd.begin(), all_odd.end(),
+    [](int x) { return x % 2 == 0; });
+// has_even = false
 
-// ============================================
-// 📌 EXECUTION POLICIES (C++17)
-// ============================================
+// none_of - проверка, что НИ ОДИН элемент не удовлетворяет условию
+bool no_even = std::none_of(all_odd.begin(), all_odd.end(),
+    [](int x) { return x % 2 == 0; });
+// no_even = true
 
-void demo_parallel_algorithms() {
-    std::vector<int> large_vec(1'000'000);
-    std::iota(large_vec.begin(), large_vec.end(), 1);
-    
-    // std::execution::seq - последовательное выполнение (по умолчанию)
-    std::sort(std::execution::seq, 
-              large_vec.begin(), large_vec.end());
-    
-    // std::execution::par - параллельное выполнение
-    // Может использовать несколько потоков
-    std::sort(std::execution::par,
-              large_vec.begin(), large_vec.end());
-    
-    // std::execution::par_unseq - параллельное + векторизация
-    // Может использовать SIMD инструкции
-    std::sort(std::execution::par_unseq,
-              large_vec.begin(), large_vec.end());
-    
-    // std::execution::unseq (C++20) - только векторизация
-    std::sort(std::execution::unseq,
-              large_vec.begin(), large_vec.end());
-    
-    // Примеры других алгоритмов с execution policies:
-    
-    // Параллельный transform
-    std::vector<double> data(1'000'000);
-    std::transform(std::execution::par,
-                   data.begin(), data.end(), data.begin(),
-                   [](double x) { return std::sqrt(x); });
-    
-    // Параллельный count_if
-    auto count = std::count_if(std::execution::par,
-                               large_vec.begin(), large_vec.end(),
-                               [](int x) { return x % 2 == 0; });
-    
-    // ВАЖНО: Параллельные алгоритмы требуют thread-safe операций!
-    // Плохо - race condition:
-    // int sum = 0;
-    // std::for_each(std::execution::par, vec.begin(), vec.end(),
-    //     [&sum](int x) { sum += x; }); // ОПАСНО!
-    
-    // Хорошо - используйте reduce:
-    int safe_sum = std::reduce(std::execution::par,
-                               large_vec.begin(), large_vec.end());
-}
 
-void performance_considerations() {
-    /*
-     * КОГДА ИСПОЛЬЗОВАТЬ ПАРАЛЛЕЛЬНЫЕ АЛГОРИТМЫ:
-     * 
-     * ✅ Хорошо подходят:
-     * - Большие объемы данных (> 10,000 элементов)
-     * - Вычислительно затратные операции на элемент
-     * - sort, transform, reduce, for_each
-     * 
-     * ❌ Плохо подходят:
-     * - Маленькие массивы (overhead от создания потоков)
-     * - Операции с зависимостями между элементами
-     * - Работа с shared state без синхронизации
-     * 
-     * OVERHEAD:
-     * - Создание потоков занимает время
-     * - Нужно учитывать стоимость операции на элемент
-     * - Тестируйте на реальных данных!
-     */
-    
-    // Пример: когда параллелизм невыгоден
-    std::vector<int> small_vec{1, 2, 3, 4, 5};
-    // Это МЕДЛЕННЕЕ чем seq:
-    // std::sort(std::execution::par, small_vec.begin(), small_vec.end());
-    
-    // Пример: когда параллелизм выгоден
-    std::vector<double> big_data(10'000'000);
-    std::iota(big_data.begin(), big_data.end(), 1.0);
-    // Это БЫСТРЕЕ чем seq:
-    std::transform(std::execution::par,
-                   big_data.begin(), big_data.end(), big_data.begin(),
-                   [](double x) { return std::sin(x) * std::cos(x); });
-}
+// ────────────────────────────────────────────────────────────────────────────────────
+// Сравнение последовательностей
+// ────────────────────────────────────────────────────────────────────────────────────
 
-// ============================================
-// 📌 RANGES ALGORITHMS (C++20)
-// ============================================
+std::vector<int> vec1{1, 2, 3, 4, 5};
+std::vector<int> vec2{1, 2, 3, 4, 5};
+std::vector<int> vec3{1, 2, 9, 4, 5};
 
-void demo_ranges_basics() {
-    namespace rng = std::ranges;
-    
-    std::vector<int> vec{5, 2, 8, 1, 9, 3, 7, 4, 6};
-    
-    // Ranges алгоритмы принимают сам контейнер, а не итераторы
-    rng::sort(vec);  // Вместо std::sort(vec.begin(), vec.end())
-    
-    // Поиск
-    auto it = rng::find(vec, 5);
-    if (it != vec.end()) {
-        std::cout << "Найден: " << *it << '\n';
-    }
-    
-    // count_if
-    int even_count = rng::count_if(vec, [](int x) { return x % 2 == 0; });
-    
-    // copy_if
-    std::vector<int> evens;
-    rng::copy_if(vec, std::back_inserter(evens),
-                 [](int x) { return x % 2 == 0; });
-    
-    // transform
-    std::vector<int> squared;
-    rng::transform(vec, std::back_inserter(squared),
-                   [](int x) { return x * x; });
-}
+// equal - проверка равенства двух последовательностей
+bool eq = std::equal(vec1.begin(), vec1.end(), vec2.begin());
+// eq = true
 
-void demo_projections() {
-    // Проекции позволяют трансформировать элементы перед операцией
-    struct Person {
-        std::string name;
-        int age;
-    };
-    
-    std::vector<Person> people{
-        {"Alice", 30}, {"Bob", 25}, {"Charlie", 35}
-    };
-    
-    // Сортировка по возрасту с помощью проекции
-    std::ranges::sort(people, {}, &Person::age);
-    // Вместо: std::sort(people.begin(), people.end(),
-    //              [](const Person& a, const Person& b) {
-    //                  return a.age < b.age;
-    //              });
-    
-    // Поиск по имени
-    auto it = std::ranges::find(people, "Bob", &Person::name);
-    
-    // Проекция с лямбдой
-    std::ranges::sort(people, {},
-        [](const Person& p) { return p.age; });
-    
-    // max_element с проекцией
-    auto oldest = std::ranges::max_element(people, {}, &Person::age);
-    std::cout << "Самый старший: " << oldest->name << '\n';
-}
+// С пользовательским компаратором
+bool eq_abs = std::equal(vec1.begin(), vec1.end(), vec2.begin(),
+    [](int a, int b) { return std::abs(a) == std::abs(b); });
 
-void demo_constrained_algorithms() {
-    // Ranges алгоритмы используют концепты для проверки типов
-    std::vector<int> vec{1, 2, 3, 4, 5};
-    
-    // Это компилируется - vector имеет random_access_iterator
-    std::ranges::sort(vec);
-    
-    std::list<int> lst{1, 2, 3, 4, 5};
-    // Это НЕ компилируется - list имеет bidirectional_iterator
-    // std::ranges::sort(lst);  // Ошибка компиляции!
-    
-    // Но это работает:
-    std::ranges::reverse(lst);  // reverse требует только bidirectional
-    
-    // Ranges проверяют концепты во время компиляции,
-    // давая более понятные сообщения об ошибках
-}
+// mismatch - поиск первого различия между последовательностями
+auto [it1, it3] = std::mismatch(vec1.begin(), vec1.end(), vec3.begin());
+// it1 указывает на 3, it3 указывает на 9
 
-void demo_ranges_views_with_algorithms() {
-    std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-    
-    // Комбинирование views и алгоритмов
-    namespace rv = std::ranges::views;
-    
-    // Подсчет четных чисел > 5
-    auto filtered = vec | rv::filter([](int x) { return x % 2 == 0; })
-                        | rv::filter([](int x) { return x > 5; });
-    int count = std::ranges::distance(filtered);
-    
-    // Сумма квадратов нечетных чисел
-    auto odd_squares = vec 
-        | rv::filter([](int x) { return x % 2 == 1; })
-        | rv::transform([](int x) { return x * x; });
-    int sum = std::accumulate(odd_squares.begin(), odd_squares.end(), 0);
-    
-    // Ranges возвращают подтипы range, а не новые контейнеры (ленивость)
-}
+// is_permutation - проверка, является ли одна последовательность перестановкой другой
+std::vector<int> perm{5, 4, 3, 2, 1};
+bool is_perm = std::is_permutation(vec1.begin(), vec1.end(), perm.begin());
+// is_perm = true (элементы те же, но в другом порядке)
 
-// ============================================
-// 📌 COMMON PATTERNS
-// ============================================
 
-void pattern_erase_remove() {
-    // ERASE-REMOVE IDIOM - стандартный способ удаления элементов
-    
-    std::vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8, 9};
-    
-    // Удаление всех четных чисел
-    vec.erase(
-        std::remove_if(vec.begin(), vec.end(),
-            [](int x) { return x % 2 == 0; }),
-        vec.end()
-    );
-    
-    // C++20 ranges упрощает это:
-    namespace rng = std::ranges;
-    std::vector<int> vec2{1, 2, 3, 4, 5, 6, 7, 8, 9};
-    auto [first, last] = rng::remove_if(vec2, 
-        [](int x) { return x % 2 == 0; });
-    vec2.erase(first, last);
-    
-    // Или используйте std::erase_if (C++20) для std::vector:
-    std::vector<int> vec3{1, 2, 3, 4, 5, 6, 7, 8, 9};
-    std::erase_if(vec3, [](int x) { return x % 2 == 0; });
-    // Самый простой способ!
-}
 
-void pattern_transform_reduce() {
-    // TRANSFORM-REDUCE - преобразование и сокращение в одной операции
-    
-    std::vector<int> prices{100, 200, 150, 300};
-    std::vector<int> quantities{2, 1, 3, 2};
-    
-    // Общая стоимость: sum(price[i] * quantity[i])
-    int total = std::transform_reduce(
-        prices.begin(), prices.end(),
-        quantities.begin(),
-        0,  // начальное значение
-        std::plus<>(),  // операция сокращения
-        std::multiplies<>()  // операция трансформации
-    );
-    std::cout << "Общая стоимость: " << total << '\n';
-    
-    // Сумма квадратов
-    std::vector<double> values{1.5, 2.5, 3.5};
-    double sum_of_squares = std::transform_reduce(
-        values.begin(), values.end(),
-        0.0,
-        std::plus<>(),
-        [](double x) { return x * x; }
-    );
-}
+// ════════════════════════════════════════════════════════════════════════════════════
+// 📌 MODIFYING SEQUENCE OPERATIONS (ИЗМЕНЯЮЩИЕ ОПЕРАЦИИ)
+// ════════════════════════════════════════════════════════════════════════════════════
 
-void pattern_sorting_with_lambdas() {
-    // СОРТИРОВКА С ЛЯМБДАМИ - гибкая настройка порядка
-    
-    struct Task {
-        std::string name;
-        int priority;
-        std::chrono::system_clock::time_point deadline;
-    };
-    
-    std::vector<Task> tasks;
-    // ... заполнение tasks
-    
-    // Сортировка по приоритету (убыв.), затем по deadline (возр.)
-    std::ranges::sort(tasks, [](const Task& a, const Task& b) {
-        if (a.priority != b.priority) {
-            return a.priority > b.priority;  // Больший приоритет первым
+// ────────────────────────────────────────────────────────────────────────────────────
+// Копирование и перемещение
+// ────────────────────────────────────────────────────────────────────────────────────
+
+std::vector<int> src{1, 2, 3, 4, 5, 6, 7, 8, 9};
+std::vector<int> dst;
+
+// copy - копирование всех элементов
+std::copy(src.begin(), src.end(), std::back_inserter(dst));
+// dst теперь {1, 2, 3, 4, 5, 6, 7, 8, 9}
+
+// copy_if - копирование только элементов, удовлетворяющих условию
+std::vector<int> evens;
+std::copy_if(src.begin(), src.end(), std::back_inserter(evens),
+    [](int x) { return x % 2 == 0; });
+// evens = {2, 4, 6, 8}
+
+// copy_n - копирование первых N элементов
+std::vector<int> first_three;
+std::copy_n(src.begin(), 3, std::back_inserter(first_three));
+// first_three = {1, 2, 3}
+
+// copy_backward - копирование в обратном направлении
+// Полезно когда диапазоны перекрываются
+std::vector<int> backward(src.size());
+std::copy_backward(src.begin(), src.end(), backward.end());
+// Копирует с конца в конец
+
+// move - перемещение элементов (полезно для move-only типов)
+std::vector<std::string> str_src{"hello", "world"};
+std::vector<std::string> str_dst;
+std::move(str_src.begin(), str_src.end(), std::back_inserter(str_dst));
+// str_src теперь содержит пустые строки (moved-from state)
+// str_dst = {"hello", "world"}
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// transform - применение функции к элементам
+// ────────────────────────────────────────────────────────────────────────────────────
+
+std::vector<int> vec{1, 2, 3, 4, 5};
+std::vector<int> result;
+
+// Унарная трансформация (один входной диапазон)
+std::transform(vec.begin(), vec.end(), std::back_inserter(result),
+    [](int x) { return x * x; });
+// result = {1, 4, 9, 16, 25} (квадраты)
+
+// Бинарная трансформация (два входных диапазона)
+std::vector<int> vec2{10, 20, 30, 40, 50};
+std::vector<int> sums;
+std::transform(vec.begin(), vec.end(), vec2.begin(),
+               std::back_inserter(sums),
+               [](int a, int b) { return a + b; });
+// sums = {11, 22, 33, 44, 55}
+
+// Трансформация на месте (in-place)
+std::transform(vec.begin(), vec.end(), vec.begin(),
+    [](int x) { return x * 2; });
+// vec = {2, 4, 6, 8, 10}
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// replace - замена элементов
+// ────────────────────────────────────────────────────────────────────────────────────
+
+std::vector<int> data{1, 2, 3, 2, 4, 2, 5};
+
+// replace - замена всех вхождений old_value на new_value
+std::replace(data.begin(), data.end(), 2, 99);
+// data = {1, 99, 3, 99, 4, 99, 5}
+
+// replace_if - замена элементов по условию
+std::vector<int> data2{1, 2, 3, 4, 5, 6};
+std::replace_if(data2.begin(), data2.end(),
+    [](int x) { return x % 2 == 0; }, 0);
+// data2 = {1, 0, 3, 0, 5, 0} (все чётные заменены на 0)
+
+// replace_copy - замена с копированием (исходный диапазон не изменяется)
+std::vector<int> data3{1, 2, 3, 2, 4};
+std::vector<int> replaced;
+std::replace_copy(data3.begin(), data3.end(),
+                  std::back_inserter(replaced), 2, 99);
+// data3 не изменён
+// replaced = {1, 99, 3, 99, 4}
+
+// replace_copy_if
+std::vector<int> replaced_if;
+std::replace_copy_if(data3.begin(), data3.end(),
+                     std::back_inserter(replaced_if),
+                     [](int x) { return x % 2 == 0; }, 0);
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// fill и generate - заполнение контейнеров
+// ────────────────────────────────────────────────────────────────────────────────────
+
+// fill - заполнение одним значением
+std::vector<int> filled(5);
+std::fill(filled.begin(), filled.end(), 42);
+// filled = {42, 42, 42, 42, 42}
+
+// fill_n - заполнение первых N элементов
+std::vector<int> partial(10);
+std::fill_n(partial.begin(), 5, 7);
+// partial = {7, 7, 7, 7, 7, 0, 0, 0, 0, 0}
+
+// generate - заполнение результатами вызова функции
+std::vector<int> generated(5);
+int n = 0;
+std::generate(generated.begin(), generated.end(), [&n] { return n++; });
+// generated = {0, 1, 2, 3, 4}
+
+// generate_n - генерация первых N элементов
+std::vector<int> random_nums;
+std::random_device rd;
+std::mt19937 gen(rd());
+std::uniform_int_distribution<> dis(1, 100);
+std::generate_n(std::back_inserter(random_nums), 10,
+    [&] { return dis(gen); });
+// random_nums содержит 10 случайных чисел от 1 до 100
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// remove и unique - "удаление" элементов
+// ────────────────────────────────────────────────────────────────────────────────────
+
+// ⚠️ ВАЖНО: remove НЕ удаляет элементы из контейнера!
+// Он перемещает "ненужные" элементы в конец и возвращает итератор на их начало
+
+std::vector<int> values{1, 2, 3, 2, 4, 2, 5};
+auto new_end = std::remove(values.begin(), values.end(), 2);
+// values = {1, 3, 4, 5, ?, ?, ?} - в конце "мусор"
+// new_end указывает на первый "мусорный" элемент
+
+// ✅ ПРАВИЛЬНО: erase-remove idiom (идиома стирания-удаления)
+values.erase(new_end, values.end());
+// Теперь values = {1, 3, 4, 5}
+
+// Можно в одну строку:
+std::vector<int> values2{1, 2, 3, 2, 4, 2, 5};
+values2.erase(std::remove(values2.begin(), values2.end(), 2), values2.end());
+
+// remove_if - удаление по условию
+std::vector<int> values3{1, 2, 3, 4, 5, 6, 7, 8};
+values3.erase(
+    std::remove_if(values3.begin(), values3.end(),
+        [](int x) { return x % 2 == 0; }),
+    values3.end()
+);
+// values3 = {1, 3, 5, 7} (только нечётные)
+
+// unique - удаление последовательных дубликатов
+// ⚠️ Обычно используется ПОСЛЕ сортировки!
+std::vector<int> dups{1, 1, 2, 2, 2, 3, 3, 4, 5, 5};
+dups.erase(std::unique(dups.begin(), dups.end()), dups.end());
+// dups = {1, 2, 3, 4, 5}
+
+// unique с компаратором
+std::vector<int> nums{1, 2, 3, 4, 5};
+nums.erase(
+    std::unique(nums.begin(), nums.end(),
+        [](int a, int b) { return (a % 2) == (b % 2); }),
+    nums.end()
+);
+// Удаляет последовательные числа с одинаковой чётностью
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// reverse и rotate - перестановки элементов
+// ────────────────────────────────────────────────────────────────────────────────────
+
+// reverse - разворот последовательности
+std::vector<int> rev{1, 2, 3, 4, 5};
+std::reverse(rev.begin(), rev.end());
+// rev = {5, 4, 3, 2, 1}
+
+// reverse_copy - разворот с копированием
+std::vector<int> reversed;
+std::reverse_copy(rev.begin(), rev.end(), std::back_inserter(reversed));
+
+// rotate - циклический сдвиг
+std::vector<int> rot{1, 2, 3, 4, 5};
+std::rotate(rot.begin(), rot.begin() + 2, rot.end());
+// rot = {3, 4, 5, 1, 2}
+// Элемент на позиции begin()+2 становится первым
+
+// Практический пример: сдвиг влево на 1
+std::vector<int> shift{1, 2, 3, 4, 5};
+std::rotate(shift.begin(), shift.begin() + 1, shift.end());
+// shift = {2, 3, 4, 5, 1}
+
+// Сдвиг вправо на 1
+std::rotate(shift.rbegin(), shift.rbegin() + 1, shift.rend());
+// shift = {1, 2, 3, 4, 5} (вернулось к исходному)
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// shuffle и sample - случайные перестановки
+// ────────────────────────────────────────────────────────────────────────────────────
+
+std::vector<int> deck{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+// shuffle - случайная перестановка элементов
+std::random_device rd;
+std::mt19937 gen(rd());
+std::shuffle(deck.begin(), deck.end(), gen);
+// deck теперь в случайном порядке
+
+// sample (C++17) - случайная выборка N элементов без повторений
+std::vector<int> full_deck(52);
+std::iota(full_deck.begin(), full_deck.end(), 1);
+std::vector<int> hand;
+std::sample(full_deck.begin(), full_deck.end(),
+            std::back_inserter(hand), 5, gen);
+// hand содержит 5 случайных уникальных карт из колоды
+
+
+
+// ════════════════════════════════════════════════════════════════════════════════════
+// 📌 SORTING OPERATIONS (ОПЕРАЦИИ СОРТИРОВКИ)
+// ════════════════════════════════════════════════════════════════════════════════════
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Основные алгоритмы сортировки
+// ────────────────────────────────────────────────────────────────────────────────────
+
+// sort - быстрая сортировка O(n log n) average, O(n²) worst
+std::vector<int> vec{5, 2, 8, 1, 9, 3};
+std::sort(vec.begin(), vec.end());
+// vec = {1, 2, 3, 5, 8, 9}
+
+// Сортировка по убыванию
+std::sort(vec.begin(), vec.end(), std::greater<>());
+// vec = {9, 8, 5, 3, 2, 1}
+
+// С пользовательским компаратором (lambda)
+std::sort(vec.begin(), vec.end(),
+    [](int a, int b) { return a > b; });
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// stable_sort - устойчивая сортировка
+// ────────────────────────────────────────────────────────────────────────────────────
+
+// Сохраняет относительный порядок равных элементов
+struct Person {
+    std::string name;
+    int age;
+};
+
+std::vector<Person> people{
+    {"Alice", 30},
+    {"Bob", 25},
+    {"Charlie", 30},
+    {"Diana", 25}
+};
+
+// stable_sort гарантирует, что если возраст одинаковый,
+// порядок имён сохранится
+std::stable_sort(people.begin(), people.end(),
+    [](const Person& a, const Person& b) { 
+        return a.age < b.age; 
+    });
+// Результат: Bob(25), Diana(25), Alice(30), Charlie(30)
+// Bob перед Diana, Alice перед Charlie - порядок сохранён
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// partial_sort - частичная сортировка (top-N элементов)
+// ────────────────────────────────────────────────────────────────────────────────────
+
+std::vector<int> scores{85, 92, 78, 95, 88, 73, 90};
+
+// Отсортировать только первые 3 элемента (топ-3)
+std::partial_sort(scores.begin(), scores.begin() + 3, scores.end(),
+                  std::greater<>());
+// scores = {95, 92, 90, ..., остальные в неопределённом порядке}
+// Первые 3 элемента - наибольшие и отсортированы
+
+// Полезно когда нужен только топ-N, а не полная сортировка
+// Быстрее, чем sort + взятие первых N
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// nth_element - N-й элемент на своём месте
+// ────────────────────────────────────────────────────────────────────────────────────
+
+std::vector<int> nums{5, 2, 8, 1, 9, 3, 7, 4, 6};
+
+// Поставить 5-й элемент (медиану) на своё место
+std::nth_element(nums.begin(), nums.begin() + 4, nums.end());
+// nums[4] содержит элемент, который был бы на 5-й позиции в отсортированном массиве
+// Элементы слева <= nums[4]
+// Элементы справа >= nums[4]
+// Но НЕ отсортированы!
+
+// Поиск медианы
+std::nth_element(nums.begin(), nums.begin() + nums.size()/2, nums.end());
+int median = nums[nums.size()/2];
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Сортировка с пользовательскими компараторами
+// ────────────────────────────────────────────────────────────────────────────────────
+
+struct Product {
+    std::string name;
+    double price;
+    int rating;
+};
+
+std::vector<Product> products{
+    {"Laptop", 999.99, 5},
+    {"Mouse", 29.99, 4},
+    {"Keyboard", 79.99, 5}
+};
+
+// Сортировка по цене
+std::sort(products.begin(), products.end(),
+    [](const Product& a, const Product& b) {
+        return a.price < b.price;
+    });
+
+// Сортировка по нескольким критериям: сначала рейтинг (убыв.), затем цена (возр.)
+std::sort(products.begin(), products.end(),
+    [](const Product& a, const Product& b) {
+        if (a.rating != b.rating) {
+            return a.rating > b.rating;  // Выше рейтинг - раньше
         }
-        return a.deadline < b.deadline;  // Раньше deadline первым
+        return a.price < b.price;  // При равных - дешевле раньше
     });
-    
-    // С помощью std::tie
-    std::ranges::sort(tasks, [](const Task& a, const Task& b) {
-        return std::tie(b.priority, a.deadline) < 
-               std::tie(a.priority, b.deadline);
-    });
-    
-    // С проекцией (только по одному полю)
-    std::ranges::sort(tasks, {}, &Task::priority);
-}
 
-void pattern_filtering_transformation() {
-    // FILTERING + TRANSFORMATION CHAINS
-    
-    std::vector<int> numbers{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-    
-    // Старый способ: много промежуточных контейнеров
-    std::vector<int> evens;
-    std::copy_if(numbers.begin(), numbers.end(),
-                 std::back_inserter(evens),
-                 [](int x) { return x % 2 == 0; });
-    
-    std::vector<int> doubled;
-    std::transform(evens.begin(), evens.end(),
-                   std::back_inserter(doubled),
-                   [](int x) { return x * 2; });
-    
-    // C++20 ranges: ленивые вычисления, нет промежуточных контейнеров
-    namespace rv = std::ranges::views;
-    auto result = numbers
-        | rv::filter([](int x) { return x % 2 == 0; })
-        | rv::transform([](int x) { return x * 2; });
-    
-    // Материализация в vector при необходимости
-    std::vector<int> materialized(result.begin(), result.end());
-    
-    // Или просто итерация
-    for (int val : result) {
-        std::cout << val << ' ';
+// Использование std::tie для многокритериальной сортировки
+std::sort(products.begin(), products.end(),
+    [](const Product& a, const Product& b) {
+        // Сначала по rating (desc), потом по price (asc)
+        return std::tie(b.rating, a.price) < std::tie(a.rating, b.price);
+    });
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Разбиение (partitioning)
+// ────────────────────────────────────────────────────────────────────────────────────
+
+std::vector<int> values{1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+// partition - разбиение на две части по условию
+auto pivot = std::partition(values.begin(), values.end(),
+    [](int x) { return x % 2 == 0; });
+// Чётные элементы перемещены в начало, нечётные - в конец
+// pivot указывает на начало второй части (нечётных)
+// Порядок внутри частей НЕ сохраняется
+
+// stable_partition - устойчивое разбиение
+std::vector<int> values2{1, 2, 3, 4, 5, 6, 7, 8, 9};
+std::stable_partition(values2.begin(), values2.end(),
+    [](int x) { return x % 2 == 0; });
+// Относительный порядок элементов внутри каждой части сохраняется
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Проверка сортировки
+// ────────────────────────────────────────────────────────────────────────────────────
+
+// is_sorted - проверка, отсортирован ли диапазон
+std::vector<int> sorted{1, 2, 3, 4, 5};
+bool is_sorted = std::is_sorted(sorted.begin(), sorted.end());
+// is_sorted = true
+
+std::vector<int> not_sorted{1, 3, 2, 4, 5};
+bool check = std::is_sorted(not_sorted.begin(), not_sorted.end());
+// check = false
+
+// is_sorted_until - поиск первого "неотсортированного" элемента
+std::vector<int> partial{1, 2, 3, 9, 4, 5};
+auto until = std::is_sorted_until(partial.begin(), partial.end());
+// until указывает на 9 (первый элемент, нарушающий порядок)
+
+// Проверка сортировки с компаратором
+bool desc_sorted = std::is_sorted(sorted.begin(), sorted.end(), 
+                                   std::greater<>());
+
+
+
+// ════════════════════════════════════════════════════════════════════════════════════
+// 📌 BINARY SEARCH (БИНАРНЫЙ ПОИСК)
+// ════════════════════════════════════════════════════════════════════════════════════
+
+// ⚠️ ВАЖНО: Все алгоритмы бинарного поиска требуют ОТСОРТИРОВАННОГО диапазона!
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Основные операции бинарного поиска
+// ────────────────────────────────────────────────────────────────────────────────────
+
+std::vector<int> sorted_vec{1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+// binary_search - проверка наличия элемента (возвращает bool)
+bool found = std::binary_search(sorted_vec.begin(), sorted_vec.end(), 5);
+// found = true (элемент 5 присутствует)
+
+bool not_found = std::binary_search(sorted_vec.begin(), sorted_vec.end(), 10);
+// not_found = false
+
+// lower_bound - первый элемент >= заданного значения
+auto lb = std::lower_bound(sorted_vec.begin(), sorted_vec.end(), 5);
+// lb указывает на 5
+
+auto lb2 = std::lower_bound(sorted_vec.begin(), sorted_vec.end(), 5.5);
+// lb2 указывает на 6 (первый >= 5.5)
+
+// upper_bound - первый элемент > заданного значения
+auto ub = std::upper_bound(sorted_vec.begin(), sorted_vec.end(), 5);
+// ub указывает на 6 (первый > 5)
+
+// equal_range - диапазон элементов, равных заданному значению
+auto [first, last] = std::equal_range(sorted_vec.begin(), sorted_vec.end(), 5);
+// first == lower_bound, last == upper_bound
+// Диапазон [first, last) содержит все элементы, равные 5
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Практическое применение
+// ────────────────────────────────────────────────────────────────────────────────────
+
+// Вставка элемента с сохранением сортировки
+std::vector<int> data{1, 3, 5, 7, 9};
+auto insert_pos = std::lower_bound(data.begin(), data.end(), 6);
+data.insert(insert_pos, 6);
+// data = {1, 3, 5, 6, 7, 9}
+
+// Подсчёт количества вхождений значения
+std::vector<int> duplicates{1, 2, 2, 2, 3, 4, 5};
+auto [dup_first, dup_last] = std::equal_range(duplicates.begin(), 
+                                               duplicates.end(), 2);
+int count = std::distance(dup_first, dup_last);
+// count = 3
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Бинарный поиск с пользовательским компаратором
+// ────────────────────────────────────────────────────────────────────────────────────
+
+struct Event {
+    int time;
+    std::string name;
+};
+
+std::vector<Event> events{
+    {100, "Start"},
+    {200, "Middle"},
+    {300, "End"}
+};
+// events отсортированы по time
+
+// Поиск события по времени
+auto it = std::lower_bound(events.begin(), events.end(), 200,
+    [](const Event& e, int t) { return e.time < t; });
+// it указывает на {200, "Middle"}
+
+// Проверка наличия события в конкретное время
+bool exists = std::binary_search(events.begin(), events.end(), 200,
+    [](const Event& e, int t) { return e.time < t; });
+
+
+// ════════════════════════════════════════════════════════════════════════════════════
+// 📌 SET OPERATIONS (ОПЕРАЦИИ НАД МНОЖЕСТВАМИ)
+// ════════════════════════════════════════════════════════════════════════════════════
+
+// ⚠️ ВАЖНО: Оба диапазона должны быть ОТСОРТИРОВАНЫ!
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Основные операции над множествами
+// ────────────────────────────────────────────────────────────────────────────────────
+
+std::vector<int> a{1, 2, 3, 4, 5};
+std::vector<int> b{3, 4, 5, 6, 7};
+std::vector<int> result;
+
+// set_union - объединение множеств (все уникальные элементы из обоих)
+std::set_union(a.begin(), a.end(), b.begin(), b.end(),
+               std::back_inserter(result));
+// result = {1, 2, 3, 4, 5, 6, 7}
+
+// set_intersection - пересечение (элементы, присутствующие в обоих)
+result.clear();
+std::set_intersection(a.begin(), a.end(), b.begin(), b.end(),
+                      std::back_inserter(result));
+// result = {3, 4, 5}
+
+// set_difference - разность A \ B (элементы из A, которых нет в B)
+result.clear();
+std::set_difference(a.begin(), a.end(), b.begin(), b.end(),
+                    std::back_inserter(result));
+// result = {1, 2}
+
+// set_symmetric_difference - симметричная разность (в одном, но не в обоих)
+result.clear();
+std::set_symmetric_difference(a.begin(), a.end(), b.begin(), b.end(),
+                              std::back_inserter(result));
+// result = {1, 2, 6, 7}
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Проверки включения
+// ────────────────────────────────────────────────────────────────────────────────────
+
+// includes - проверка, что все элементы второго множества есть в первом
+std::vector<int> full{1, 2, 3, 4, 5};
+std::vector<int> subset{2, 3, 4};
+bool contains = std::includes(full.begin(), full.end(), 
+                              subset.begin(), subset.end());
+// contains = true
+
+std::vector<int> not_subset{2, 3, 6};
+bool not_contains = std::includes(full.begin(), full.end(),
+                                  not_subset.begin(), not_subset.end());
+// not_contains = false
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// merge - слияние отсортированных последовательностей
+// ────────────────────────────────────────────────────────────────────────────────────
+
+std::vector<int> seq1{1, 3, 5, 7};
+std::vector<int> seq2{2, 4, 6, 8};
+std::vector<int> merged;
+
+std::merge(seq1.begin(), seq1.end(), seq2.begin(), seq2.end(),
+           std::back_inserter(merged));
+// merged = {1, 2, 3, 4, 5, 6, 7, 8} (отсортировано)
+
+// merge может содержать дубликаты (в отличие от set_union)
+std::vector<int> dup1{1, 2, 3};
+std::vector<int> dup2{2, 3, 4};
+std::vector<int> merged_dups;
+std::merge(dup1.begin(), dup1.end(), dup2.begin(), dup2.end(),
+           std::back_inserter(merged_dups));
+// merged_dups = {1, 2, 2, 3, 3, 4}
+
+
+
+// ════════════════════════════════════════════════════════════════════════════════════
+// 📌 HEAP OPERATIONS (ОПЕРАЦИИ С КУЧЕЙ)
+// ════════════════════════════════════════════════════════════════════════════════════
+
+// Heap (куча) - структура данных для эффективного поиска max/min элемента
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Создание и работа с max-heap (максимальная куча)
+// ────────────────────────────────────────────────────────────────────────────────────
+
+std::vector<int> heap_data{3, 1, 4, 1, 5, 9, 2, 6};
+
+// make_heap - превращает диапазон в max-heap
+std::make_heap(heap_data.begin(), heap_data.end());
+// heap_data[0] теперь содержит максимальный элемент (9)
+
+// push_heap - добавление элемента в heap
+heap_data.push_back(10);  // Добавляем в конец
+std::push_heap(heap_data.begin(), heap_data.end());
+// 10 теперь на вершине heap
+
+// pop_heap - извлечение максимального элемента
+std::pop_heap(heap_data.begin(), heap_data.end());
+int max_element = heap_data.back();
+heap_data.pop_back();
+// max_element = 10, heap_data снова валидная куча
+
+// sort_heap - сортировка heap (после этого это уже НЕ heap!)
+std::sort_heap(heap_data.begin(), heap_data.end());
+// heap_data теперь отсортирован по возрастанию
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Min-heap (минимальная куча)
+// ────────────────────────────────────────────────────────────────────────────────────
+
+std::vector<int> min_heap{3, 1, 4, 1, 5};
+
+// Используем std::greater<> для создания min-heap
+std::make_heap(min_heap.begin(), min_heap.end(), std::greater<>());
+// min_heap[0] содержит минимальный элемент (1)
+
+min_heap.push_back(0);
+std::push_heap(min_heap.begin(), min_heap.end(), std::greater<>());
+// 0 теперь на вершине
+
+std::pop_heap(min_heap.begin(), min_heap.end(), std::greater<>());
+int min_element = min_heap.back();
+min_heap.pop_back();
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Проверка heap
+// ────────────────────────────────────────────────────────────────────────────────────
+
+// is_heap - проверка, является ли диапазон корректной кучей
+std::vector<int> check{9, 5, 4, 1, 3};
+bool is_valid_heap = std::is_heap(check.begin(), check.end());
+// is_valid_heap = true (это max-heap)
+
+// is_heap_until - находит первый элемент, нарушающий свойство heap
+std::vector<int> partial_heap{9, 5, 4, 10, 3};
+auto heap_end = std::is_heap_until(partial_heap.begin(), partial_heap.end());
+// heap_end указывает на 10 (нарушает свойство heap)
+
+
+// ════════════════════════════════════════════════════════════════════════════════════
+// 📌 MIN/MAX OPERATIONS (ПОИСК МИНИМУМА И МАКСИМУМА)
+// ════════════════════════════════════════════════════════════════════════════════════
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Сравнение двух значений
+// ────────────────────────────────────────────────────────────────────────────────────
+
+int a = 5, b = 10;
+
+// min / max - возвращают ссылку на меньший/больший элемент
+int min_val = std::min(a, b);  // 5
+int max_val = std::max(a, b);  // 10
+
+// minmax - возвращает пару {min, max}
+auto [min_ab, max_ab] = std::minmax(a, b);
+// min_ab = 5, max_ab = 10
+
+// С initializer_list
+int min_of_many = std::min({5, 2, 8, 1, 9});  // 1
+int max_of_many = std::max({5, 2, 8, 1, 9});  // 9
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Поиск в диапазоне
+// ────────────────────────────────────────────────────────────────────────────────────
+
+std::vector<int> numbers{5, 2, 8, 1, 9, 3};
+
+// min_element / max_element - возвращают итератор
+auto min_it = std::min_element(numbers.begin(), numbers.end());
+auto max_it = std::max_element(numbers.begin(), numbers.end());
+// *min_it = 1, *max_it = 9
+
+// minmax_element - оба итератора сразу
+auto [min_it2, max_it2] = std::minmax_element(numbers.begin(), numbers.end());
+
+// С пользовательским компаратором
+struct Person {
+    std::string name;
+    int age;
+};
+
+std::vector<Person> people{
+    {"Alice", 30},
+    {"Bob", 25},
+    {"Charlie", 35}
+};
+
+auto youngest = std::min_element(people.begin(), people.end(),
+    [](const Person& a, const Person& b) { return a.age < b.age; });
+// youngest->name = "Bob"
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// clamp (C++17) - ограничение значения диапазоном
+// ────────────────────────────────────────────────────────────────────────────────────
+
+int value = 15;
+int clamped = std::clamp(value, 0, 10);
+// clamped = 10 (ограничено сверху)
+
+int value2 = -5;
+int clamped2 = std::clamp(value2, 0, 10);
+// clamped2 = 0 (ограничено снизу)
+
+int value3 = 5;
+int clamped3 = std::clamp(value3, 0, 10);
+// clamped3 = 5 (в пределах диапазона)
+
+// Практический пример: нормализация координат
+struct Point { int x, y; };
+Point p{150, -50};
+Point normalized{
+    std::clamp(p.x, 0, 100),  // x = 100
+    std::clamp(p.y, 0, 100)   // y = 0
+};
+
+
+// ════════════════════════════════════════════════════════════════════════════════════
+// 📌 NUMERIC OPERATIONS (ЧИСЛЕННЫЕ ОПЕРАЦИИ)
+// ════════════════════════════════════════════════════════════════════════════════════
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// accumulate - свёртка (fold/reduce)
+// ────────────────────────────────────────────────────────────────────────────────────
+
+std::vector<int> nums{1, 2, 3, 4, 5};
+
+// Суммирование
+int sum = std::accumulate(nums.begin(), nums.end(), 0);
+// sum = 15 (0 + 1 + 2 + 3 + 4 + 5)
+
+// С пользовательской операцией (произведение)
+int product = std::accumulate(nums.begin(), nums.end(), 1,
+    [](int a, int b) { return a * b; });
+// product = 120 (1 * 1 * 2 * 3 * 4 * 5)
+
+// Конкатенация строк
+std::vector<std::string> words{"Hello", " ", "World"};
+std::string sentence = std::accumulate(words.begin(), words.end(), std::string(""));
+// sentence = "Hello World"
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// reduce (C++17) - параллелизуемая версия accumulate
+// ────────────────────────────────────────────────────────────────────────────────────
+
+int sum2 = std::reduce(nums.begin(), nums.end(), 0);
+// Аналог accumulate, но может выполняться параллельно
+// Требует ассоциативной и коммутативной операции!
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// inner_product - скалярное произведение
+// ────────────────────────────────────────────────────────────────────────────────────
+
+std::vector<int> v1{1, 2, 3, 4, 5};
+std::vector<int> v2{2, 3, 4, 5, 6};
+
+int dot_product = std::inner_product(v1.begin(), v1.end(), v2.begin(), 0);
+// dot_product = 1*2 + 2*3 + 3*4 + 4*5 + 5*6 = 70
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// transform_reduce (C++17) - transform + reduce в одной операции
+// ────────────────────────────────────────────────────────────────────────────────────
+
+// Сумма квадратов
+int sum_of_squares = std::transform_reduce(
+    nums.begin(), nums.end(),
+    0,                    // начальное значение
+    std::plus<>(),        // операция редукции (сложение)
+    [](int x) { return x * x; }  // трансформация (квадрат)
+);
+// sum_of_squares = 1² + 2² + 3² + 4² + 5² = 55
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// partial_sum - частичные суммы (префиксные суммы)
+// ────────────────────────────────────────────────────────────────────────────────────
+
+std::vector<int> source{1, 2, 3, 4, 5};
+std::vector<int> prefix_sums;
+
+std::partial_sum(source.begin(), source.end(), std::back_inserter(prefix_sums));
+// prefix_sums = {1, 3, 6, 10, 15}
+// prefix_sums[i] = source[0] + source[1] + ... + source[i]
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// inclusive_scan / exclusive_scan (C++17)
+// ────────────────────────────────────────────────────────────────────────────────────
+
+// inclusive_scan - аналог partial_sum
+std::vector<int> inc_scan;
+std::inclusive_scan(source.begin(), source.end(), std::back_inserter(inc_scan));
+// inc_scan = {1, 3, 6, 10, 15}
+
+// exclusive_scan - без включения текущего элемента
+std::vector<int> exc_scan;
+std::exclusive_scan(source.begin(), source.end(), std::back_inserter(exc_scan), 0);
+// exc_scan = {0, 1, 3, 6, 10}
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// adjacent_difference - разности соседних элементов
+// ────────────────────────────────────────────────────────────────────────────────────
+
+std::vector<int> sequence{1, 3, 6, 10, 15};
+std::vector<int> diffs;
+
+std::adjacent_difference(sequence.begin(), sequence.end(), 
+                        std::back_inserter(diffs));
+// diffs = {1, 2, 3, 4, 5}
+// diffs[0] = sequence[0]
+// diffs[i] = sequence[i] - sequence[i-1] для i > 0
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// iota - заполнение последовательными значениями
+// ────────────────────────────────────────────────────────────────────────────────────
+
+std::vector<int> range(10);
+std::iota(range.begin(), range.end(), 1);
+// range = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+
+std::vector<int> evens(5);
+std::iota(evens.begin(), evens.end(), 0);
+std::transform(evens.begin(), evens.end(), evens.begin(),
+    [](int x) { return x * 2; });
+// evens = {0, 2, 4, 6, 8}
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// gcd / lcm (C++17) - НОД и НОК
+// ────────────────────────────────────────────────────────────────────────────────────
+
+int gcd_result = std::gcd(24, 36);  // 12 (наибольший общий делитель)
+int lcm_result = std::lcm(24, 36);  // 72 (наименьшее общее кратное)
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// midpoint (C++20) - среднее значение без переполнения
+// ────────────────────────────────────────────────────────────────────────────────────
+
+int mid = std::midpoint(100, 200);  // 150
+
+// Преимущество перед (a+b)/2 - нет риска переполнения
+// std::midpoint(INT_MAX, INT_MAX) корректно вернёт INT_MAX
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// lerp (C++20) - линейная интерполяция
+// ────────────────────────────────────────────────────────────────────────────────────
+
+double interpolated = std::lerp(0.0, 10.0, 0.5);  // 5.0
+// lerp(a, b, t) = a + t*(b - a)
+
+double quarter = std::lerp(0.0, 10.0, 0.25);  // 2.5
+
+
+
+// ════════════════════════════════════════════════════════════════════════════════════
+// 📌 EXECUTION POLICIES (ПОЛИТИКИ ВЫПОЛНЕНИЯ C++17)
+// ════════════════════════════════════════════════════════════════════════════════════
+
+// Execution policies позволяют запускать алгоритмы параллельно
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Типы политик выполнения
+// ────────────────────────────────────────────────────────────────────────────────────
+
+std::vector<int> large_data(1'000'000);
+std::iota(large_data.begin(), large_data.end(), 1);
+
+// std::execution::seq - последовательное выполнение (по умолчанию)
+std::sort(std::execution::seq, large_data.begin(), large_data.end());
+// Выполняется в одном потоке, как обычный std::sort
+
+// std::execution::par - параллельное выполнение
+std::sort(std::execution::par, large_data.begin(), large_data.end());
+// Может использовать несколько потоков
+// Хорошо для больших данных и дорогих операций
+
+// std::execution::par_unseq - параллельное + векторизация (SIMD)
+std::sort(std::execution::par_unseq, large_data.begin(), large_data.end());
+// Может использовать SIMD инструкции процессора
+// Максимальная производительность
+
+// std::execution::unseq (C++20) - только векторизация, без параллелизма
+std::sort(std::execution::unseq, large_data.begin(), large_data.end());
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Примеры использования с различными алгоритмами
+// ────────────────────────────────────────────────────────────────────────────────────
+
+// Параллельный transform
+std::vector<double> doubles(1'000'000);
+std::transform(std::execution::par,
+               doubles.begin(), doubles.end(), doubles.begin(),
+               [](double x) { return std::sqrt(x); });
+
+// Параллельный count_if
+auto count = std::count_if(std::execution::par,
+                           large_data.begin(), large_data.end(),
+                           [](int x) { return x % 2 == 0; });
+
+// Параллельный for_each
+std::for_each(std::execution::par,
+              large_data.begin(), large_data.end(),
+              [](int& x) { x = x * 2; });
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// ⚠️ ВАЖНЫЕ ПРЕДОСТЕРЕЖЕНИЯ
+// ────────────────────────────────────────────────────────────────────────────────────
+
+// ❌ ОПАСНО: Race condition (гонка данных)
+int shared_sum = 0;
+// std::for_each(std::execution::par, large_data.begin(), large_data.end(),
+//     [&shared_sum](int x) { shared_sum += x; }); // НЕБЕЗОПАСНО!
+
+// ✅ БЕЗОПАСНО: используйте reduce для агрегации
+int safe_sum = std::reduce(std::execution::par,
+                           large_data.begin(), large_data.end());
+
+// ❌ ОПАСНО: Исключения в параллельном алгоритме вызовут std::terminate()
+// std::for_each(std::execution::par, data.begin(), data.end(),
+//     [](int x) { 
+//         if (x == 0) throw std::runtime_error("error");
+//     });
+
+// ⚠️ Требования к операциям:
+// - Должны быть thread-safe
+// - Не должны бросать исключения (или готовьтесь к terminate)
+// - Для par_unseq: не должны использовать синхронизацию (mutex, atomic)
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Когда использовать параллельные алгоритмы
+// ────────────────────────────────────────────────────────────────────────────────────
+
+// ✅ ХОРОШО подходит:
+// - Большие объёмы данных (> 10,000 элементов)
+// - Вычислительно затратные операции на каждый элемент
+// - sort, transform, reduce, for_each на больших данных
+
+std::vector<double> expensive_calc(10'000'000);
+std::transform(std::execution::par,
+               expensive_calc.begin(), expensive_calc.end(),
+               expensive_calc.begin(),
+               [](double x) { return std::sin(x) * std::cos(x); });
+
+// ❌ ПЛОХО подходит:
+// - Маленькие массивы (overhead от создания потоков больше выигрыша)
+// - Простые операции (копирование, сравнение)
+// - Операции с зависимостями между элементами
+
+std::vector<int> small{1, 2, 3, 4, 5};
+// std::sort(std::execution::par, small.begin(), small.end());
+// МЕДЛЕННЕЕ чем seq из-за overhead!
+
+
+// ════════════════════════════════════════════════════════════════════════════════════
+// 📌 RANGES ALGORITHMS (АЛГОРИТМЫ C++20 RANGES)
+// ════════════════════════════════════════════════════════════════════════════════════
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Основы ranges алгоритмов
+// ────────────────────────────────────────────────────────────────────────────────────
+
+std::vector<int> vec{5, 2, 8, 1, 9, 3, 7, 4, 6};
+
+// Ranges алгоритмы принимают целый контейнер, а не пару итераторов
+std::ranges::sort(vec);
+// Вместо: std::sort(vec.begin(), vec.end())
+
+// find
+auto it = std::ranges::find(vec, 5);
+
+// count_if
+int even_count = std::ranges::count_if(vec, [](int x) { return x % 2 == 0; });
+
+// copy_if
+std::vector<int> evens;
+std::ranges::copy_if(vec, std::back_inserter(evens),
+                     [](int x) { return x % 2 == 0; });
+
+// transform
+std::vector<int> squared;
+std::ranges::transform(vec, std::back_inserter(squared),
+                       [](int x) { return x * x; });
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Проекции (projections) - мощная фича ranges
+// ────────────────────────────────────────────────────────────────────────────────────
+
+struct Person {
+    std::string name;
+    int age;
+};
+
+std::vector<Person> people{
+    {"Alice", 30},
+    {"Bob", 25},
+    {"Charlie", 35}
+};
+
+// Сортировка по возрасту с помощью проекции (указатель на член)
+std::ranges::sort(people, {}, &Person::age);
+// Третий параметр - проекция, {} - компаратор по умолчанию
+
+// Эквивалентно старому способу:
+// std::sort(people.begin(), people.end(),
+//           [](const Person& a, const Person& b) { return a.age < b.age; });
+
+// Поиск по имени с проекцией
+auto bob = std::ranges::find(people, "Bob", &Person::name);
+
+// Проекция с lambda
+std::ranges::sort(people, {}, [](const Person& p) { return p.age; });
+
+// max_element с проекцией
+auto oldest = std::ranges::max_element(people, {}, &Person::age);
+// oldest->name = "Charlie"
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Концепты (concepts) для type safety
+// ────────────────────────────────────────────────────────────────────────────────────
+
+// Ranges алгоритмы проверяют типы во время компиляции
+
+std::vector<int> random_access{1, 2, 3, 4, 5};
+std::ranges::sort(random_access);  // ✅ OK - vector имеет random_access_iterator
+
+std::list<int> bidirectional{1, 2, 3, 4, 5};
+// std::ranges::sort(bidirectional);  // ❌ Ошибка компиляции!
+// sort требует random_access_iterator, а list даёт только bidirectional
+
+// Но это работает (reverse требует только bidirectional)
+std::ranges::reverse(bidirectional);  // ✅ OK
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Комбинирование с views
+// ────────────────────────────────────────────────────────────────────────────────────
+
+std::vector<int> numbers{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+// Подсчёт чётных чисел > 5
+auto filtered = numbers 
+    | std::views::filter([](int x) { return x % 2 == 0; })
+    | std::views::filter([](int x) { return x > 5; });
+
+int count_filtered = std::ranges::distance(filtered);
+
+// Сумма квадратов нечётных чисел
+auto odd_squares = numbers 
+    | std::views::filter([](int x) { return x % 2 == 1; })
+    | std::views::transform([](int x) { return x * x; });
+
+int sum = std::accumulate(odd_squares.begin(), odd_squares.end(), 0);
+
+// Ленивое вычисление - никакие промежуточные контейнеры не создаются!
+
+
+
+// ════════════════════════════════════════════════════════════════════════════════════
+// 📌 COMMON PATTERNS (РАСПРОСТРАНЁННЫЕ ПАТТЕРНЫ)
+// ════════════════════════════════════════════════════════════════════════════════════
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Erase-Remove Idiom (идиома стирания-удаления)
+// ────────────────────────────────────────────────────────────────────────────────────
+
+// Стандартный способ удаления элементов из контейнера
+
+std::vector<int> data{1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+// ✅ Классический способ: erase + remove_if
+data.erase(
+    std::remove_if(data.begin(), data.end(),
+        [](int x) { return x % 2 == 0; }),
+    data.end()
+);
+// data = {1, 3, 5, 7, 9}
+
+// ✅ C++20 ranges упрощает:
+std::vector<int> data2{1, 2, 3, 4, 5, 6, 7, 8, 9};
+auto [first, last] = std::ranges::remove_if(data2, 
+    [](int x) { return x % 2 == 0; });
+data2.erase(first, last);
+
+// ✅ C++20 std::erase_if - самый простой способ!
+std::vector<int> data3{1, 2, 3, 4, 5, 6, 7, 8, 9};
+std::erase_if(data3, [](int x) { return x % 2 == 0; });
+// Работает для vector, deque, string, list и т.д.
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Transform-Reduce Pattern
+// ────────────────────────────────────────────────────────────────────────────────────
+
+// Преобразование и агрегация в одной операции
+
+std::vector<int> prices{100, 200, 150, 300};
+std::vector<int> quantities{2, 1, 3, 2};
+
+// Общая стоимость: sum(price[i] * quantity[i])
+int total_cost = std::transform_reduce(
+    prices.begin(), prices.end(),
+    quantities.begin(),
+    0,                      // начальное значение
+    std::plus<>(),          // операция редукции (сложение)
+    std::multiplies<>()     // операция трансформации (умножение)
+);
+// total_cost = 100*2 + 200*1 + 150*3 + 300*2 = 1250
+
+// Сумма квадратов
+std::vector<double> values{1.5, 2.5, 3.5};
+double sum_of_squares = std::transform_reduce(
+    values.begin(), values.end(),
+    0.0,
+    std::plus<>(),
+    [](double x) { return x * x; }
+);
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Sorting with Multiple Criteria (многокритериальная сортировка)
+// ────────────────────────────────────────────────────────────────────────────────────
+
+struct Task {
+    std::string name;
+    int priority;
+    int deadline;
+};
+
+std::vector<Task> tasks{
+    {"Task A", 1, 10},
+    {"Task B", 2, 5},
+    {"Task C", 1, 7}
+};
+
+// Сортировка по приоритету (убыв.), затем по deadline (возр.)
+std::ranges::sort(tasks, [](const Task& a, const Task& b) {
+    if (a.priority != b.priority) {
+        return a.priority > b.priority;  // Выше приоритет - первым
     }
+    return a.deadline < b.deadline;  // Раньше deadline - первым
+});
+
+// С использованием std::tie для элегантности
+std::ranges::sort(tasks, [](const Task& a, const Task& b) {
+    return std::tie(b.priority, a.deadline) < 
+           std::tie(a.priority, b.deadline);
+});
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Filtering + Transformation Chains
+// ────────────────────────────────────────────────────────────────────────────────────
+
+std::vector<int> numbers{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+// ❌ Старый способ: много промежуточных контейнеров
+std::vector<int> temp_evens;
+std::copy_if(numbers.begin(), numbers.end(),
+             std::back_inserter(temp_evens),
+             [](int x) { return x % 2 == 0; });
+
+std::vector<int> doubled;
+std::transform(temp_evens.begin(), temp_evens.end(),
+               std::back_inserter(doubled),
+               [](int x) { return x * 2; });
+
+// ✅ C++20 ranges: ленивые вычисления, без промежуточных копий
+auto result = numbers
+    | std::views::filter([](int x) { return x % 2 == 0; })
+    | std::views::transform([](int x) { return x * 2; });
+
+// Материализация только при необходимости
+std::vector<int> materialized(result.begin(), result.end());
+
+// Или просто итерация без материализации
+for (int val : result) {
+    // Обработка
 }
 
-void pattern_custom_predicates() {
-    // CUSTOM PREDICATES - переиспользуемые условия
-    
-    // Функциональный объект
-    struct IsEven {
-        bool operator()(int x) const { return x % 2 == 0; }
-    };
-    
-    std::vector<int> vec{1, 2, 3, 4, 5, 6};
-    
-    // Использование function object
-    auto count1 = std::count_if(vec.begin(), vec.end(), IsEven{});
-    
-    // Лямбда
-    auto is_even = [](int x) { return x % 2 == 0; };
-    auto count2 = std::count_if(vec.begin(), vec.end(), is_even);
-    
-    // std::function (больше overhead)
-    std::function<bool(int)> is_even_fn = [](int x) { return x % 2 == 0; };
-    auto count3 = std::count_if(vec.begin(), vec.end(), is_even_fn);
-    
-    // Параметризованный предикат
-    auto is_divisible_by = [](int divisor) {
-        return [divisor](int x) { return x % divisor == 0; };
-    };
-    
-    auto div_by_3 = is_divisible_by(3);
-    auto count4 = std::count_if(vec.begin(), vec.end(), div_by_3);
-}
 
-// ============================================
-// 📌 PERFORMANCE TIPS
-// ============================================
+// ────────────────────────────────────────────────────────────────────────────────────
+// Custom Predicates (переиспользуемые предикаты)
+// ────────────────────────────────────────────────────────────────────────────────────
 
-void performance_tips() {
-    /*
-     * ⚡ СЛОЖНОСТЬ АЛГОРИТМОВ:
-     * 
-     * O(1):
-     * - min, max, swap
-     * 
-     * O(log n):
-     * - binary_search, lower_bound, upper_bound (на sorted range)
-     * - heap operations (push/pop)
-     * 
-     * O(n):
-     * - find, count, copy, transform, accumulate
-     * - is_sorted, remove, unique, reverse, rotate
-     * 
-     * O(n log n):
-     * - sort, stable_sort, merge
-     * - set operations на sorted ranges
-     * 
-     * O(n²):
-     * - is_permutation (worst case)
-     * - search без оптимизаций
-     */
-    
-    /*
-     * 🔍 КАТЕГОРИИ ИТЕРАТОРОВ (от слабых к сильным):
-     * 
-     * Input Iterator: только чтение, single-pass
-     * Output Iterator: только запись, single-pass
-     * Forward Iterator: чтение/запись, multi-pass
-     * Bidirectional Iterator: + движение назад (list, set, map)
-     * Random Access Iterator: + произвольный доступ (vector, deque, array)
-     * Contiguous Iterator (C++20): + смежность в памяти (vector, array)
-     * 
-     * Некоторые алгоритмы требуют определенных категорий:
-     * - sort требует Random Access
-     * - reverse требует Bidirectional
-     * - find требует только Input
-     */
-    
-    /*
-     * 📊 КОГДА ИСПОЛЬЗОВАТЬ RANGES:
-     * 
-     * ✅ Используйте ranges когда:
-     * - Хотите более читаемый код
-     * - Нужны проекции
-     * - Работаете с views (ленивые вычисления)
-     * - Хотите лучшие сообщения об ошибках компиляции
-     * 
-     * ❌ Избегайте ranges когда:
-     * - Нужна максимальная производительность (есть небольшой overhead)
-     * - Работаете с устаревшим кодом
-     * - Используете компилятор без полной поддержки C++20
-     */
-    
-    /*
-     * ⚠️ GOTCHAS С ПАРАЛЛЕЛЬНЫМИ АЛГОРИТМАМИ:
-     * 
-     * 1. Race conditions:
-     *    std::for_each(std::execution::par, v.begin(), v.end(),
-     *        [&counter](int x) { ++counter; }); // ОПАСНО!
-     * 
-     * 2. Исключения:
-     *    Если алгоритм бросает исключение в параллельном режиме,
-     *    std::terminate() вызывается немедленно!
-     * 
-     * 3. Детерминированность:
-     *    Результаты могут отличаться между запусками из-за
-     *    floating-point операций в разном порядке
-     * 
-     * 4. Overhead:
-     *    Не используйте par для маленьких данных или простых операций
-     * 
-     * 5. Iterator invalidation:
-     *    Некоторые алгоритмы (remove, unique) могут инвалидировать
-     *    итераторы непредсказуемым образом в параллельном режиме
-     */
-}
+// Функциональный объект (functor)
+struct IsEven {
+    bool operator()(int x) const { return x % 2 == 0; }
+};
 
-void performance_best_practices() {
-    std::vector<int> data(1'000'000);
-    std::iota(data.begin(), data.end(), 1);
-    
-    // ✅ ХОРОШО: reserve перед вставкой
-    std::vector<int> result;
-    result.reserve(data.size());
-    std::copy(data.begin(), data.end(), std::back_inserter(result));
-    
-    // ❌ ПЛОХО: без reserve - множество реаллокаций
-    std::vector<int> result2;
-    std::copy(data.begin(), data.end(), std::back_inserter(result2));
-    
-    // ✅ ХОРОШО: erase-remove для удаления
-    data.erase(
-        std::remove_if(data.begin(), data.end(),
-            [](int x) { return x % 2 == 0; }),
-        data.end()
-    );
-    
-    // ❌ ПЛОХО: удаление в цикле
-    // for (auto it = data.begin(); it != data.end(); ) {
-    //     if (*it % 2 == 0) {
-    //         it = data.erase(it);  // O(n) на каждой итерации!
-    //     } else {
-    //         ++it;
-    //     }
-    // }
-    
-    // ✅ ХОРОШО: используйте binary_search на отсортированных данных
-    std::vector<int> sorted{1, 2, 3, 4, 5, 6, 7, 8, 9};
-    bool found = std::binary_search(sorted.begin(), sorted.end(), 5);
-    
-    // ❌ ПЛОХО: линейный поиск на отсортированных данных
-    // auto it = std::find(sorted.begin(), sorted.end(), 5);
-    
-    // ✅ ХОРОШО: используйте stable_sort только когда нужна стабильность
-    std::sort(data.begin(), data.end());  // Быстрее
-    
-    // ❌ ПЛОХО: stable_sort когда стабильность не нужна
-    // std::stable_sort(data.begin(), data.end());  // Медленнее
-}
+std::vector<int> vec{1, 2, 3, 4, 5, 6};
 
-// ============================================
-// 📌 ГЛАВНАЯ ФУНКЦИЯ - ДЕМОНСТРАЦИЯ ВСЕХ ПРИМЕРОВ
-// ============================================
+// Использование functor
+auto count1 = std::count_if(vec.begin(), vec.end(), IsEven{});
 
-int main() {
-    std::cout << "=== Non-Modifying Algorithms ===\n";
-    demo_find_algorithms();
-    demo_count_algorithms();
-    demo_predicates();
-    demo_comparison();
-    
-    std::cout << "\n=== Modifying Algorithms ===\n";
-    demo_copy_move();
-    demo_transform();
-    demo_replace();
-    demo_fill_generate();
-    demo_remove_unique();
-    demo_reverse_rotate();
-    demo_shuffle_sample();
-    
-    std::cout << "\n=== Sorting ===\n";
-    demo_sorting();
-    demo_custom_comparators();
-    demo_partitioning();
-    
-    std::cout << "\n=== Binary Search ===\n";
-    demo_binary_search();
-    demo_binary_search_custom();
-    
-    std::cout << "\n=== Set Operations ===\n";
-    demo_set_operations();
-    
-    std::cout << "\n=== Heap Operations ===\n";
-    demo_heap_operations();
-    
-    std::cout << "\n=== Min/Max ===\n";
-    demo_minmax();
-    
-    std::cout << "\n=== Numeric Algorithms ===\n";
-    demo_numeric_algorithms();
-    
-    std::cout << "\n=== Parallel Execution ===\n";
-    demo_parallel_algorithms();
-    performance_considerations();
-    
-    std::cout << "\n=== Ranges (C++20) ===\n";
-    demo_ranges_basics();
-    demo_projections();
-    demo_constrained_algorithms();
-    demo_ranges_views_with_algorithms();
-    
-    std::cout << "\n=== Common Patterns ===\n";
-    pattern_erase_remove();
-    pattern_transform_reduce();
-    pattern_sorting_with_lambdas();
-    pattern_filtering_transformation();
-    pattern_custom_predicates();
-    
-    std::cout << "\n=== Performance Tips ===\n";
-    performance_tips();
-    performance_best_practices();
-    
-    return 0;
-}
+// Lambda как переменная
+auto is_even = [](int x) { return x % 2 == 0; };
+auto count2 = std::count_if(vec.begin(), vec.end(), is_even);
+
+// Параметризованный предикат (higher-order function)
+auto is_divisible_by = [](int divisor) {
+    return [divisor](int x) { return x % divisor == 0; };
+};
+
+auto div_by_3 = is_divisible_by(3);
+auto count3 = std::count_if(vec.begin(), vec.end(), div_by_3);
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Partition-based Selection (выбор через разбиение)
+// ────────────────────────────────────────────────────────────────────────────────────
+
+std::vector<int> scores{85, 92, 78, 95, 88, 73, 90, 87, 91};
+
+// Быстрый способ найти топ-3 без полной сортировки
+std::nth_element(scores.begin(), scores.begin() + 2, scores.end(), 
+                 std::greater<>());
+// scores[0], scores[1], scores[2] содержат 3 наибольших элемента
+// (не обязательно отсортированы между собой)
+// Остальные элементы < scores[2]
+
+
+// ════════════════════════════════════════════════════════════════════════════════════
+// 📌 PERFORMANCE TIPS (СОВЕТЫ ПО ПРОИЗВОДИТЕЛЬНОСТИ)
+// ════════════════════════════════════════════════════════════════════════════════════
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Сложность алгоритмов
+// ────────────────────────────────────────────────────────────────────────────────────
+
+/*
+ * O(1) - константное время:
+ * - min, max, swap
+ * 
+ * O(log n) - логарифмическое:
+ * - binary_search, lower_bound, upper_bound (на sorted range)
+ * - heap operations (push/pop)
+ * 
+ * O(n) - линейное:
+ * - find, count, copy, transform, accumulate
+ * - is_sorted, remove, unique, reverse, rotate
+ * - partition
+ * 
+ * O(n log n) - логлинейное:
+ * - sort, stable_sort, partial_sort
+ * - merge на sorted ranges
+ * - set operations на sorted ranges
+ * 
+ * O(n²) - квадратичное:
+ * - is_permutation (worst case)
+ * - некоторые случаи search
+ */
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Best Practices
+// ────────────────────────────────────────────────────────────────────────────────────
+
+std::vector<int> data(1'000'000);
+std::iota(data.begin(), data.end(), 1);
+
+// ✅ ХОРОШО: reserve перед множественными вставками
+std::vector<int> result;
+result.reserve(data.size());
+std::copy(data.begin(), data.end(), std::back_inserter(result));
+
+// ❌ ПЛОХО: без reserve - много реаллокаций
+std::vector<int> result2;
+std::copy(data.begin(), data.end(), std::back_inserter(result2));
+
+// ✅ ХОРОШО: erase-remove для удаления элементов
+data.erase(
+    std::remove_if(data.begin(), data.end(),
+        [](int x) { return x % 2 == 0; }),
+    data.end()
+);
+
+// ❌ ПЛОХО: удаление в цикле (O(n²))
+// for (auto it = data.begin(); it != data.end(); ) {
+//     if (*it % 2 == 0) {
+//         it = data.erase(it);  // O(n) на каждой итерации!
+//     } else {
+//         ++it;
+//     }
+// }
+
+// ✅ ХОРОШО: binary_search на отсортированных данных O(log n)
+std::vector<int> sorted{1, 2, 3, 4, 5, 6, 7, 8, 9};
+bool found = std::binary_search(sorted.begin(), sorted.end(), 5);
+
+// ❌ ПЛОХО: линейный поиск на отсортированных данных O(n)
+// auto it = std::find(sorted.begin(), sorted.end(), 5);
+
+// ✅ ХОРОШО: используйте stable_sort только когда нужна стабильность
+std::sort(data.begin(), data.end());  // Обычно быстрее
+
+// ❌ ПЛОХО: stable_sort без необходимости
+// std::stable_sort(data.begin(), data.end());  // Медленнее и больше памяти
+
+// ✅ ХОРОШО: используйте ranges для читаемости
+std::ranges::sort(data);
+auto max = std::ranges::max_element(data);
+
+// ✅ ХОРОШО: используйте проекции вместо сложных компараторов
+struct Product { std::string name; double price; };
+std::vector<Product> products;
+std::ranges::sort(products, {}, &Product::price);
+
+// ❌ ПЛОХО: длинная lambda
+// std::sort(products.begin(), products.end(),
+//           [](const Product& a, const Product& b) { return a.price < b.price; });
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Категории итераторов
+// ────────────────────────────────────────────────────────────────────────────────────
+
+/*
+ * От слабых к сильным:
+ * 
+ * Input Iterator: только чтение, single-pass
+ * Output Iterator: только запись, single-pass
+ * Forward Iterator: чтение/запись, multi-pass
+ * Bidirectional Iterator: + движение назад (list, set, map)
+ * Random Access Iterator: + произвольный доступ (vector, deque, array)
+ * Contiguous Iterator (C++20): + смежность в памяти (vector, array, string)
+ * 
+ * Требования алгоритмов:
+ * - sort требует Random Access
+ * - reverse требует Bidirectional
+ * - find требует только Input
+ */
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Когда использовать Ranges
+// ────────────────────────────────────────────────────────────────────────────────────
+
+/*
+ * ✅ Используйте ranges когда:
+ * - Хотите более читаемый код
+ * - Нужны проекции для упрощения кода
+ * - Работаете с views (ленивые вычисления)
+ * - Хотите лучшие сообщения об ошибках компиляции
+ * - Комбинируете операции через pipe operator
+ * 
+ * ⚠️ Имейте в виду:
+ * - Небольшой overhead по сравнению с классическими алгоритмами
+ * - Требуется C++20
+ * - Не все компиляторы полностью поддерживают ranges
+ */
+
+
+// ────────────────────────────────────────────────────────────────────────────────────
+// Gotchas с параллельными алгоритмами
+// ────────────────────────────────────────────────────────────────────────────────────
+
+/*
+ * ⚠️ ОПАСНОСТИ:
+ * 
+ * 1. Race conditions:
+ *    int counter = 0;
+ *    std::for_each(std::execution::par, v.begin(), v.end(),
+ *        [&counter](int x) { ++counter; }); // НЕБЕЗОПАСНО!
+ * 
+ * 2. Исключения вызывают std::terminate():
+ *    Если алгоритм бросает исключение в параллельном режиме,
+ *    программа немедленно завершается через std::terminate()
+ * 
+ * 3. Недетерминированность:
+ *    Результаты могут различаться между запусками из-за
+ *    операций с плавающей точкой в разном порядке
+ * 
+ * 4. Overhead:
+ *    Не используйте par для маленьких данных или простых операций
+ *    Overhead от создания потоков может перевесить выигрыш
+ * 
+ * 5. Iterator invalidation:
+ *    Некоторые алгоритмы могут инвалидировать итераторы
+ *    непредсказуемым образом в параллельном режиме
+ */
