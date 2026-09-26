@@ -1,0 +1,79 @@
+/* --------------------------------------------------- */
+/* 📌 Поля формы: единая геометрия и читаемые подсказки */
+/* --------------------------------------------------- */
+.field { display: grid; gap: 0.35rem; }
+.field__label { font-weight: 600; }
+.field__hint { color: #586579; font-size: 0.875rem; }
+
+.field :is(input, select, textarea) {
+  width: 100%;
+  min-width: 0;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #68778d;
+  border-radius: 0.4rem;
+  background: #fff;
+  color: #17202a;
+  font: inherit;
+}
+
+.field textarea { min-height: 7rem; resize: vertical; }
+.field input::placeholder { color: #586579; }
+
+/* Показывайте ошибку после ввода или отправки, а не сразу у пустого required. */
+.field input:user-invalid,
+.field [aria-invalid="true"] {
+  border-color: #a61b1b;
+}
+
+.field__error { color: #8a1717; }
+.field [disabled] { opacity: 0.6; cursor: not-allowed; }
+
+/* --------------------------------------------------- */
+/* 📌 Клавиатурный фокус и доступная кнопка */
+/* --------------------------------------------------- */
+:where(button, a, input, select, textarea):focus-visible {
+  outline: 3px solid #155eef;
+  outline-offset: 3px;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 2.75rem;
+  padding-inline: 1rem;
+  border: 0;
+  border-radius: 0.4rem;
+  cursor: pointer;
+}
+
+.button:disabled { cursor: not-allowed; opacity: 0.55; }
+
+/* Не убирайте outline без равноценной замены. Семантика и подписи задаются в HTML. */
+
+/* --------------------------------------------------- */
+/* 📌 Списки и таблицы с длинными данными */
+/* --------------------------------------------------- */
+.table-scroll { max-width: 100%; overflow-x: auto; }
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th, .data-table td { padding: 0.65rem; text-align: start; }
+.data-table tbody tr + tr { border-top: 1px solid #d5dce6; }
+.data-table th { white-space: nowrap; }
+
+/* --------------------------------------------------- */
+/* 📌 Диалог: ограничение размера и фон */
+/* --------------------------------------------------- */
+.dialog {
+  width: min(32rem, calc(100% - 2rem));
+  max-height: calc(100dvh - 2rem);
+  overflow: auto;
+  padding: 1.5rem;
+  border: 0;
+  border-radius: 0.75rem;
+}
+
+.dialog::backdrop { background: rgb(0 0 0 / 0.55); }
+
+/* Для модального поведения используйте HTML <dialog> и showModal():
+   один CSS не обеспечивает управление фокусом и закрытие по Escape. */

@@ -1,38 +1,57 @@
-# CSS шпаргалка
+# Шпаргалка по CSS
 
-Основные приёмы работы с современным CSS: базовый синтаксис, селекторы, layout, типографика, эффекты и инструменты.
+Короткие рецепты для повседневной вёрстки: каскад, раскладка, адаптивность, текст, формы и анимация. Каждый `.css` файл можно читать отдельно; пояснения находятся рядом с правилами. Организация стилей и инструменты вынесены в Markdown.
 
-### 🧱 [Базовый синтаксис и селекторы](./basics-selectors.md)
+### 🧱 [Каскад и селекторы](./basics_selectors.css)
 
-- Specificity, inheritance, каскад
-- Combinators, attribute selectors, псевдоклассы
-- Custom properties и `var()`
-- Единицы измерения: rem, vw, clamp()
+* 📌  **Слои, специфичность и наследование**
+* 📌  **Селекторы, состояния и вложенность**
+* 📌  **Переменные и безопасные значения по умолчанию**
 
-### 📐 [Layout: Flexbox и Grid](./layout-flex-grid.md)
+***
 
-- Flexbox: flex-direction, gap, flex
-- Grid: template, areas, gap
-- Responsive layout: media, container queries
-- Positioning, multi-column, debugging
+### 📐 [Раскладка элементов](./layout.css)
 
-### 📝 [Типографика и цвета](./typography-colors.md)
+* 📌  **Flexbox для строк и распределения места**
+* 📌  **Grid для сеток и макета страницы**
+* 📌  **Размеры, переполнение и позиционирование**
 
-- Подключение web fonts, fallback
-- fluid typography через clamp()
-- Цвета: HSL, color-mix, variables
-- Accessibility: контраст, hyphens, ellipsis
+***
 
-### 🎨 [Визуальные эффекты и анимации](./effects-animations.md)
+### 📱 [Адаптивность](./responsive.css)
 
-- Transition, timing-function
-- Keyframes, transforms (2D/3D)
-- Filter/backdrop, clip-path
-- prefers-reduced-motion
+* 📌  **Отзывчивые размеры без лишних брейкпоинтов**
+* 📌  **Media queries для окна и предпочтений**
+* 📌  **Container queries для компонентов**
 
-### 🧰 [Практики, инструменты и performance](./practices-tools.md)
+***
 
-- БЭМ/ITCSS/Utility-first подходы
-- Sass, PostCSS, autoprefixer
-- Performance: critical CSS, GPU-friendly
-- Debugging tools, reset, deployment
+### 🔤 [Типографика и цвета](./typography_colors.css)
+
+* 📌  **Шрифты, ритм и обрезка длинного текста**
+* 📌  **Цветовые токены и темы**
+* 📌  **Контраст и системные предпочтения**
+
+***
+
+### 🧩 [Формы и интерактивные состояния](./forms_interactions.css)
+
+* 📌  **Поля, ошибки и отключённые элементы**
+* 📌  **Клавиатурный фокус и области нажатия**
+* 📌  **Списки, таблицы и диалоговые окна**
+
+***
+
+### 🎨 [Эффекты и анимация](./effects_animations.css)
+
+* 📌  **Переходы, трансформации и keyframes**
+* 📌  **Тени, градиенты и обрезка изображения**
+* 📌  **Уменьшение движения и безопасные состояния**
+
+***
+
+### 🧰 [Организация CSS и инструменты](./practices_tools.md)
+
+* 📌  **Структура файлов и договорённости команды**
+* 📌  **Stylelint и проверка в браузере**
+* 📌  **Производительность и типичные ошибки**

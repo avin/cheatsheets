@@ -1,0 +1,69 @@
+/* --------------------------------------------------- */
+/* 📌 Переходы: анимируйте состояние, а не layout без необходимости */
+/* --------------------------------------------------- */
+.action {
+  background: #174ea6;
+  color: white;
+  transform: translateY(0);
+  transition: transform 160ms ease, background-color 160ms ease;
+}
+
+.action:hover {
+  background: #0d397e;
+  transform: translateY(-2px);
+}
+
+.action:active { transform: translateY(0); }
+
+/* transform и opacity обычно дешевле для анимации, чем width или top.
+   Проверяйте реальную стоимость в DevTools; will-change не ставьте повсюду. */
+
+/* --------------------------------------------------- */
+/* 📌 Keyframes: индикация загрузки */
+/* --------------------------------------------------- */
+@keyframes spin {
+  to { transform: rotate(1turn); }
+}
+
+.spinner {
+  width: 1.5rem;
+  aspect-ratio: 1;
+  border: 0.2rem solid #b8c9e6;
+  border-top-color: #174ea6;
+  border-radius: 50%;
+  animation: spin 750ms linear infinite;
+}
+
+/* Не полагайтесь только на анимацию: статус загрузки сообщайте текстом/ARIA. */
+
+/* --------------------------------------------------- */
+/* 📌 Поверхности, изображения и простые эффекты */
+/* --------------------------------------------------- */
+.elevated-card {
+  border-radius: 0.75rem;
+  box-shadow: 0 0.5rem 1.5rem rgb(18 30 52 / 0.14);
+}
+
+.hero-banner {
+  background: linear-gradient(120deg, #133c78, #3275c7);
+  color: white;
+}
+
+.thumbnail {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 0.5rem;
+}
+
+/* --------------------------------------------------- */
+/* 📌 Уменьшение движения: сохраняйте видимое конечное состояние */
+/* --------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .action { transition-duration: 0.01ms; }
+  .spinner { animation-duration: 1.5s; }
+}
+
+/* Не делайте индикатор единственным способом узнать о ходе операции;
+   при необходимости замените вращение статичным значком и текстом. */

@@ -1,0 +1,95 @@
+/* --------------------------------------------------- */
+/* 📌 Слои каскада: порядок задавайте до объявления правил */
+/* --------------------------------------------------- */
+@layer reset, base, components, utilities;
+
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+}
+
+@layer base {
+  body {
+    margin: 0;
+    font-family: system-ui, sans-serif;
+    line-height: 1.5;
+  }
+
+  /* color наследуется, margin — нет. Не задавайте базовые стили через ID. */
+  a {
+    color: inherit;
+  }
+}
+
+@layer components {
+  .button {
+    background: var(--button-bg, #1646a0);
+    color: white;
+  }
+}
+
+@layer utilities {
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+/* Обычное правило вне @layer имеет приоритет над обычными правилами внутри слоёв.
+   Держите прикладные правила в объявленных слоях, если рассчитываете на их порядок. */
+/* Блоки ниже — самостоятельные рецепты, не продолжение примера со слоями. */
+
+/* --------------------------------------------------- */
+/* 📌 Селекторы: выбирайте цель без лишней специфичности */
+/* --------------------------------------------------- */
+.card > .card__title { margin-block: 0 0.5rem; } /* прямой потомок */
+.field + .field { margin-block-start: 1rem; }   /* соседний элемент */
+input[required] { border-inline-start: 0.2rem solid currentColor; }
+.menu-item:not([aria-current="page"]):hover { text-decoration: underline; }
+.form-group:has(input:invalid) .form-group__hint { color: #9b1c1c; }
+
+/* :where() даёт нулевую специфичность: компонент легко переопределить. */
+:where(.article) :where(h2, h3) { scroll-margin-block-start: 5rem; }
+
+/* --------------------------------------------------- */
+/* 📌 Вложенность: группируйте состояния возле компонента */
+/* --------------------------------------------------- */
+.chip {
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+
+  &:hover { background: #e8eefb; }
+  &[aria-pressed="true"] { background: #c6d8fa; }
+  & .chip__icon { margin-inline-end: 0.25rem; }
+}
+
+/* Не вкладывайте глубоко: селекторы сложно переопределять и читать. */
+
+/* --------------------------------------------------- */
+/* 📌 Переменные: токены можно переопределять на компоненте */
+/* --------------------------------------------------- */
+:root {
+  --space-2: 0.5rem;
+  --space-4: 1rem;
+  --content-width: 70rem;
+}
+
+.panel {
+  --panel-gap: var(--space-4);
+  display: grid;
+  gap: var(--panel-gap);
+  padding: var(--space-4);
+}
+
+.panel--compact { --panel-gap: var(--space-2); }
+
+/* var(--missing, fallback) работает, если переменная не определена;
+   fallback не спасает от значения неверного типа для свойства. */

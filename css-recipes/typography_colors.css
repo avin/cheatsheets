@@ -1,0 +1,77 @@
+/* --------------------------------------------------- */
+/* 📌 Шрифт и ритм текста */
+/* --------------------------------------------------- */
+@font-face {
+  font-family: "App Sans";
+  src: url("/fonts/app-variable.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap; /* текст виден во время загрузки шрифта */
+}
+
+body {
+  font-family: "App Sans", system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.prose { max-width: 65ch; }
+.prose p { margin-block: 0 1em; }
+.prose h2 { margin-block: 2em 0.5em; line-height: 1.2; }
+
+/* --------------------------------------------------- */
+/* 📌 Перенос и усечение: выбирайте по типу контента */
+/* --------------------------------------------------- */
+.title-one-line {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.summary {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+.user-content { overflow-wrap: anywhere; }
+.article-copy { hyphens: auto; } /* нужен корректный lang у HTML-элемента */
+
+/* Не обрезайте критичные имена и сообщения об ошибках без способа прочесть целиком. */
+
+/* --------------------------------------------------- */
+/* 📌 Цветовые токены и тема */
+/* --------------------------------------------------- */
+:root {
+  color-scheme: light dark; /* системные элементы тоже подстраиваются */
+  --surface: #fff;
+  --text: #17202a;
+  --accent: #174ea6;
+  --border: #c9d2df;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --surface: #171c24;
+  --text: #f2f4f8;
+  --accent: #9bc0ff;
+  --border: #515d6d;
+}
+
+body { background: var(--surface); color: var(--text); }
+.card { border: 1px solid var(--border); background: var(--surface); }
+.link { color: var(--accent); }
+.card--muted { background: color-mix(in srgb, var(--surface) 90%, var(--accent)); }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --surface: #171c24;
+    --text: #f2f4f8;
+    --accent: #9bc0ff;
+    --border: #515d6d;
+  }
+}
+
+/* Контраст текста и фона проверяйте в обеих темах: токены сами его не гарантируют. */

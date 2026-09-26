@@ -1,0 +1,70 @@
+/* --------------------------------------------------- */
+/* 📌 Размеры без постоянных брейкпоинтов */
+/* --------------------------------------------------- */
+.site-header {
+  padding-inline: clamp(1rem, 4vw, 3rem);
+}
+
+.hero__title {
+  font-size: clamp(2rem, 1.2rem + 3vw, 4rem);
+  line-height: 1.1;
+}
+
+.app-shell {
+  min-height: 100vh;  /* запасной вариант */
+  min-height: 100dvh; /* видимая высота на мобильном устройстве */
+}
+
+/* --------------------------------------------------- */
+/* 📌 Media query: меняйте макет по доступному месту */
+/* --------------------------------------------------- */
+@media (width <= 48rem) {
+  .page {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "content" "sidebar";
+  }
+
+  .toolbar__spacer { display: none; }
+}
+
+@media (pointer: coarse) {
+  .icon-button { min-width: 2.75rem; min-height: 2.75rem; }
+}
+
+/* Для печати убирайте управление и не обрезайте основной текст. */
+@media print {
+  .site-nav, .toolbar { display: none; }
+  .code-block { overflow: visible; white-space: pre-wrap; }
+}
+
+/* --------------------------------------------------- */
+/* 📌 Container query: компонент реагирует на свою колонку */
+/* --------------------------------------------------- */
+.product-slot { container: product / inline-size; }
+
+.product-card {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@container product (width >= 34rem) {
+  .product-card {
+    grid-template-columns: 12rem minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+/* Правило @container действует на потомков .product-slot, не на сам контейнер.
+   Для размера окна используйте @media, для размера компонента — @container. */
+
+/* --------------------------------------------------- */
+/* 📌 Поддержка функций: улучшение поверх рабочего базового варианта */
+/* --------------------------------------------------- */
+.gallery { display: flex; flex-wrap: wrap; gap: 1rem; }
+
+@supports (display: grid) {
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  }
+}
