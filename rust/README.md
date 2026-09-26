@@ -74,7 +74,7 @@
 
 ***
 
-### ⚙️ [Cargo и структура проекта](./cargo_workspace.rs)
+### ⚙️ [Cargo и структура проекта](./cargo_workspace.md)
 
 * 📌  **Пакет, библиотека, бинарник, `src/bin`**
 * 📌  **Workspace, общие зависимости и features**
