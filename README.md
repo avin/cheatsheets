@@ -13,6 +13,7 @@
 
 ## Rust
 - [Rust](./rust/README.md)
+- [Rust Concurrency & Async](./rust-concurrency/README.md)
 
 ## Фронтенд
 - [JavaScript](./js/README.md)
