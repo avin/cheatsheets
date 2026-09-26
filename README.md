@@ -11,6 +11,9 @@
 - [C++ Web/Network](cpp-web-network/README.md)
 - [CMake](./cmake-recipes/README.md)
 
+## Rust
+- [Rust](./rust/README.md)
+
 ## Фронтенд
 - [JavaScript](./js/README.md)
 - [JavaScript алгоритмы](./js-algos/README.md)
