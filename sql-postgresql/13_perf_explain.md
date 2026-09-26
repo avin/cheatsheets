@@ -1,67 +1,81 @@
-# Производительность и EXPLAIN
+# Производительность и планы запросов
 
-## EXPLAIN
+План показывает, как PostgreSQL собирается выполнить запрос. Сначала измеряйте конкретный медленный запрос на данных, похожих на рабочие; затем меняйте запрос, индекс или схему.
+
+## Первый проход: EXPLAIN
+
 ```sql
-EXPLAIN SELECT * FROM orders WHERE status = 'new';
-EXPLAIN (ANALYZE, BUFFERS) SELECT * FROM orders WHERE status = 'new';
+EXPLAIN (ANALYZE, BUFFERS)
+SELECT id, total
+FROM orders
+WHERE user_id = 42
+ORDER BY created_at DESC
+LIMIT 20;
 ```
-- `ANALYZE` выполняет запрос, дает фактические строки/время; `BUFFERS` - кеш/диск.
 
-## Типы сканов (частое)
-- `Seq Scan` - полный просмотр таблицы.
-- `Index Scan` - поиск по индексу, выбор строк.
-- `Index Only Scan` - без чтения таблицы (если все в индексе, видимость через VM).
-- `Bitmap Index/Heap Scan` - битовые операции для больших диапазонов.
+- **Что смотреть**: фактические строки и время, число повторов (`loops`), отличие `rows` от `actual rows`, чтение блоков (`Buffers`), сортировки и временные файлы.
+- **Когда применять**: запрос действительно медленный или план неожиданно изменился после роста данных.
+- **Риск**: `ANALYZE` выполняет запрос. Для `UPDATE`/`DELETE` исследуйте на копии данных или внутри транзакции с `ROLLBACK`; побочные эффекты внешних функций откат не гарантирует.
 
-## Соединения
-- `Nested Loop` - хорошо для точечных/малых наборов.
-- `Hash Join` - эффективно для равенства/больших объемов; требует `work_mem`.
-- `Merge Join` - отсортированные входы.
+## Как читать основные узлы
 
-## Актуальность статистики
+| Узел | Что означает | Что проверить |
+| --- | --- | --- |
+| `Seq Scan` | Чтение таблицы целиком | Это может быть нормально для маленькой таблицы или большой доли строк. |
+| `Index Scan` / `Index Only Scan` | Поиск через индекс | Подходит ли порядок колонок условиям? Для `Index Only Scan` важна видимость строк. |
+| `Bitmap Heap Scan` | Индекс находит множество строк, затем читается таблица | Сколько страниц и строк реально затронуто? |
+| `Nested Loop` | Повторяющийся поиск правой стороны | Есть ли индекс для внутренней стороны и не слишком ли много повторов? |
+| `Hash Join` / `Merge Join` | Соединение через хеш или отсортированные входы | Нужны ли сортировка и временные файлы? |
+
+Начинайте с внутренних узлов, где фактическая работа резко превышает оценку. Само наличие `Seq Scan` не доказывает проблему.
+
+## Проверка гипотезы об индексе
+
+```sql
+EXPLAIN (ANALYZE, BUFFERS)
+SELECT id, total
+FROM orders
+WHERE user_id = 42
+ORDER BY created_at DESC
+LIMIT 20;
+
+CREATE INDEX CONCURRENTLY orders_user_created_idx
+ON orders (user_id, created_at DESC);
+```
+
+- **Плюсы**: индекс может сократить поиск и убрать сортировку.
+- **Минусы**: занимает место и замедляет запись; частичный индекс может быть лучше для редкого статуса.
+- **Типичная ошибка**: создавать индекс по каждой колонке отдельно и ждать, что он покроет составные `WHERE` и `ORDER BY`.
+- `CREATE INDEX CONCURRENTLY` нельзя запускать внутри явной транзакции.
+
+## Статистика и обслуживание
+
 ```sql
 ANALYZE orders;
-VACUUM (ANALYZE) orders;
+
+SELECT relname, n_live_tup, n_dead_tup, last_autoanalyze
+FROM pg_stat_user_tables
+WHERE relname = 'orders';
 ```
-- После больших вставок/удалений обновляй статистику.
 
-## Индексы: проверки
-- Используй `EXPLAIN` и `pg_stat_user_indexes` для видимости:
+Если оценка числа строк сильно ошибается после массовой загрузки, обновите статистику. `VACUUM` освобождает место для повторного использования внутри таблицы; обычный `VACUUM` обычно не уменьшает файл на диске. Проверяйте работу autovacuum до ручной настройки параметров.
+
+## Повторяющиеся медленные запросы
+
+`pg_stat_statements` агрегирует статистику по нормализованным запросам; расширение должно быть доступно и настроено на сервере:
+
 ```sql
-SELECT relname, indexrelname, idx_scan
-FROM pg_stat_user_indexes
-WHERE schemaname = 'public';
-```
-- Частичный/выражение индекс - если запрос совпадает с условием/выражением.
-
-## Настройки, которые часто влияют
-- `work_mem` - для сортировок/хешей (per operation).
-- `effective_cache_size` - оценка кеша ОС.
-- `shared_buffers` - кеш postgres.
-- `random_page_cost`, `seq_page_cost` - стоимость IO.
-- `enable_seqscan|indexscan|bitmapscan` можно временно выключить для диагностики плана.
-
-## Частые проблемы
-- Фильтр по колонке без индекса -> Seq Scan.
-- Функция в условии без соответствующего индекс-выражения.
-- `OR` без перекрестных индексов -> Seq Scan; иногда помогает `UNION ALL`.
-- Смещение пагинации `OFFSET` большое - дорогой skip; используйте keyset pagination.
-
-## Обслуживание таблиц
-- `VACUUM (VERBOSE)` / `VACUUM FULL` (блокирует) / `ANALYZE` - очистка мертвых строк и статистика.
-- `REINDEX TABLE tbl;` при bloat индексов; `CLUSTER tbl USING idx;` для физической сортировки.
-- Мониторинг автоочистки: `SELECT relname, last_autovacuum FROM pg_stat_all_tables ORDER BY last_autovacuum NULLS FIRST;`
-
-## Поиск горячих запросов
-```sql
-CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
-SELECT query, calls, mean_exec_time, rows
+SELECT calls, total_exec_time, mean_exec_time, rows, query
 FROM pg_stat_statements
-ORDER BY mean_exec_time DESC
-LIMIT 10;
+ORDER BY total_exec_time DESC
+LIMIT 20;
 ```
 
-## Как читать план кратко
-- Смотри сверху вниз: порядок исполнения слева направо.
-- `Actual vs Planned Rows` - несоответствие = плохая статистика.
-- `Recheck Cond` в `Bitmap Heap Scan` - пост-верификация.
+- **Когда применять**: искать наибольшую суммарную нагрузку, а не один случайный медленный запрос.
+- **Риск**: план зависит от параметров, объёма данных и актуальной статистики. Сравнивайте результаты на репрезентативном наборе.
+
+## Справочник
+
+- [PostgreSQL: EXPLAIN](https://www.postgresql.org/docs/current/sql-explain.html)
+- [PostgreSQL: Using EXPLAIN](https://www.postgresql.org/docs/current/using-explain.html)
+- [PostgreSQL: pg_stat_statements](https://www.postgresql.org/docs/current/pgstatstatements.html)
